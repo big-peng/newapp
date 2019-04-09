@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.*?>
+<?import javafx.embed.swing.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane fx:id="pane" fx:controller="com.hzaihua.newapp.views.Controller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+        <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="600.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="文件">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="新建" />
+                        <MenuItem mnemonicParsing="false" text="打开" />
+                        <MenuItem mnemonicParsing="false" text="保存" />
+                        <MenuItem mnemonicParsing="false" text="另存为" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <HBox fx:id="hBox1" layoutY="24.0" prefHeight="376.0" prefWidth="137.0" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+            <children>
+                <Accordion prefHeight="400.0" prefWidth="137.0">
+                    <panes>
+                        <TitledPane animated="false" text="untitled 1" />
+                        <TitledPane animated="false" text="untitled 2" />
+                    </panes>
+                </Accordion>
+            </children>
+        </HBox>
+        <HBox fx:id="hBox2" layoutX="136.0" layoutY="24.0" prefHeight="376.0" prefWidth="465.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Separator orientation="VERTICAL" prefHeight="10000.0" />
+                <TabPane prefHeight="400.0" prefWidth="464.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="首页" />
+                        <Tab text="标签1" />
+                    </tabs>
+                </TabPane>
+            </children>
+        </HBox>
+</Pane>

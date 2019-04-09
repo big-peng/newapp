@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.input.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <MenuBar prefHeight="25.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" style="-fx-hgap: 100%; -fx-vgap: 100%;">
+        <menus>
+          <Menu mnemonicParsing="false" text="文件">
+            <items>
+              <MenuItem mnemonicParsing="false" text="新建" />
+                  <MenuItem mnemonicParsing="false" text="打开" />
+                  <MenuItem mnemonicParsing="false" text="保存" />
+                  <MenuItem mnemonicParsing="false" text="另存为" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <SplitPane dividerPositions="0.1756" layoutY="24.0" prefHeight="382.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" style="-fx-hgap: 100%; -fx-vgap: 100%;">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="124.0">
+               <children>
+                  <Accordion layoutX="-3.0" layoutY="-2.0" prefHeight="383.0" prefWidth="106.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                    <panes>
+                      <TitledPane animated="false" prefHeight="139.0" prefWidth="106.0" text="菜单1">
+                           <content>
+                              <Button mnemonicParsing="false" prefHeight="21.0" prefWidth="104.0" text="Button" />
+                           </content>
+                        </TitledPane>
+                      <TitledPane animated="false" prefHeight="340.0" prefWidth="106.0" text="菜单2" />
+                    </panes>
+                  </Accordion>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="379.0" prefWidth="344.0">
+               <children>
+                  <TabPane prefHeight="380.0" prefWidth="490.0" tabClosingPolicy="ALL_TABS">
+                    <tabs>
+                      <Tab text="Untitled Tab 1">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                        </content>
+                      </Tab>
+                      <Tab text="Untitled Tab 2">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</Pane>
