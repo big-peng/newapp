@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx" prefHeight="300.0" prefWidth="400.0">
+    <BorderPane>
+        <center>
+            <VBox maxHeight="200" maxWidth="400">
+            <GridPane style="-fx-padding: 30 0 0 75">
+            <children>
+                <Label prefHeight="30.0" prefWidth="60.0" text="用户名称:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <TextField fx:id="downUserName" layoutX="5.0" layoutY="5.0" prefHeight="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label prefHeight="30.0" prefWidth="60.0" text="姓       名:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <TextField fx:id="downName" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label prefHeight="30.0" prefWidth="60.0" text="电话号码:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <TextField fx:id="downTelephone" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            </children>
+        </GridPane>
+                <Label style="-fx-padding: 20 0 0 85">提示：可以输入一项或者多项查询条件</Label>
+                <HBox style="-fx-padding: 20 0 0 180;-fx-font-size: 14">
+                    <JFXButton fx:id="findDownUsers" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="搜索"/>
+                </HBox>
+        </VBox>
+        </center>
+    </BorderPane>
+</AnchorPane>

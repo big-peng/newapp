@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.geometry.Insets?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx" prefHeight="700.0" prefWidth="500.0">
+    <BorderPane>
+        <center>
+            <VBox maxHeight="700" maxWidth="500">
+                <GridPane style="-fx-padding: 30 0 0 80">
+                    <children>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="用户名称:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="username" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label GridPane.columnIndex="2" GridPane.rowIndex="1">*</Label>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="密      码:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label GridPane.columnIndex="2" GridPane.rowIndex="2">*</Label>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="重复密码:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <TextField fx:id="ageinPasswork" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label GridPane.columnIndex="2" GridPane.rowIndex="3">*</Label>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="类    型:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <ComboBox fx:id="searchComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" id="jfxComboBox" prefWidth="200" promptText="选择用户等级">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <Label GridPane.columnIndex="0" GridPane.rowIndex="5" text=""/>
+                        <Label GridPane.columnIndex="1" GridPane.rowIndex="5" text=""/>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="姓      名:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                        <TextField fx:id="downName" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label GridPane.columnIndex="2" GridPane.rowIndex="6">*</Label>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="电      话:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                        <TextField fx:id="downTelephone" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label GridPane.columnIndex="2" GridPane.rowIndex="7">*</Label>
+                        <Label prefHeight="30.0" prefWidth="60.0" text="职      业:" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                        <TextField fx:id="worktype" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label prefHeight="30.0" prefWidth="60.0" text="工作单位:" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                        <TextField fx:id="workAddress" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Label prefHeight="30.0" prefWidth="60.0" text="照      片:" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                        <ImageView fx:id="photo" fitHeight="100" fitWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+                        <JFXButton fx:id="fileChoose" GridPane.columnIndex="2" GridPane.rowIndex="10" style="-fx-font-size: 13;-fx-background-color: pink" text="选择照片" />
+                        <Label prefHeight="60.0" text="测      点:" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="11" prefHeight="100" prefWidth="70">
+                            <TreeTableView fx:id="treeTableView" prefWidth="100" prefHeight="100">
+                                <columns>
+                                    <JFXTreeTableColumn fx:id="measureCode" prefWidth="100.0" text="测点编号"/>
+                                    <JFXTreeTableColumn fx:id="measureName" prefWidth="109.0" text="测点名称"/>
+                                </columns>
+                            </TreeTableView>
+                        </VBox>
+                        <HBox GridPane.columnIndex="1" GridPane.rowIndex="12" layoutX="50" layoutY="100">
+                            <padding><Insets left="140.0" top="5.0"/></padding>
+                            <JFXButton text="分配测点" style="-fx-font-size: 13;-fx-background-color: blue;"/>
+                        </HBox>
+                    </children>
+                </GridPane>
+                <Label style="-fx-padding: 20 0 0 155">提示：*为必填项</Label>
+                <HBox style="-fx-padding: 20 0 0 230;-fx-font-size: 14">
+                    <JFXButton fx:id="comitAddDownUser" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+                </HBox>
+            </VBox>
+        </center>
+    </BorderPane>
+</AnchorPane>

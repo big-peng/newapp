@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121">
+    <children>
+        <JFXTabPane fx:id="editListener" layoutX="20.0" layoutY="20.0" prefHeight="520.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="基本">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <children>
+                                    <JFXCheckBox layoutX="90.0" layoutY="60.0" text="开机启动">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </JFXCheckBox>
+                                    <Label layoutX="80.0" layoutY="100.0" text="服务器编号：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="98.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+                                    <Label layoutX="440.0" layoutY="100.0" text="*请参照HJ-664进行设置">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+                                    <Label layoutX="80" layoutY="140.0" text="服务器名称：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="138.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+
+                                    <Label layoutX="80" layoutY="180.0" text="测点上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="170" layoutY="180.0" text="1000">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="440.0" layoutY="180.0" text="由授权限制">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+                                    <Label layoutX="80" layoutY="220.0" text="用户上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="170" layoutY="220.0" text="20">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="440.0" layoutY="220.0" text="由授权限制">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+                                    <Label layoutX="80.0" layoutY="260.0" text="文件存储路径：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+                                    <JFXTextField fx:id="filePath" layoutX="170.0" layoutY="258.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+                                    <Label fx:id="pathWarning" layoutX="170.0" layoutY="288.0" style="-fx-text-fill: red;" text="">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXButton fx:id="fileChoose" layoutX="440.0" layoutY="260.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" style="-fx-font-size: 13;" text="浏览..." />
+
+                                    <JFXButton layoutX="280.0" layoutY="340.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="保存" />
+                                    <JFXButton layoutX="345.0" layoutY="340.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="取消" />
+
+                                </children>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+                <Tab text="数据库">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <children>
+                                    <JFXRadioButton fx:id="radio_1" layoutX="80.0" layoutY="60.0" selected="true" styleClass="custom-jfx-radio-button" text="Mysql">
+                                        <toggleGroup>
+                                            <ToggleGroup fx:id="toggleGroup" />
+                                        </toggleGroup>
+                                    </JFXRadioButton>
+                                    <JFXRadioButton fx:id="radio_2" layoutX="200.0" layoutY="60.0" selected="false" styleClass="custom-jfx-radio-button" text="HBase" toggleGroup="$toggleGroup" />
+                                    <JFXRadioButton fx:id="radio_3" layoutX="320.0" layoutY="60.0" selected="false" styleClass="custom-jfx-radio-button" text="SQL Server" toggleGroup="$toggleGroup" />
+
+                                    <Label layoutX="80.0" layoutY="100.0" text="数据库地址：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="98.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+
+                                    <Label layoutX="80" layoutY="140.0" text="数据库用户名：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="138.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+
+                                    <Label layoutX="80" layoutY="180.0" text="数据库密码：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="178.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+                                    <JFXButton layoutX="440.0" layoutY="180.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" style="-fx-font-size: 13;" text="测试连接" />
+
+                                    <Label layoutX="80" layoutY="260.0" text="数据备份地址：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="258.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+
+                                    <Label layoutX="80" layoutY="300.0" text="数据备份间隔：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="170.0" layoutY="298.0" style="-fx-font-size: 13;-fx-pref-height: 22;  -fx-min-height: 1;-fx-pref-width: 250;" />
+                                    <JFXButton layoutX="440.0" layoutY="300.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" style="-fx-font-size: 13;" text="还原数据" />
+
+                                    <Label layoutX="80" layoutY="340.0" text="数据增利备份间隔：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="200.0" layoutY="338.0" prefHeight="23.0" style="-fx-font-size: 13; -fx-pref-height: 22; -fx-min-height: 1; -fx-pref-width: 220;" />
+                                    <JFXButton layoutX="440.0" layoutY="340.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" style="-fx-font-size: 13;" text="备份管理" />
+
+                                </children>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+                <Tab text="加载项">
+                    <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane fx:id="treeview_test" minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <children>
+                                <Label layoutX="20.0" layoutY="22.0" text="已加载">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                </Label>
+                                <JFXButton layoutX="565.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="禁止加载" />
+                                <JFXTreeTableView fx:id="tbv_book" layoutX="14.0" layoutY="48.0" prefHeight="410.0" prefWidth="310.0">
+                                    <columns>
+                                        <JFXTreeTableColumn fx:id="tb_column_book_id" prefWidth="75.0" text="图书ID" />
+                                        <JFXTreeTableColumn fx:id="tb_column_book_name" prefWidth="89.0" text="图书名称" />
+                                        <JFXTreeTableColumn fx:id="tb_column_book_type" prefWidth="69.0" text="图书类别" />
+                                        <JFXTreeTableColumn fx:id="tb_column_book_author" prefWidth="64.0" text="作者" />
+                                    </columns>
+                                </JFXTreeTableView>
+                                <JFXButton layoutX="334.0" layoutY="210.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="≫" />
+                                <JFXButton layoutX="334.0" layoutY="247.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="≪" />
+                                <Label layoutX="379.0" layoutY="22.0" text="未加载">
+                                    <font>
+                                        <Font size="13.0" />
+                                    </font>
+                                </Label>
+                                <JFXButton layoutX="247.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="禁止加载" />
+                                <JFXTreeTableView layoutX="372.0" layoutY="48.0" prefHeight="410.0" prefWidth="270.0">
+                                    <columns>
+                                        <JFXTreeTableColumn prefWidth="75.0" text="图书ID" />
+                                        <JFXTreeTableColumn prefWidth="89.0" text="图书名称" />
+                                        <JFXTreeTableColumn prefWidth="69.0" text="图书类别" />
+                                    </columns>
+                                </JFXTreeTableView>
+                            </children>
+                        </AnchorPane>
+                    </ScrollPane>
+                </Tab>
+
+                <Tab text="客户端">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <children>
+                                    <Label layoutX="160.0" layoutY="50.0" text="APP客户端">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Separator layoutX="85.0" layoutY="80.0" prefWidth="220.0" />
+
+                                    <Label layoutX="65.0" layoutY="100.0" text="APP接入端口：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="155.0" layoutY="98.0" style="-fx-font-size: 13; -fx-pref-height: 22; -fx-min-height: 1; -fx-pref-width: 170;" />
+
+                                    <Label layoutX="65.0" layoutY="140.0" text="APP同时接入上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="180.0" layoutY="138.0" style="-fx-font-size: 13; -fx-pref-height: 22; -fx-min-height: 1; -fx-pref-width: 146;" />
+
+                                    <Label layoutX="180.0" layoutY="167.0" text="最大100，由授权限制">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+                                    <Label layoutX="450.0" layoutY="50.0" text="WEB客户端">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Separator layoutX="370.0" layoutY="80.0" prefWidth="220.0" />
+
+                                    <Label layoutX="350.0" layoutY="100.0" text="WEB同时接入上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextField layoutX="467.0" layoutY="98.0" style="-fx-font-size: 13; -fx-pref-height: 22; -fx-min-height: 1; -fx-pref-width: 144;" />
+
+                                    <Label layoutX="467.0" layoutY="128.0" text="最大100，由授权限制">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+
+                <Tab text="授权">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <children>
+                                    <Label layoutX="80.0" layoutY="60.0" text="产品授权码：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="90.0" text="服务器固件码：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="120.0" text="被授权用户：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="150.0" text="授权测点上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="180.0" text="授权用户上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="210.0" text="APP连接上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="240.0" text="WEB连接上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="80.0" layoutY="270.0" text="加载项：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+
+
+                                    <Label layoutX="200.0" layoutY="60.0" text="xxxx-xxxx-xxxx-xxxx">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="90.0" text="服务器固件码：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="120.0" text="被授权用户：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="150.0" text="授权测点上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="180.0" text="授权用户上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="210.0" text="APP连接上限：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label layoutX="200.0" layoutY="240.0" text="加载项：">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <JFXTextArea fx:id="noEdit" editable="false" layoutX="198.0" layoutY="266.0" prefHeight="73.0" prefWidth="252.0" style="-fx-font-size: 13;" text="是否健康速度快菲尼克斯地方胜多负少接口都分不开闪电风暴会计师对方水电费健康比速度快解放北师大">
+                                    </JFXTextArea>
+
+
+                                    <JFXButton layoutX="355.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" style="-fx-font-size: 13;" text="更改授权码" />
+                                </children>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </JFXTabPane>
+    </children>
+</AnchorPane>

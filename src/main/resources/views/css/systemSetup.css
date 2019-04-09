@@ -1,0 +1,155 @@
+.jfx-decorator {
+    -fx-decorator-color: derive(#2B579A, 0%);
+    -fx-border-width: 2 2 2 2;
+}
+
+.jfx-decorator .jfx-decorator-buttons-container {
+    -fx-background-color: -fx-decorator-color;
+}
+
+.jfx-decorator .resize-border {
+    -fx-border-color: -fx-decorator-color;
+    -fx-border-width: 2 2 2 2;
+}
+.jfx-decorator .jfx-decorator-title-container .jfx-decorator-text {
+    -fx-opacity: 0;
+    -fx-fill: #2B579A;
+    -fx-font-size: 0;
+}
+
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: #2B579A;
+}
+
+.jfx-hamburger-icon{
+    -fx-spacing: 5;
+    -fx-cursor: hand;
+}
+.jfx-hamburger-icon StackPane{
+    -fx-pref-width: 40px;
+    -fx-pref-height: 7px;
+    -fx-background-color : #D63333;
+    -fx-background-radius : 5px;
+}
+
+#title {
+    -fx-font-color: red;
+    -fx-font-size: 20px;
+    -fx-font-weight: bolder;
+}
+
+/*Flat button example*/
+.jfx-button {
+     -jfx-button-type: FLAT;
+     -fx-background-color: #2B579A;
+     -fx-text-fill: black;
+}
+
+/*Raised button example*/
+.jfx-button {
+     -jfx-button-type: FLAT;
+     -fx-background-color: #2B579A;
+     -fx-text-fill: white;
+}
+
+.jfx-toggle-button {
+     -jfx-toggle-color: #009688;
+     -jfx-untoggle-color: #FAFAFA;
+     -jfx-toggle-line-color: #77C2BB;
+     -jfx-untoggle-line-color: #999999;
+     -jfx-size: 10.0;
+     -jfx-disable-visual-focus: false;
+}
+
+.jfx-combo-box{
+    -jfx-focus-color: #039BE5;
+
+}
+
+.mylistview .scroll-bar:horizontal .track,
+.mylistview .scroll-bar:vertical .track{
+    -fx-background-color:transparent;
+    -fx-border-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-border-radius:2em;
+}
+
+.mylistview .scroll-bar:horizontal .increment-button ,
+.mylistview .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 0 10 0;
+}
+
+.mylistview .scroll-bar:vertical .increment-button ,
+.mylistview .scroll-bar:vertical .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 10 0 0;
+}
+.mylistview  .scroll-bar .increment-arrow,
+.mylistview  .scroll-bar .decrement-arrow{
+    -fx-shape:" ";
+    -fx-padding:0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Scroll Bar			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.scroll-bar:vertical > .track-background, .scroll-bar:horizontal > .track-background {
+    -fx-background-color: #F1F1F1;
+    -fx-background-insets: 0.0;
+}
+
+.scroll-bar:vertical > .thumb, .scroll-bar:horizontal > .thumb {
+    -fx-background-color: #BCBCBC;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 1.0;
+}
+
+.scroll-bar > .increment-button, .scroll-bar > .decrement-button {
+    -fx-padding: 5 2 5 2;
+}
+
+.scroll-bar > .increment-button, .scroll-bar > .decrement-button, .scroll-bar:hover > .increment-button, .scroll-bar:hover > .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar > .increment-button > .increment-arrow, .scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-background-color: rgb(150.0, 150.0, 150.0);
+}
+
+.scroll-bar > .increment-button > .increment-arrow {
+    -fx-shape: "M298 426h428l-214 214z";
+}
+
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-shape: "M298 598l214-214 214 214h-428z";
+}
+
+
+.jfx-check-box {
+    -jfx-unchecked-color: #5A5A5A;
+    -jfx-checked-color: #2B579A;
+}
+.jfx-radio-button{
+    -jfx-selected-color: #2B579A;
+    -jfx-unselected-color: #5A5A5A;
+}
+
+.jfx-text-field {
+    -fx-padding: 0 0 0 0;
+}
+
+.jfx-text-area {
+    -jfx-focus-color: white;
+    -jfx-unfocus-color: white;
+    -fx-padding: 0.333333em 0 0 0 ;
+}
+.jfx-text-area,
+.jfx-text-area:focused {
+    -fx-text-fill: #333333;
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXListView?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import javafx.scene.layout.HBox?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="moreInfoPopup"
+        xmlns="http://javafx.com/javafx/2.2">
+    <JFXTreeTableView fx:id="treeTableView">
+        <columns>
+            <JFXTreeTableColumn fx:id="firstNameColumn"
+                                minWidth="133" text="First Name" prefWidth="133"
+                                resizable="true"></JFXTreeTableColumn>
+            <JFXTreeTableColumn fx:id="lastNameColumn" text="Last Name"
+                                minWidth="133" resizable="true"></JFXTreeTableColumn>
+            <JFXTreeTableColumn fx:id="ageColumn" text="Age"
+                                minWidth="133" resizable="true"></JFXTreeTableColumn>
+        </columns>
+    </JFXTreeTableView>
+</StackPane>
