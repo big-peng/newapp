@@ -13,10 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Button?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import javafx.collections.FXCollections?>
-<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.ImageView?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="1000.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
     <GridPane layoutY="50" layoutX="50">
@@ -37,13 +34,13 @@
             <TextField fx:id="zhiye" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
             <Label prefHeight="25.0" prefWidth="60.0" text="工作单位:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
             <TextField fx:id="workAddress" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-            <!--<VBox layoutX="300" layoutY="300" style="-fx-padding: 0 0 0 10">
-            <Label text="照        片:"/>
-            <ImageView fx:id="photo" fitHeight="100.0" fitWidth="100.0">
-            </ImageView>
-            </VBox>-->
         </children>
     </GridPane>
+    <VBox layoutX="370" layoutY="150">
+        <Label text="照        片:"/>
+        <ImageView fx:id="photo" fitHeight="100.0" fitWidth="100.0">
+        </ImageView>
+    </VBox>
     <VBox layoutX="450" layoutY="230" maxHeight="50" maxWidth="600" spacing="10">
         <children>
             <HBox spacing="10" style="-fx-padding: 0 0 0 10;">

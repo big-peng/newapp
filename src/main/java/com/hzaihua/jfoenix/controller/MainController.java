@@ -2,6 +2,8 @@ package com.hzaihua.jfoenix.controller;
 
 import com.hzaihua.jfoenix.load.SystemSetupLoad;
 import com.hzaihua.jfoenix.load.User.UserLoad;
+import com.hzaihua.jfoenix.load.measure.AddFixedMeasureLoad;
+import com.hzaihua.jfoenix.load.measure.AddMoveMeasureLoad;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
@@ -63,10 +65,13 @@ public class MainController {
     private StackPane optionsBurgerEdit;
     @FXML
     private StackPane optionsBurgerOperate;
+    @FXML
+    private JFXButton changeMeasure;
     private JFXPopup toolbarPopupFile;
     private JFXPopup toolbarPopupEdit;
     private JFXPopup toolbarPopupOperate;
     private JFXPopup moreInfoPopup;
+    private JFXPopup changeMeasureMove;
     // readonly table view
     @FXML
     private JFXTreeTableView<Person> treeTableView;
@@ -113,9 +118,7 @@ public class MainController {
 
     @PostConstruct
     public void init() throws Exception {
-        // init the title hamburger icon
         FXMLLoader loaderFile = new FXMLLoader(getClass().getResource("/views/fxml/main/mainPopupFile.fxml"));
-        //loader.setController(new InputController());
         toolbarPopupFile = new JFXPopup(loaderFile.load());
         FXMLLoader loaderEdit = new FXMLLoader(getClass().getResource("/views/fxml/main/mainPopupEdit.fxml"));
         loaderEdit.setController(new InputController());
@@ -123,6 +126,9 @@ public class MainController {
         FXMLLoader loaderOperate = new FXMLLoader(getClass().getResource("/views/fxml/main/mainPopupOperate.fxml"));
         loaderOperate.setController(new PopupOperateController());
         toolbarPopupOperate = new JFXPopup(loaderOperate.load());
+        FXMLLoader loaderChange = new FXMLLoader(getClass().getResource("/views/fxml/measure/changeMasure.fxml"));
+        loaderChange.setController(new ChangeMeasureController());
+        changeMeasureMove = new JFXPopup(loaderChange.load());
         optionsBurgerFile.setOnMouseClicked(e -> toolbarPopupFile.show(optionsBurgerFile,
                 JFXPopup.PopupVPosition.TOP,
                 JFXPopup.PopupHPosition.RIGHT,
@@ -134,6 +140,11 @@ public class MainController {
                 -12,
                 50));
         optionsBurgerOperate.setOnMouseClicked(e -> toolbarPopupOperate.show(optionsBurgerOperate,
+                JFXPopup.PopupVPosition.TOP,
+                JFXPopup.PopupHPosition.RIGHT,
+                -12,
+                50));
+        changeMeasure.setOnMouseClicked(e -> changeMeasureMove.show(changeMeasure,
                 JFXPopup.PopupVPosition.TOP,
                 JFXPopup.PopupHPosition.RIGHT,
                 -12,
@@ -240,27 +251,9 @@ public class MainController {
         //表格的点击事件
         treeTableView.setRowFactory(tv->{
             TreeTableRow<Person> row = new TreeTableRow<Person>();
-            /*row.setOnMouseEntered(event->{
-                try{
-                    Thread.sleep(2000);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                System.out.println(row.getItem().firstNameProperty());
-                *//*try{
-                    Thread.sleep(2000);
-                }catch(Exception e){
-                    e.printStackTrace();
-                }*//*
-                //toolbarPopupOperate.hide();
-            });
-            row.setOnMouseMoved(event -> {
-                System.out.println(123);
-            });*/
             row.setOnMouseClicked(event -> {
                 if (event.getButton().toString().equals("SECONDARY") && (! row.isEmpty()) ) {
                     Person emailInfo = row.getItem();
-                    //System.out.println(emailInfo.firstNameProperty());
                     FXMLLoader moreInfo = new FXMLLoader(getClass().getResource("/views/fxml/system/MoreInfo.fxml"));
                     try {
                         moreInfoPopup = new JFXPopup(moreInfo.load());
@@ -398,6 +391,20 @@ public class MainController {
         }
     }
 
+    public static final class ChangeMeasureController{
+        @FXML
+        private JFXListView<?> changeMeasureList;
+
+        @FXML
+        private void submit(){
+            if(changeMeasureList.getSelectionModel().getSelectedIndex() == 0){
+                AddFixedMeasureLoad addFixedMeasureLoad = new AddFixedMeasureLoad();
+            }else if(changeMeasureList.getSelectionModel().getSelectedIndex() == 1){
+                AddMoveMeasureLoad addMoveMeasureLoad = new AddMoveMeasureLoad();
+            }
+        }
+    }
+
     public static final class PopupOperateController {
         @FXML
         private JFXListView<?> toolbarPopupList;
@@ -406,7 +413,6 @@ public class MainController {
         @FXML
         private void submit() {
             if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
-                //Platform.exit();
                 SystemSetupLoad systemSetupLoad = new SystemSetupLoad();
             }
         }

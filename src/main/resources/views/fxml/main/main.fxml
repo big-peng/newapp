@@ -48,8 +48,8 @@
                 <children>
                     <HBox alignment="CENTER">
                         <children>
-                            <JFXButton prefWidth="80" prefHeight="30" buttonType="RAISED" text="添加测点"
-                                       styleClass="custom-jfx-button-raised"/>
+                                    <JFXButton fx:id="changeMeasure" prefWidth="80" prefHeight="30" buttonType="RAISED" text="添加测点"
+                                               styleClass="custom-jfx-button-raised"/>
                             <HBox fx:id="disableHBox" spacing="20" style="-fx-padding: 0 0 0 20;" disable="true">
                                 <JFXButton prefWidth="80" prefHeight="30" buttonType="RAISED" text="编辑测点"
                                            styleClass="custom-jfx-button-raised"/>

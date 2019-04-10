@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.jfoenix.controls.JFXListView?>
+<JFXListView xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx" fx:id="changeMeasureList"
+             styleClass="option-list-view" style="-fx-pref-width: 151px;" onMouseClicked="#submit">
+    <Label>
+        固定点位
+    </Label>
+    <Label>
+        移动点位
+    </Label>
+</JFXListView>

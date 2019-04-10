@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.image.ImageView?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
+    <AnchorPane prefHeight="800.0" prefWidth="600.0">
+        <VBox prefHeight="350">
+            <GridPane layoutY="20" layoutX="30">
+                <padding>
+                    <Insets bottom="20.0" left="40.0" top="50.0"/>
+                </padding>
+                <children>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点类型:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="1"/>
+                    <Label fx:id="MeasureType" prefHeight="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                           text="固定测点"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点编号:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="2"/>
+                    <TextField fx:id="MeasureCode" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="2">*</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点名称:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="3"/>
+                    <TextField fx:id="MeasureName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="3">*</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点单位:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="4"/>
+                    <TextField fx:id="MeasureUserName" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点地址:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="5"/>
+                    <TextField fx:id="MeasureAddress" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点经度:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="6"/>
+                    <TextField fx:id="Longitude" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="6">*</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点纬度:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="7"/>
+                    <TextField fx:id="Latitude" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="7">*</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="备      注:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="8"/>
+                    <TextField fx:id="Remark" prefHeight="50.0" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="8">50字以内</Label>
+                </children>
+            </GridPane>
+            <Label style="-fx-padding: 0 0 0 135">提示：*为必填项</Label>
+            <HBox style="-fx-padding: 5 0 0 50">
+                <JFXCheckBox fx:id="AutoConnect" text="允许自动连接"/>
+            </HBox>
+        </VBox>
+        <!--照片显示地-->
+        <VBox layoutX="350" layoutY="200">
+            <Label text="照        片:"/>
+            <ImageView fx:id="MeasureHead" fitHeight="100.0" fitWidth="100.0">
+            </ImageView>
+        </VBox>
+        <!--设备显示框-->
+        <VBox layoutY="350" layoutX="35" maxHeight="400" maxWidth="650" spacing="10">
+            <children>
+                <HBox StackPane.alignment="CENTER_RIGHT">
+                    <children>
+                        <Label text="设备"/>
+                        <StackPane HBox.hgrow="ALWAYS">
+                            <StackPane maxWidth="300" StackPane.alignment="CENTER_RIGHT">
+                                <HBox alignment="CENTER_RIGHT">
+                                    <children>
+                                        <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
+                                            <JFXButton fx:id="addFixedMeasure" prefHeight="30" buttonType="RAISED"
+                                                       text="添加设备"
+                                                       styleClass="custom-jfx-button-raised"/>
+                                        </HBox>
+                                        <HBox fx:id="editMeasure" spacing="10" style="-fx-padding: 0 0 0 10;"
+                                              disable="true">
+                                            <JFXButton fx:id="editFixedMeasure" prefHeight="30" buttonType="RAISED"
+                                                       text="编辑设备"
+                                                       styleClass="custom-jfx-button-raised"/>
+                                            <JFXButton fx:id="deleteMeasure" prefHeight="30" buttonType="RAISED"
+                                                       text="删除设备"
+                                                       styleClass="custom-jfx-button-raised"
+                                                       style="-fx-text-fill: #D34336"/>
+                                        </HBox>
+                                    </children>
+                                </HBox>
+                            </StackPane>
+                        </StackPane>
+                    </children>
+                </HBox>
+                <JFXTreeTableView fx:id="downUserTreeTableView">
+                    <columns>
+                        <JFXTreeTableColumn fx:id="downusername" minWidth="133" prefWidth="133" resizable="true"
+                                            text="设备编号"/>
+                        <JFXTreeTableColumn fx:id="downname" minWidth="133" resizable="true" text="设备类型"/>
+                        <JFXTreeTableColumn fx:id="status" minWidth="133" resizable="true" text="侦听端口"/>
+                        <JFXTreeTableColumn minWidth="133" resizable="true" text="设备参数管理">
+                        </JFXTreeTableColumn>
+                    </columns>
+                </JFXTreeTableView>
+            </children>
+        </VBox>
+        <HBox style="-fx-padding: 760 0 0 280;-fx-font-size: 14">
+            <JFXButton fx:id="comitFixedMeasure" buttonType="RAISED" style="-fx-background-color: green;"
+                       styleClass="custom-jfx-button-raised" prefHeight="30" text="确定"/>
+        </HBox>
+    </AnchorPane>
+</ScrollPane>
