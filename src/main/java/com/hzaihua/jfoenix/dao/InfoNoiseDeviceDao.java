@@ -21,9 +21,10 @@ public interface InfoNoiseDeviceDao {
     /**
      * 根据设备ID进行查询，测点下所属设备查询时会调用该接口，之后该接口可能会修改为多个设备信息使用用一个实体类，而且传入的参数也新增一个要查询的设备表名
      * @param deviceCode 设备编号
+     * @param deviceTableName 要查询的设备的表名
      * @return 返回该设备编号的设备信息
      */
-    public InfoNoiseDevice queryByDeviceCode(String deviceCode);
+    public InfoNoiseDevice queryByDeviceCode(String deviceCode,String deviceTableName);
 
     /**
      * 插入一个新的设备信息

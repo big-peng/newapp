@@ -1,6 +1,7 @@
 package com.hzaihua.jfoenix.controller;
 
 import com.hzaihua.jfoenix.load.MainLoad;
+import com.hzaihua.jfoenix.service.InfoUserService;
 import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLView;
 import javafx.event.ActionEvent;
@@ -11,8 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.annotation.Resource;
+
 @FXMLView(value = "/views/fxml/login.fxml")
 public class LoginController extends AbstractFxmlView {
+    @Resource
+    private InfoUserService infoUserService;
     @FXML
     private TextField username;
     @FXML
@@ -27,17 +32,12 @@ public class LoginController extends AbstractFxmlView {
         /*System.out.println(studentDao);
         List<Student> list = studentDao.selectAll();
         System.out.println(list);*/
-        if ("admin".equals(username.getText())){
-            if ("123".equals(password.getText())){
-                actiontarget.setText("登录成功");
-                Stage stage = (Stage)exitLogin.getScene().getWindow();
-                MainLoad mainController = new MainLoad();
-                stage.close();
-            }else{
-                actiontarget.setText("登录失败，密码错误");
-            }
-        }else{
-            actiontarget.setText("登录失败，账号错误");
+        String result = infoUserService.pwdIsTrue(username.getText(),password.getText());
+        if ("登录成功".equals(result)){
+            Stage stage = (Stage)exitLogin.getScene().getWindow();
+            MainLoad mainController = new MainLoad();
+            stage.close();
         }
+        actiontarget.setText(result);
     }
 }
