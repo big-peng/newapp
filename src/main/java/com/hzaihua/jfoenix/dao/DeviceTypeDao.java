@@ -6,5 +6,5 @@ public interface DeviceTypeDao {
      * @param TypeCode 类型的编号
      * @return 返回值为类型的对应的设备表名
      */
-    public String queryByTypeCode(int TypeCode);
+    public String queryByTypeCode(String TypeCode);
 }

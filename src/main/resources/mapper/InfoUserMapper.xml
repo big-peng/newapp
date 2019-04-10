@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.InfoUserDao">
+    <!--查询所有  -->
+    <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoUser">
+        select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName]
+        from Info_User
+    </select>
+    <!-- 添加 -->
+    <insert id="insertUser" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
+        insert into Info_User values(#{userName},#{password},#{nickName},#{userType},
+        #{parentUser},#{phone},#{occupation},#{company},#{headFileName})
+    </insert>
+    <!-- 修改属性 -->
+    <update id="updateByUserName" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
+        update Info_User set [password]=#{password},[nickName]=#{nickName},[userType]=#{userType},[parentUser]=#{parentUser},
+        [phone]=#{phone},[occupation]=#{occupation},[company]=#{company},[headFileName]=#{headFileName}
+        where [userName]=#{userName}
+    </update>
+    <!-- 删除 -->
+    <delete id="deleteByUserName" parameterType="string">
+        delete from Info_User where [userName]=#{userName}
+    </delete>
+    <!-- 根据ID查询 -->
+    <select id="queryByUserName" resultType="com.hzaihua.jfoenix.entity.InfoUser" parameterType="string">
+          select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName]
+          from Info_User where [userName]=#{userName}
+    </select>
+    <select id="queryByParentUser" resultType="com.hzaihua.jfoenix.entity.InfoUser" parameterType="string">
+          select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName]
+          from Info_User where [parentUser]=#{parentUser}
+    </select>
+</mapper>

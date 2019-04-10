@@ -8,7 +8,7 @@ public interface StateNoiseDao {
      * @param deviceCode 设备编号
      * @return 返回设备的当前状态对象
      */
-    public StateNoise queryByDeviceCode(String deviceCode);
+    public StateNoise queryByDeviceCode(String deviceCode,String deviceTableName);
 
     /**
      * 修改设备的状态
