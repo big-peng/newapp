@@ -1,6 +1,7 @@
 package com.hzaihua.jfoenix.dao;
 
 import com.hzaihua.jfoenix.entity.StateNoise;
+import org.apache.ibatis.annotations.Param;
 
 public interface StateNoiseDao {
     /**
@@ -8,7 +9,7 @@ public interface StateNoiseDao {
      * @param deviceCode 设备编号
      * @return 返回设备的当前状态对象
      */
-    public StateNoise queryByDeviceCode(String deviceCode,String deviceTableName);
+    public StateNoise queryByDeviceCode(@Param("deviceCode") String deviceCode, @Param("deviceTableName")String deviceTableName);
 
     /**
      * 修改设备的状态

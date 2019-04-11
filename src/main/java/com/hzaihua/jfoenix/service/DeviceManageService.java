@@ -1,12 +1,16 @@
 package com.hzaihua.jfoenix.service;
 
+import com.hzaihua.jfoenix.controller.MainController;
 import com.hzaihua.jfoenix.dao.DeviceTypeDao;
 import com.hzaihua.jfoenix.dao.InfoMeasureDao;
 import com.hzaihua.jfoenix.dao.InfoNoiseDeviceDao;
 import com.hzaihua.jfoenix.dao.StateNoiseDao;
-import com.hzaihua.jfoenix.entity.*;
+import com.hzaihua.jfoenix.entity.InfoMeasure;
+import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
+import com.hzaihua.jfoenix.entity.StateNoise;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -14,7 +18,7 @@ import java.util.List;
 /**
  * 该接口主要用来进行设备的管理，其中包括新增测点、查询所有测点、查询某测点下设备、查询所有设备、删除测点、修改测点参数等方法
  */
-//@Service
+@Service
 public class DeviceManageService{
     /**
      * 该方法实现的是测点的新增功能，新增测点的过程中添加测点信息的时候，需要直接添加下级设备(当然，也可以不添加)，下级设备可以直接新增设备，也可以从没有测点归属的设备中添加，当然，这需要由页面的操作逻辑决定
@@ -68,8 +72,8 @@ public class DeviceManageService{
     private DeviceTypeDao deviceTypeDao;
     @Resource
     private StateNoiseDao stateNoiseDao;
-    public ObservableList<StateMeasure> getIndexList(){
-        ObservableList<StateMeasure> result = FXCollections.observableArrayList();
+    public ObservableList<MainController.StateMeasure> getIndexList(){
+        ObservableList<MainController.StateMeasure> result = FXCollections.observableArrayList();
         List<InfoMeasure> allMeasure = infoMeasureDao.queryAll();
         for (InfoMeasure infoMeasure:allMeasure) {
             String measureCode = infoMeasure.getMeasureCode();
@@ -94,9 +98,10 @@ public class DeviceManageService{
             }
             String address = "(" + infoMeasure.getLatitude() + "," + infoMeasure.getLongitude() + ")";
             String other = "...";
-            StateMeasure stateMeasure = new StateMeasure(measureCode,measureName,linkState,"","",address,other);
+            MainController.StateMeasure stateMeasure = new MainController.StateMeasure(measureCode,measureName,linkState,"","",address,other);
             result.add(stateMeasure);
         }
+        System.out.println(result);
         return result;
     }
 }

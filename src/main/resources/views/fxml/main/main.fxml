@@ -63,10 +63,12 @@
                             <StackPane HBox.hgrow="ALWAYS">
                                 <HBox style="-fx-padding: 5 40 0 0" spacing="100" maxWidth="500" maxHeight="300" alignment="BASELINE_CENTER">
                                     <VBox spacing="20">
-                                        <JFXComboBox fx:id="searchComboBox" id="jfxComboBox" prefWidth="100" promptText="选择测点类型">
+                                        <JFXComboBox fx:id="searchComboBox" id="jfxComboBox" prefWidth="120" promptText="选择测点类型">
                                             <items>
                                                 <FXCollections fx:factory="observableArrayList">
-
+                                                    <Label>已全部连接</Label>
+                                                    <Label>存在断开连接</Label>
+                                                    <Label>存在正在连接</Label>
                                                 </FXCollections>
                                             </items>
                                         </JFXComboBox>
@@ -81,13 +83,20 @@
                     </HBox>
                     <JFXTreeTableView fx:id="treeTableView">
                         <columns>
-                            <JFXTreeTableColumn fx:id="firstNameColumn"
-                                                minWidth="133" text="First Name" prefWidth="133"
+                            <JFXTreeTableColumn fx:id="measureCode" text="测点编码" prefWidth="133"
                                                 resizable="true"></JFXTreeTableColumn>
-                            <JFXTreeTableColumn fx:id="lastNameColumn" text="Last Name"
-                                                minWidth="133" resizable="true"></JFXTreeTableColumn>
-                            <JFXTreeTableColumn fx:id="ageColumn" text="Age"
-                                                minWidth="133" resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="measureName" text="测点名称" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="linkState" text="连接状态" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="dataTime" text="时间" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="data" text="数值" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="address" text="地理位置" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
+                            <JFXTreeTableColumn fx:id="other" text="其他参数" prefWidth="133"
+                                                resizable="true"></JFXTreeTableColumn>
                         </columns>
                     </JFXTreeTableView>
                 </children>

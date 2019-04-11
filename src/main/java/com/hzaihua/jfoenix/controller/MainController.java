@@ -4,6 +4,8 @@ import com.hzaihua.jfoenix.load.SystemSetupLoad;
 import com.hzaihua.jfoenix.load.User.UserLoad;
 import com.hzaihua.jfoenix.load.measure.AddFixedMeasureLoad;
 import com.hzaihua.jfoenix.load.measure.AddMoveMeasureLoad;
+import com.hzaihua.jfoenix.service.DeviceManageService;
+import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPopup;
@@ -20,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
+
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.value.ChangeListener;
@@ -28,6 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
+import org.springframework.stereotype.Controller;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -37,22 +41,13 @@ import java.util.function.Function;
 
 @ViewController(value = "/views/fxml/main/main.fxml")
 public class MainController {
-    private static final String PREFIX = "( ";
-    private static final String POSTFIX = " )";
-    private final String[] names = {"Morley", "Scott", "Kruger", "Lain",
-            "Kennedy", "Gawron", "Han", "Hall", "Aydogdu", "Grace",
-            "Spiers", "Perera", "Smith", "Connoly",
-            "Sokolowski", "Chaow", "James", "June",};
-
-    /*@FXML
-    private JFXDrawer drawer;*/
     private final Random random = new SecureRandom();
     //查询到的全部数据
-    ObservableList<Person> dummyData = null;
+    ObservableList<StateMeasure> dummyData = null;
     //表格中需要呈现的数据
-    ObservableList<Person> nowDummyData = FXCollections.observableArrayList();
-    ObservableList<Person> searchFieldDummyData = FXCollections.observableArrayList();
-    ObservableList<Person> searchComboBoxDummyData = FXCollections.observableArrayList();
+    ObservableList<StateMeasure> nowDummyData = FXCollections.observableArrayList();
+    ObservableList<StateMeasure> searchFieldDummyData = FXCollections.observableArrayList();
+    ObservableList<StateMeasure> searchComboBoxDummyData = FXCollections.observableArrayList();
     @FXMLViewFlowContext
     private ViewFlowContext context;
     @FXML
@@ -74,24 +69,24 @@ public class MainController {
     private JFXPopup changeMeasureMove;
     // readonly table view
     @FXML
-    private JFXTreeTableView<Person> treeTableView;
+    private JFXTreeTableView<StateMeasure> treeTableView;
     @FXML
-    private JFXTreeTableColumn<Person, String> firstNameColumn;
+    private JFXTreeTableColumn<StateMeasure, String> measureCode;
     @FXML
-    private JFXTreeTableColumn<Person, String> lastNameColumn;
+    private JFXTreeTableColumn<StateMeasure, String> measureName;
     @FXML
-    private JFXTreeTableColumn<Person, Integer> ageColumn;
+    private JFXTreeTableColumn<StateMeasure, String> linkState;
+    @FXML
+    private JFXTreeTableColumn<StateMeasure, String> dataTime;
+    @FXML
+    private JFXTreeTableColumn<StateMeasure, String> data;
+    @FXML
+    private JFXTreeTableColumn<StateMeasure, String> address;
+    @FXML
+    private JFXTreeTableColumn<StateMeasure, String> other;
     @FXML
     private JFXTextField searchField;
-    // editable table view
-    @FXML
-    private JFXTreeTableView<Person> editableTreeTableView;
-    @FXML
-    private JFXTreeTableColumn<Person, String> firstNameEditableColumn;
-    @FXML
-    private JFXTreeTableColumn<Person, String> lastNameEditableColumn;
-    @FXML
-    private JFXTreeTableColumn<Person, Integer> ageEditableColumn;
+
     @FXML
     private Label treeTableViewCount;
     @FXML
@@ -100,9 +95,12 @@ public class MainController {
     private JFXButton treeTableViewRemove;
     @FXML
     private Label editableTreeTableViewCount;
-    //用来记录选中的是哪一个设备或测点
+    //用来记录选中的是哪一个设备或测点，为测点编号
     //private String id;
-    private int id;
+    //要删除的行数
+    private int deleteRow;
+    //要删除的数据的测点编号
+    private String deleteMeasureCode;
     @FXML
     private HBox disableHBox;
     @FXML
@@ -167,7 +165,7 @@ public class MainController {
             alert.setOverlayClose(false);
             JFXDialogLayout layout = new JFXDialogLayout();
             layout.setHeading(new Label("提示！"));
-            layout.setBody(new Label("你确定要删除测点"+id+"吗？\n" +
+            layout.setBody(new Label("你确定要删除测点"+deleteMeasureCode+"吗？\n" +
                     "删除后将无法恢复"));
             JFXButton trueButton = new JFXButton("确认");
             JFXButton closeButton = new JFXButton("取消");
@@ -179,15 +177,15 @@ public class MainController {
                 alert.hideWithAnimation();
                 //先从数据库中删除，返回删除成功之后在删除表格中的
                 //删除不能以行数为标准删除，否则会出Bug
-                dummyData.remove(nowDummyData.get(id));
-                nowDummyData.remove(id);
+                dummyData.remove(nowDummyData.get(deleteRow));
+                nowDummyData.remove(deleteRow);
                 //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
                 treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
                 treeTableView.setShowRoot(false);
                 disableHBox.setDisable(true);
                 /*treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
                 treeTableView.setShowRoot(false);*/
-                id = -1;
+                deleteRow = -1;
                 snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
                         new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
                         Duration.millis(2000), null));
@@ -205,15 +203,15 @@ public class MainController {
             searchField.setText(null);
         });
         //给筛选的下拉框赋值
-        ObservableList<Label> as = FXCollections.observableArrayList();
+        /*ObservableList<Label> as = FXCollections.observableArrayList();
         for (String name:names) {
             as.add(new Label(name));
         }
-        searchComboBox.setItems(as);
+        searchComboBox.setItems(as);*/
     }
 
-    private <T> void setupCellValueFactory(JFXTreeTableColumn<Person, T> column, Function<Person, ObservableValue<T>> mapper) {
-        column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Person, T> param) -> {
+    private <T> void setupCellValueFactory(JFXTreeTableColumn<StateMeasure, T> column, Function<StateMeasure, ObservableValue<T>> mapper) {
+        column.setCellValueFactory((TreeTableColumn.CellDataFeatures<StateMeasure, T> param) -> {
             if (column.validateValue(param)) {
                 return mapper.apply(param.getValue().getValue());
             } else {
@@ -221,14 +219,19 @@ public class MainController {
             }
         });
     }
-
+    DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
     private void setupReadOnlyTableView() {
-        setupCellValueFactory(firstNameColumn, Person::firstNameProperty);
-        setupCellValueFactory(lastNameColumn, Person::lastNameProperty);
-        setupCellValueFactory(ageColumn, p -> p.age.asObject());
+        setupCellValueFactory(measureCode, StateMeasure::measureCodeProperty);
+        setupCellValueFactory(measureName, StateMeasure::measureNameProperty);
+        setupCellValueFactory(linkState, StateMeasure::linkStateProperty);
+        setupCellValueFactory(dataTime, StateMeasure::dataTimeProperty);
+        setupCellValueFactory(data, StateMeasure::dataProperty);
+        setupCellValueFactory(address, StateMeasure::addressProperty);
+        setupCellValueFactory(other, StateMeasure::otherProperty);
 
         //创建表格中的数据
-        dummyData = generateDummyData(100);
+        System.out.println(deviceManageService);
+        dummyData = deviceManageService.getIndexList();
         nowDummyData.addAll(dummyData);
         treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
 
@@ -250,10 +253,10 @@ public class MainController {
         });*/
         //表格的点击事件
         treeTableView.setRowFactory(tv->{
-            TreeTableRow<Person> row = new TreeTableRow<Person>();
+            TreeTableRow<StateMeasure> row = new TreeTableRow<StateMeasure>();
             row.setOnMouseClicked(event -> {
                 if (event.getButton().toString().equals("SECONDARY") && (! row.isEmpty()) ) {
-                    Person emailInfo = row.getItem();
+                    StateMeasure emailInfo = row.getItem();
                     FXMLLoader moreInfo = new FXMLLoader(getClass().getResource("/views/fxml/system/MoreInfo.fxml"));
                     try {
                         moreInfoPopup = new JFXPopup(moreInfo.load());
@@ -266,18 +269,19 @@ public class MainController {
                             2,
                             50);
                 }else if(event.getButton().toString().equals("PRIMARY") && event.getClickCount() == 1 && (! row.isEmpty()) ){
-                    Person emailInfo = row.getItem();
+                    StateMeasure emailInfo = row.getItem();
                     //记录选中的
                     System.out.println(row.getIndex());
                     //id = emailInfo.firstNameProperty().getValue();
-                    if (id == row.getIndex()){
+                    if (deleteRow == row.getIndex()){
                         //如果点击第二次，刷新表格以取消选中
                         treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
                         treeTableView.setShowRoot(false);
-                        id = -1;
+                        deleteRow = -1;
                         disableHBox.setDisable(true);
                     }else {
-                        id = row.getIndex();
+                        deleteRow = row.getIndex();
+                        deleteMeasureCode = row.getItem().getMeasureCode();
                         disableHBox.setDisable(false);
                     }
                 }
@@ -291,14 +295,14 @@ public class MainController {
     }
 
     //搜索框的实现
-    private ChangeListener<String> setupSearchField(final JFXTreeTableView<MainController.Person> tableView) {
+    private ChangeListener<String> setupSearchField(final JFXTreeTableView<MainController.StateMeasure> tableView) {
         return (o, oldVal, newVal) -> {
             nowDummyData.clear();
             nowDummyData.addAll(dummyData);
             if (newVal!=null){
-                for (Person person:dummyData){
-                    if (!person.firstName.get().contains(newVal) && !person.lastName.get().contains(newVal) && !Integer.toString(person.age.get()).contains(newVal)){
-                        nowDummyData.remove(person);
+                for (StateMeasure stateMeasure:dummyData){
+                    if (!stateMeasure.measureCode.get().contains(newVal) && !stateMeasure.measureName.get().contains(newVal)) {
+                        nowDummyData.remove(stateMeasure);
                     }
                 }
             }
@@ -321,8 +325,8 @@ public class MainController {
                 }
                 nowDummyData.clear();
                 nowDummyData.addAll(searchDummyData);
-            }*/
-            /*tableView.setPredicate(personProp -> {
+            }*//*
+            *//*tableView.setPredicate(personProp -> {
                 final Person person = personProp.getValue();
                 if (newVal == null) {
                     return true;
@@ -335,14 +339,14 @@ public class MainController {
         };
     }
 
-    private ChangeListener<Label> setupSearchComboBox(final JFXTreeTableView<MainController.Person> tableView) {
+    private ChangeListener<Label> setupSearchComboBox(final JFXTreeTableView<MainController.StateMeasure> tableView) {
         return (o, oldVal, newVal) ->{
             nowDummyData.clear();
             nowDummyData.addAll(dummyData);
             if (newVal != null){
-                for (Person person:dummyData){
-                    if (!person.firstName.get().contains(newVal.getText())){
-                        nowDummyData.remove(person);
+                for (StateMeasure stateMeasure:dummyData){
+                    if (!stateMeasure.linkState.get().equals(newVal.getText())){
+                        nowDummyData.remove(stateMeasure);
                     }
                 }
             }
@@ -359,21 +363,6 @@ public class MainController {
                         return person.firstName.get().contains(newVal.getText());
                     }
                 });*/
-    }
-
-    private ObservableList<Person> generateDummyData(final int numberOfEntries) {
-        final ObservableList<Person> dummyData = FXCollections.observableArrayList();
-        for (int i = 0; i < numberOfEntries; i++) {
-            dummyData.add(createNewRandomPerson());
-        }
-        return dummyData;
-    }
-
-    //创建随机数据，之后可以修改成查询数据并封装
-    private Person createNewRandomPerson() {
-        return new Person(names[random.nextInt(names.length)],
-                names[random.nextInt(names.length)],
-                random.nextInt(100));
     }
 
     public static final class InputController {
@@ -420,28 +409,122 @@ public class MainController {
 
     /*
      * data class
-     * 可以再该类中设置列数据，可以将其当成entity类
+     * 可以再该类中设置列数据
      */
+    public static class StateMeasure extends RecursiveTreeObject<StateMeasure> {
+        private StringProperty measureCode;//测点的编号
+        private StringProperty measureName;//测点的名称
+        private StringProperty linkState;//测点中的设备连接状态
+        private StringProperty dataTime;//数值时间
+        private StringProperty data;//数值
+        private StringProperty address;//测点的位置信息
+        private StringProperty other;//测点的其他参数
 
-    static final class Person extends RecursiveTreeObject<Person> {
-        //设置列的数据类型
-        final StringProperty firstName;
-        final StringProperty lastName;
-        final SimpleIntegerProperty age;
-        //DoubleProperty money;
-
-        Person(String firstName, String lastName, int age) {
-            this.firstName = new SimpleStringProperty(firstName);
-            this.lastName = new SimpleStringProperty(lastName);
-            this.age = new SimpleIntegerProperty(age);
+        public String getMeasureCode() {
+            return measureCode.get();
         }
 
-        StringProperty firstNameProperty() {
-            return firstName;
+        public StringProperty measureCodeProperty() {
+            return measureCode;
         }
 
-        StringProperty lastNameProperty() {
-            return lastName;
+        public void setMeasureCode(String measureCode) {
+            this.measureCode = new SimpleStringProperty(measureCode);
+        }
+
+        public String getMeasureName() {
+            return measureName.get();
+        }
+
+        public StringProperty measureNameProperty() {
+            return measureName;
+        }
+
+        public void setMeasureName(String measureName) {
+            this.measureName = new SimpleStringProperty(measureName);
+        }
+
+        public String getLinkState() {
+            return linkState.get();
+        }
+
+        public StringProperty linkStateProperty() {
+            return linkState;
+        }
+
+        public void setLinkState(String linkState) {
+            this.linkState = new SimpleStringProperty(linkState);
+        }
+
+        public String getDataTime() {
+            return dataTime.get();
+        }
+
+        public StringProperty dataTimeProperty() {
+            return dataTime;
+        }
+
+        public void setDataTime(String dataTime) {
+            this.dataTime = new SimpleStringProperty(dataTime);
+        }
+
+        public String getData() {
+            return data.get();
+        }
+
+        public StringProperty dataProperty() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = new SimpleStringProperty(data);
+        }
+
+        public String getAddress() {
+            return address.get();
+        }
+
+        public StringProperty addressProperty() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = new SimpleStringProperty(address);
+        }
+
+        public String getOther() {
+            return other.get();
+        }
+
+        public StringProperty otherProperty() {
+            return other;
+        }
+
+        public void setOther(String other) {
+            this.other = new SimpleStringProperty(other);
+        }
+
+        public StateMeasure(String measureCode, String measureName, String linkState, String dataTime, String data, String address, String other) {
+            this.measureCode = new SimpleStringProperty(measureCode);
+            this.measureName = new SimpleStringProperty(measureName);
+            this.linkState = new SimpleStringProperty(linkState);
+            this.dataTime = new SimpleStringProperty(dataTime);
+            this.data = new SimpleStringProperty(data);
+            this.address = new SimpleStringProperty(address);
+            this.other = new SimpleStringProperty(other);
+        }
+
+        @Override
+        public String toString() {
+            return "StateMeasure{" +
+                    "measureCode=" + measureCode +
+                    ", measureName=" + measureName +
+                    ", linkState=" + linkState +
+                    ", dataTime=" + dataTime +
+                    ", data=" + data +
+                    ", address=" + address +
+                    ", other=" + other +
+                    '}';
         }
     }
 }
