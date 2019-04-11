@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import javafx.scene.control.ScrollPane?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="650.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
+    <AnchorPane prefHeight="800.0" prefWidth="600.0">
+        <VBox prefHeight="350" layoutY="20" layoutX="80">
+            <GridPane>
+                <children>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点类型:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="MeasureType" prefHeight="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                           text="移动测点"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点编号:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="MeasureCode" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="2">与设备编号一致</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点名称:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextField fx:id="MeasureName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="3">*</Label>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点单位:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <TextField fx:id="MeasureUserName" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="测点地址:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <TextField fx:id="MeasureAddress" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                    <Label prefHeight="25.0" prefWidth="60.0" text="备      注:" GridPane.columnIndex="0"
+                           GridPane.rowIndex="6"/>
+                    <TextField fx:id="Remark" prefHeight="50.0" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                    <Label GridPane.columnIndex="2" GridPane.rowIndex="6">50字以内</Label>
+                </children>
+            </GridPane>
+            <HBox style="-fx-padding: 5 0 0 50">
+                <JFXCheckBox fx:id="AutoConnect" text="允许自动连接"/>
+            </HBox>
+        </VBox>
+        <VBox layoutX="50.0" layoutY="250.0" spacing="10">
+            <HBox style="-fx-padding: 0 0 0 30" spacing="10">
+                <Label style="-fx-padding: 5 0 0 0" text="选择设备类型"/>
+                <Label fx:id="NoiseDeviceType" style="-fx-padding:0 0 0 20"/>
+                <JFXButton style="-fx-padding: 0 0 0 280 " styleClass="custom-jfx-button-raised" text="前往设置"/>
+                <!--<JFXButton buttonType="RAISED"  styleClass="custom-jfx-button-raised" text="AWA6218j"/>
+                <JFXButton styleClass="custom-jfx-button-raised" text="AWA1102"/>-->
+            </HBox>
+            <ScrollPane prefHeight="300.0" prefWidth="500.0">
+
+            </ScrollPane>
+        </VBox>
+        <HBox layoutX="280" layoutY="710" style="-fx-font-size: 14">
+            <JFXButton fx:id="comitMoveMeasure" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+        </HBox>
+    </AnchorPane>
+</ScrollPane>

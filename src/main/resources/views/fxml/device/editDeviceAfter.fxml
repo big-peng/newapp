@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+            prefHeight="500.0" prefWidth="300.0">
+    <VBox layoutY="20" layoutX="35">
+        <GridPane>
+            <Label prefHeight="25.0" prefWidth="60.0" text="设备编号:" GridPane.columnIndex="0"
+                   GridPane.rowIndex="1"/>
+            <Label fx:id="NoiseDeviceCode" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label prefHeight="25.0" prefWidth="60.0" text="设备密码:" GridPane.columnIndex="0"
+                   GridPane.rowIndex="2"/>
+            <TextField fx:id="DevicePassword" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Label GridPane.columnIndex="2" GridPane.rowIndex="2">*</Label>
+            <Label prefHeight="25.0" prefWidth="60.0" text="侦听端口:" GridPane.columnIndex="0"
+                   GridPane.rowIndex="3"/>
+            <TextField fx:id="MeasureUserName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Label GridPane.columnIndex="2" GridPane.rowIndex="3">*</Label>
+            <Label prefHeight="30.0" prefWidth="60.0" text="功 能 区:" style="-fx-padding: 0 0 5 0" GridPane.columnIndex="0"
+                   GridPane.rowIndex="4"/>
+            <ComboBox fx:id="searchComboBox" id="jfxComboBox" prefWidth="170" promptText="选择设备类型" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Label prefHeight="25.0" prefWidth="60.0" text="话筒高度:" GridPane.columnIndex="0"
+                   GridPane.rowIndex="5"/>
+            <TextField fx:id="MicrophoneHeight" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            <Label GridPane.columnIndex="2" GridPane.rowIndex="5">米</Label>
+        </GridPane>
+        <Label style="-fx-padding: 10 0 0 55">提示：*为必填项</Label>
+        <HBox style="-fx-padding: 15 0 0 0">
+            <JFXCheckBox fx:id="IsAutoAdjust" selected="true" text="自动校时（推荐选择）"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadMin" selected="true" text="自动读取分钟统计数据（推荐选择）"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadHour" selected="true" text="自动读取小时统计数据（推荐选择）"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadDay" selected="true" text="自动读取天统计数据（推荐选择）"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadLp" text="自动读取声级瞬时数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadLeq1s" text="自动读取每秒等效声级数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadOct" text="自动读取频谱分析数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadWea" text="自动读取气象数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadCar" text="自动读取交通数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadDust" text="自动读取空气数据"/>
+        </HBox>
+        <HBox style="-fx-padding: 5 0 0 0">
+            <JFXCheckBox fx:id="IsReadEvent" selected="true" text="自动读取事件数据（推荐选择）"/>
+        </HBox>
+        <HBox style="-fx-padding: 20 0 0 0">
+            <JFXCheckBox fx:id="IsOpenVoice" selected="true" text="开启实时语音服务（需硬件相关授权）"/>
+        </HBox>
+    </VBox>
+</AnchorPane>

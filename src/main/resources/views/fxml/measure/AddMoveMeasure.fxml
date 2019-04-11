@@ -11,6 +11,8 @@
 <?import com.jfoenix.controls.JFXCheckBox?>
 <?import javafx.scene.control.ScrollPane?>
 
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="650.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
     <AnchorPane prefHeight="800.0" prefWidth="600.0">
@@ -38,14 +40,20 @@
         </GridPane>
         <Label style="-fx-padding: 0 0 0 135">提示：*为必填项</Label>
         <HBox style="-fx-padding: 5 0 0 50">
-            <JFXCheckBox fx:id="AutoConnect" text="允许自动连接"/>
+            <JFXCheckBox fx:id="AutoConnect" selected="true" text="允许自动连接"/>
         </HBox>
     </VBox>
-    <VBox layoutX="50.0" layoutY="350.0" spacing="10">
-        <HBox spacing="10">
+    <VBox layoutX="50.0" layoutY="250.0" spacing="10">
+        <HBox style="-fx-padding: 0 0 0 130" spacing="10">
             <Label style="-fx-padding: 5 0 0 0" text="选择设备类型"/>
-            <JFXButton buttonType="RAISED"  styleClass="custom-jfx-button-raised" text="AWA6218j"/>
-            <JFXButton styleClass="custom-jfx-button-raised" text="AWA1102"/>
+            <ComboBox fx:id="searchComboBox" id="jfxComboBox" prefWidth="130" promptText="选择仪器类型">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <!--<JFXButton buttonType="RAISED"  styleClass="custom-jfx-button-raised" text="AWA6218j"/>
+            <JFXButton styleClass="custom-jfx-button-raised" text="AWA1102"/>-->
         </HBox>
         <ScrollPane prefHeight="300.0" prefWidth="500.0">
 

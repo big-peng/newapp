@@ -5,12 +5,15 @@ import com.jfoenix.controls.JFXButton;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
 
+import javax.annotation.PostConstruct;
+
 @ViewController(value = "/views/fxml/user/findDownUser.fxml")
 public class FindDownUserController {
     @FXML
     //查询下级用户确定按钮
     private JFXButton comitEditDownUser;
 
+    @PostConstruct
     public void init(){
         comitEditDownUser.setOnAction(event -> {
             FindDownUserLoad findDownUserLoad = new FindDownUserLoad();

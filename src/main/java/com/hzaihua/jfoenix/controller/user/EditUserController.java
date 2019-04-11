@@ -5,11 +5,14 @@ import com.jfoenix.controls.JFXButton;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
 
+import javax.annotation.PostConstruct;
+
 @ViewController(value = "/views/fxml/user/editUser.fxml")
 public class EditUserController {
     @FXML
     private JFXButton comitEditUser;
 
+    @PostConstruct
     public void init(){
         comitEditUser.setOnAction(event -> {
             EditUserLoad editUserLoad = new EditUserLoad();

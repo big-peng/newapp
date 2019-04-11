@@ -31,8 +31,7 @@
                            text="固定测点"/>
                     <Label prefHeight="25.0" prefWidth="60.0" text="测点编号:" GridPane.columnIndex="0"
                            GridPane.rowIndex="2"/>
-                    <TextField fx:id="MeasureCode" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                    <Label GridPane.columnIndex="2" GridPane.rowIndex="2">*</Label>
+                    <Label fx:id="MeasureCode" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                     <Label prefHeight="25.0" prefWidth="60.0" text="测点名称:" GridPane.columnIndex="0"
                            GridPane.rowIndex="3"/>
                     <TextField fx:id="MeasureName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
@@ -59,7 +58,7 @@
             </GridPane>
             <Label style="-fx-padding: 0 0 0 135">提示：*为必填项</Label>
             <HBox style="-fx-padding: 5 0 0 50">
-                <JFXCheckBox fx:id="AutoConnect" selected="true" text="允许自动连接"/>
+                <JFXCheckBox fx:id="AutoConnect" text="允许自动连接"/>
             </HBox>
         </VBox>
         <!--照片显示地-->
@@ -80,16 +79,16 @@
                                 <HBox alignment="CENTER_RIGHT">
                                     <children>
                                         <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
-                                            <JFXButton fx:id="addFixedDevice" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="addFixedMeasure" prefHeight="30" buttonType="RAISED"
                                                        text="添加设备"
                                                        styleClass="custom-jfx-button-raised"/>
                                         </HBox>
                                         <HBox fx:id="editMeasure" spacing="10" style="-fx-padding: 0 0 0 10;"
                                               disable="true">
-                                            <JFXButton fx:id="editFixedDevice" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="editFixedMeasure" prefHeight="30" buttonType="RAISED"
                                                        text="编辑设备"
                                                        styleClass="custom-jfx-button-raised"/>
-                                            <JFXButton fx:id="deleteDevice" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="deleteMeasure" prefHeight="30" buttonType="RAISED"
                                                        text="删除设备"
                                                        styleClass="custom-jfx-button-raised"
                                                        style="-fx-text-fill: #D34336"/>
