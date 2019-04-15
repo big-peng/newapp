@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TreeTableRow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -294,6 +295,7 @@ public class MainController {
                 if (event.getButton().toString().equals("SECONDARY") && (! row.isEmpty()) ) {
                     StateMeasure emailInfo = row.getItem();
                     FXMLLoader moreInfo = new FXMLLoader(getClass().getResource("/views/fxml/system/MoreInfo.fxml"));
+                    moreInfo.setController(new MoreInfoController());
                     try {
                         moreInfoPopup = new JFXPopup(moreInfo.load());
                     }catch (Exception e){
