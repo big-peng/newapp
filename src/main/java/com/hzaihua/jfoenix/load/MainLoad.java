@@ -7,21 +7,20 @@ import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.awt.*;
 
 public class MainLoad extends Application {
+    public static Stage stage;
 
     public MainLoad() {
         super();
         try{
-            start(new Stage());
+            stage = new Stage();
+            start(stage);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -61,7 +60,7 @@ public class MainLoad extends Application {
         primaryStage.getIcons().add(new Image("/views/img/Thunderx.jpg"));
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.add(MainController.class.getResource("/views/css/main.css").toExternalForm());
-        primaryStage.setMinWidth(500);
+        primaryStage.setMinWidth(1150);
         primaryStage.setMinHeight(400);
         primaryStage.setTitle("爱华自动监测");
         primaryStage.setResizable(true);

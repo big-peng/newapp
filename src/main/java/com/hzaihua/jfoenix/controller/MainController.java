@@ -1,5 +1,6 @@
 package com.hzaihua.jfoenix.controller;
 
+import com.hzaihua.jfoenix.load.MainLoad;
 import com.hzaihua.jfoenix.load.SystemSetupLoad;
 import com.hzaihua.jfoenix.load.User.UserLoad;
 import com.hzaihua.jfoenix.load.measure.AddFixedMeasureLoad;
@@ -15,10 +16,15 @@ import io.datafx.controller.flow.context.ViewFlowContext;
 import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.TreeTableRow;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
@@ -31,17 +37,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
-import org.springframework.stereotype.Controller;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Function;
 
 @ViewController(value = "/views/fxml/main/main.fxml")
 public class MainController {
-    private final Random random = new SecureRandom();
     //查询到的全部数据
     ObservableList<StateMeasure> dummyData = null;
     //表格中需要呈现的数据
@@ -90,8 +94,6 @@ public class MainController {
     @FXML
     private Label treeTableViewCount;
     @FXML
-    private JFXButton treeTableViewAdd;
-    @FXML
     private JFXButton treeTableViewRemove;
     @FXML
     private Label editableTreeTableViewCount;
@@ -113,6 +115,8 @@ public class MainController {
     private StackPane root;
     @FXML
     private JFXDialog dialog;
+    @FXML
+    private VBox tableVBox;
 
     @PostConstruct
     public void init() throws Exception {
@@ -147,7 +151,6 @@ public class MainController {
                 JFXPopup.PopupHPosition.RIGHT,
                 -12,
                 50));
-
         // 给中间的页面赋上内容
         //只读的表格
         setupReadOnlyTableView();
@@ -177,18 +180,20 @@ public class MainController {
                 alert.hideWithAnimation();
                 //先从数据库中删除，返回删除成功之后在删除表格中的
                 //删除不能以行数为标准删除，否则会出Bug
-                dummyData.remove(nowDummyData.get(deleteRow));
-                nowDummyData.remove(deleteRow);
-                //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
-                treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
-                treeTableView.setShowRoot(false);
-                disableHBox.setDisable(true);
+                if(deviceManageService.deleteMeasure(deleteMeasureCode)){
+                    dummyData.remove(nowDummyData.get(deleteRow));
+                    nowDummyData.remove(deleteRow);
+                    //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
+                    treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
+                    treeTableView.setShowRoot(false);
+                    disableHBox.setDisable(true);
                 /*treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
                 treeTableView.setShowRoot(false);*/
-                deleteRow = -1;
-                snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
-                        new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
-                        Duration.millis(2000), null));
+                    deleteRow = -1;
+                    snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
+                            new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
+                            Duration.millis(2000), null));
+                }
             });
             List<JFXButton> buttons = new ArrayList<JFXButton>();
             buttons.add(trueButton);
@@ -208,6 +213,39 @@ public class MainController {
             as.add(new Label(name));
         }
         searchComboBox.setItems(as);*/
+        //根据窗口大小调节表格大小的方法
+        autoTableSize();
+    }
+
+    public void autoTableSize(){
+        ChangeListener<Number> widthListener = new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, final Number newValue)
+            {
+                tableVBox.setMaxWidth(newValue.doubleValue()-150);
+                ((HBox)(searchComboBox.getParent().getParent())).setPadding(new Insets(5,tableVBox.getMaxWidth()*(-0.99)+1040,0,0));
+                measureCode.setPrefWidth(tableVBox.getMaxWidth()*0.13);
+                measureName.setPrefWidth(tableVBox.getMaxWidth()*0.13);
+                linkState.setPrefWidth(tableVBox.getMaxWidth()*0.1);
+                dataTime.setPrefWidth(tableVBox.getMaxWidth()*0.13-2);
+                data.setPrefWidth(tableVBox.getMaxWidth()*0.1);
+                address.setPrefWidth(tableVBox.getMaxWidth()*0.16);
+                other.setPrefWidth(tableVBox.getMaxWidth()*0.25);
+            }
+
+        };
+        ChangeListener<Number> heightListener = new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, final Number newValue)
+            {
+                tableVBox.setMaxHeight(newValue.doubleValue()-200);
+            }
+
+        };
+        MainLoad.stage.widthProperty().addListener(widthListener);
+        MainLoad.stage.heightProperty().addListener(heightListener);
     }
 
     private <T> void setupCellValueFactory(JFXTreeTableColumn<StateMeasure, T> column, Function<StateMeasure, ObservableValue<T>> mapper) {
@@ -228,9 +266,7 @@ public class MainController {
         setupCellValueFactory(data, StateMeasure::dataProperty);
         setupCellValueFactory(address, StateMeasure::addressProperty);
         setupCellValueFactory(other, StateMeasure::otherProperty);
-
         //创建表格中的数据
-        System.out.println(deviceManageService);
         dummyData = deviceManageService.getIndexList();
         nowDummyData.addAll(dummyData);
         treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
@@ -309,33 +345,6 @@ public class MainController {
             searchFieldDummyData.clear();
             searchFieldDummyData.addAll(nowDummyData);
             nowDummyData.retainAll(searchComboBoxDummyData);
-            /*if (newVal.contains(oldVal)){
-                for (Person person:dummyData){
-                    if (!person.firstName.get().contains(newVal) && !person.lastName.get().contains(newVal) && !Integer.toString(person.age.get()).contains(newVal)){
-                        nowDummyData.remove(person);
-                    }
-                }
-            }else {
-                ObservableList<Person> searchDummyData = FXCollections.observableArrayList();
-                searchDummyData.addAll(this.searchFieldDummyData);
-                for (Person person:dummyData){
-                    if (!person.firstName.get().contains(newVal) && !person.lastName.get().contains(newVal) && !Integer.toString(person.age.get()).contains(newVal)){
-                        searchDummyData.remove(person);
-                    }
-                }
-                nowDummyData.clear();
-                nowDummyData.addAll(searchDummyData);
-            }*//*
-            *//*tableView.setPredicate(personProp -> {
-                final Person person = personProp.getValue();
-                if (newVal == null) {
-                    return true;
-                } else {
-                    return person.firstName.get().contains(newVal)
-                            || person.lastName.get().contains(newVal)
-                            || Integer.toString(person.age.get()).contains(newVal);
-                }
-            });*/
         };
     }
 
@@ -354,15 +363,6 @@ public class MainController {
             searchComboBoxDummyData.addAll(nowDummyData);
             nowDummyData.retainAll(searchFieldDummyData);
         };
-                /*tableView.setPredicate(personProp -> {
-                    final Person person = personProp.getValue();
-                    searchDummyData.addAll(nowDummyData);
-                    if (newVal==null){
-                        return true;
-                    }else {
-                        return person.firstName.get().contains(newVal.getText());
-                    }
-                });*/
     }
 
     public static final class InputController {
