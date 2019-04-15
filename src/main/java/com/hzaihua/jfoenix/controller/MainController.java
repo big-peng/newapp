@@ -307,7 +307,6 @@ public class MainController {
                 }else if(event.getButton().toString().equals("PRIMARY") && event.getClickCount() == 1 && (! row.isEmpty()) ){
                     StateMeasure emailInfo = row.getItem();
                     //记录选中的
-                    System.out.println(row.getIndex());
                     //id = emailInfo.firstNameProperty().getValue();
                     if (deleteRow == row.getIndex()){
                         //如果点击第二次，刷新表格以取消选中
