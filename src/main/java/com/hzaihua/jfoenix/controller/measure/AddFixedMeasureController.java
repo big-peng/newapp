@@ -2,6 +2,7 @@ package com.hzaihua.jfoenix.controller.measure;
 
 
 import com.hzaihua.jfoenix.load.device.AddDeviceLoad;
+import com.hzaihua.jfoenix.load.noiseDevice.EditNoiseDeviceLoad;
 import com.jfoenix.controls.JFXButton;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
@@ -14,10 +15,10 @@ public class AddFixedMeasureController {
     private JFXButton addFixedDevice;
 
     @PostConstruct
-    public void init(){
+        public void init(){
         addFixedDevice.setOnAction(event -> {
-            System.out.println(123);
-            AddDeviceLoad addDeviceLoad = new AddDeviceLoad();
+            //AddDeviceLoad addDeviceLoad = new AddDeviceLoad();
+            EditNoiseDeviceLoad editNoiseDeviceLoad = new EditNoiseDeviceLoad();
         });
     }
 }

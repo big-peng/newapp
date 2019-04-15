@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ProgressBar?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0"
+            xmlns="http://javafx.com/javafx/8.0.121">
+    <children>
+        <JFXTabPane fx:id="editNoiseDevice" layoutX="20.0" layoutY="70.0" prefHeight="520.0" prefWidth="660.0"
+                    tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="设置">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="450.0" prefWidth="200.0">
+                            <AnchorPane prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <VBox layoutY="20" layoutX="170">
+                                    <GridPane>
+                                        <children>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="瞬时采样间隔:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                            <TextField fx:id="Sample" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （0.1秒~1秒）</Label>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="瞬时上传间隔:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                            <TextField fx:id="UpSpace" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="2">秒 （0.1秒~360秒）</Label>
+                                            <Label prefHeight="30.0" prefWidth="80.0" text="时  间   计  权:" GridPane.columnIndex="0"
+                                                   GridPane.rowIndex="3"/>
+                                            <ComboBox fx:id="TimeWight" id="jfxComboBox" prefWidth="160"
+                                                      promptText="F" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                <items>
+                                                    <FXCollections fx:factory="observableArrayList">
+                                                    </FXCollections>
+                                                </items>
+                                            </ComboBox>
+                                            <Label prefHeight="30.0" prefWidth="80.0" text="频  率   计  权:"
+                                                   GridPane.columnIndex="0"
+                                                   GridPane.rowIndex="4"/>
+                                            <ComboBox fx:id="FreWight" id="jfxComboBox" prefWidth="160"
+                                                      promptText="A" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                <items>
+                                                    <FXCollections fx:factory="observableArrayList">
+                                                    </FXCollections>
+                                                </items>
+                                            </ComboBox>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="积分统计时间:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                                            <TextField fx:id="null0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="5">秒 （60秒~3600秒）</Label>
+                                        </children>
+                                    </GridPane>
+                                    <HBox style="-fx-padding: 15 0 0 0">
+                                        <JFXCheckBox fx:id="null1" text="分钟统计数据自动上传"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="ON_OFF_HOUR" text="小时统计数据自动上传"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="ON_OFF_DAY" text="天统计数据自动上传"/>
+                                    </HBox>
+                                </VBox>
+                                <VBox layoutY="250" layoutX="170">
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="null4" text="噪声超标报警"/>
+                                    </HBox>
+                                    <GridPane>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="昼间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="DayOverValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="1">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="夜间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="NightOverValue" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="2">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="延迟启动时间:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="OverDlay" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="3">秒（1秒~10秒）</Label>
+                                    </GridPane>
+                                    <HBox style="-fx-padding: 10 0 0 0">
+                                        <JFXCheckBox fx:id="ON_OFF_11OCT" text="1/1OCT频谱分析 数据自动上传"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                    <JFXCheckBox fx:id="ON_OFF_13OCT" text="1/3OCT频谱分析 数据自动上传"/>
+                                </HBox>
+                                </VBox>
+                                <VBox layoutY="420" layoutX="170">
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="IsRecord" text="噪声超标录音"/>
+                                    </HBox>
+                                    <GridPane>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="昼间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="DayRecordValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="1">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="夜间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="NightRecordValue" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="2">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="延迟启动时间:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="RecordDlay" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="3">秒（1秒~10秒）</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="录音上传模式:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                        <TextField fx:id="RecordModel" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="4">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="优先上传始时:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                                        <DatePicker fx:id="RecordStartTime" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="优先上传终时:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                                        <DatePicker fx:id="RecordEndTime" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                                    </GridPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="610">
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="isAutoAdjust" selected="true" text="自动校准"/>
+                                    </HBox>
+                                    <GridPane>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="校准起始时间:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <DatePicker fx:id="AdjustTime" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="每日校准频次:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="AdjustSpace" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="2">次</Label>
+                                    </GridPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="700">
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="WeaAutoSave" selected="true" text="气象数据自动保存"/>
+                                        </HBox>
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="WeaAutoUp" text="气象数据自动上传"/>
+                                        </HBox>
+                                        <GridPane>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="数据采样间隔:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                            <TextField fx:id="WeaUpSpace" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （1秒~60秒）</Label>
+                                        </GridPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="790">
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="CarAutoSave" selected="true" text="交通数据自动保存"/>
+                                        </HBox>
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="CarAutoUp" text="交通数据自动上传"/>
+                                        </HBox>
+                                        <GridPane>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="采样间隔:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                            <TextField fx:id="CarUpSpace" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （60秒~3600秒）</Label>
+                                        </GridPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="880">
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="DustAutoSave" selected="true" text="空气数据自动保存"/>
+                                        </HBox>
+                                        <HBox style="-fx-padding: 5 0 0 0">
+                                            <JFXCheckBox fx:id="DustAutoUp" text="空气数据自动上传"/>
+                                        </HBox>
+                                        <GridPane>
+                                            <Label prefHeight="25.0" prefWidth="80.0" text="采样间隔:"
+                                                   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                            <TextField fx:id="DustUpSpace" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                            <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （300~3600秒）</Label>
+                                        </GridPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="970">
+                                    <Label text="噪声瞬时值上传种类" style="-fx-padding: 5 0 5 5"/>
+                                    <ScrollPane prefHeight="120" prefWidth="260">
+                                        <GridPane style="-fx-padding: 5 0 0 10">
+                                            <JFXCheckBox fx:id="ON_OFF_LEQA" prefWidth="80" prefHeight="25" GridPane.columnIndex="0" GridPane.rowIndex="1" text="LeqA1s"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPFA" prefWidth="80" prefHeight="25" GridPane.columnIndex="0" GridPane.rowIndex="2" text="LPFA"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPSA" prefWidth="80" prefHeight="25" GridPane.columnIndex="0" GridPane.rowIndex="3" text="LPSA"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPIA" prefWidth="80" prefHeight="25" GridPane.columnIndex="0" GridPane.rowIndex="4" text="LPIA"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LEQC" prefWidth="80" prefHeight="25" GridPane.columnIndex="1" GridPane.rowIndex="1" text="LeqC1s"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPFC" prefWidth="80" prefHeight="25" GridPane.columnIndex="1" GridPane.rowIndex="2" text="LPFC"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPSC" prefWidth="80" prefHeight="25" GridPane.columnIndex="1" GridPane.rowIndex="3" text="LPSC"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPIC" prefWidth="80" prefHeight="25" GridPane.columnIndex="1" GridPane.rowIndex="4" text="LPIC"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LEQZ" prefWidth="80" prefHeight="25" GridPane.columnIndex="2" GridPane.rowIndex="1" text="LeqZ1s"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPFZ" prefWidth="80" prefHeight="25" GridPane.columnIndex="2" GridPane.rowIndex="2" text="LPFZ"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPSZ" prefWidth="80" prefHeight="25" GridPane.columnIndex="2" GridPane.rowIndex="3" text="LPSZ"/>
+                                            <JFXCheckBox fx:id="ON_OFF_LPIZ" prefWidth="80" prefHeight="25" GridPane.columnIndex="2" GridPane.rowIndex="4" text="LPIZ"/>
+                                        </GridPane>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="1140">
+                                    <Label text="事件主动提示" style="-fx-padding: 5 0 5 5"/>
+                                    <ScrollPane prefHeight="260" prefWidth="260">
+                                        <VBox>
+                                            <HBox style="-fx-padding: 15 0 0 10">
+                                                <JFXCheckBox fx:id="Event_13" selected="true" text="声校准"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_01" selected="true" text="手动控制电校准"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_02" selected="true" text="自动电校准"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_03" text="加热"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_04" text="噪声超标"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_07" selected="true" text="停电"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_08" selected="true" text="机箱门被打开"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_09" selected="true" text="噪声数据出错"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_10" selected="true" text="存储器出错"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="Event_12" selected="true" text="电池电压不足"/>
+                                            </HBox>
+                                        </VBox>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="1450" prefHeight="140">
+                                    <Label text="其他开关" style="-fx-padding: 5 0 5 5"/>
+                                    <ScrollPane prefWidth="260">
+                                        <VBox>
+                                            <HBox style="-fx-padding: 15 0 0 10">
+                                                <JFXCheckBox fx:id="ON_OFF_RADF" selected="true" text="设备出错时复位"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 0 10">
+                                                <JFXCheckBox fx:id="ON_OFF_FAMF" text="存储器出错自动修复失败时格式化"/>
+                                            </HBox>
+                                            <HBox style="-fx-padding: 5 0 15 10">
+                                                <JFXCheckBox fx:id="ON_OFF_PDWIV" selected="true" text="低电压时数据存储保护"/>
+                                            </HBox>
+                                        </VBox>
+                                    </ScrollPane>
+                                </VBox>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+                <Tab text="状态">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="450.0" prefWidth="200.0">
+                            <AnchorPane prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                                <VBox layoutX="170" layoutY="20">
+                                    <HBox>
+                                    <GridPane>
+                                        <Label text="设备连接状态:" GridPane.columnIndex="0" GridPane.rowIndex="1" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="LinkState" GridPane.columnIndex="1" GridPane.rowIndex="1" prefHeight="25" prefWidth="100"/>
+                                        <Label text="噪声瞬时声级:" GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="NowDateTime" GridPane.columnIndex="1" GridPane.rowIndex="2" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="LpTime" GridPane.columnIndex="2" GridPane.rowIndex="2" prefHeight="25" prefWidth="100"/>
+                                        <Label text="存储器总容量:" GridPane.columnIndex="0" GridPane.rowIndex="3" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="UsedRoom" GridPane.columnIndex="1" GridPane.rowIndex="3" prefHeight="25" prefWidth="100"/>
+                                        <Label text="存储可用容量:" GridPane.columnIndex="0" GridPane.rowIndex="4" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="FreeRoom" GridPane.columnIndex="1" GridPane.rowIndex="4" prefHeight="25" prefWidth="100"/>
+                                        <Label text="后备电池电压:" GridPane.columnIndex="0" GridPane.rowIndex="5" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="BatteryVoltage" GridPane.columnIndex="1" GridPane.rowIndex="5" prefHeight="25" prefWidth="100"/>
+                                        <Label text="工  作   电  压:" GridPane.columnIndex="0" GridPane.rowIndex="6" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="WorkingVoltage" GridPane.columnIndex="1" GridPane.rowIndex="6" prefHeight="25" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="0" GridPane.rowIndex="7" prefHeight="15" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="1" GridPane.rowIndex="7" prefHeight="15" prefWidth="100"/>
+                                        <Label text="蜂窝信号强度:" GridPane.columnIndex="0" GridPane.rowIndex="8" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="NetworkState" GridPane.columnIndex="1" GridPane.rowIndex="8" prefHeight="25" prefWidth="100"/>
+                                        <Label text="SIM 卡 ICCID:" GridPane.columnIndex="0" GridPane.rowIndex="9" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="SIMICCID" GridPane.columnIndex="1" GridPane.rowIndex="9" prefHeight="25" prefWidth="100"/>
+                                        <Label text="SIM  卡  IMSI:" GridPane.columnIndex="0" GridPane.rowIndex="10" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="SIMIMSI" GridPane.columnIndex="1" GridPane.rowIndex="10" prefHeight="25" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="0" GridPane.rowIndex="11" prefHeight="15" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="1" GridPane.rowIndex="11" prefHeight="15" prefWidth="100"/>
+                                        <Label text="空  气   温  度:" GridPane.columnIndex="0" GridPane.rowIndex="12" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="OutTemperature" GridPane.columnIndex="1" GridPane.rowIndex="12" prefHeight="25" prefWidth="100"/>
+                                        <Label text="空  气   湿  度:" GridPane.columnIndex="0" GridPane.rowIndex="13" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="Humi_R" GridPane.columnIndex="1" GridPane.rowIndex="13" prefHeight="25" prefWidth="100"/>
+                                        <Label text="大  气   压  强:" GridPane.columnIndex="0" GridPane.rowIndex="14" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="AriPressure" GridPane.columnIndex="1" GridPane.rowIndex="14" prefHeight="25" prefWidth="100"/>
+                                        <Label text="风              速:" GridPane.columnIndex="0" GridPane.rowIndex="15" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="WindSpeed" GridPane.columnIndex="1" GridPane.rowIndex="15" prefHeight="25" prefWidth="100"/>
+                                        <Label text="风              向:" GridPane.columnIndex="0" GridPane.rowIndex="16" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="W_Direction" GridPane.columnIndex="1" GridPane.rowIndex="16" prefHeight="25" prefWidth="100"/>
+                                        <Label text="雨  量   强  度:" GridPane.columnIndex="0" GridPane.rowIndex="17" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="Rainfall" GridPane.columnIndex="1" GridPane.rowIndex="17" prefHeight="25" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="0" GridPane.rowIndex="18" prefHeight="15" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="1" GridPane.rowIndex="18" prefHeight="15" prefWidth="100"/>
+                                        <Label text="平 均 车  流 量:" GridPane.columnIndex="0" GridPane.rowIndex="19" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="PerFlux" GridPane.columnIndex="1" GridPane.rowIndex="19" prefHeight="25" prefWidth="100"/>
+                                        <Label text="平  均   车  速:" GridPane.columnIndex="0" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="AvgSpeed" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="0" GridPane.rowIndex="21" prefHeight="15" prefWidth="100"/>
+                                        <Label GridPane.columnIndex="1" GridPane.rowIndex="21" prefHeight="15" prefWidth="100"/>
+                                        <Label text="空    气  PM2.5:" GridPane.columnIndex="0" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="PM25" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label text="空    气   PM10:" GridPane.columnIndex="0" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="PM10" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                    </GridPane>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 20 0 10 0">
+                                        <Label text="当时实时事件" style="-fx-padding: 5 0 5 5"/>
+                                        <ScrollPane>
+                                            <VBox>
+                                                <JFXTreeTableView fx:id="newTimeEvent" prefHeight="150">
+                                                    <columns>
+                                                        <JFXTreeTableColumn fx:id="nowEvent" text="时间" prefWidth="150" resizable="true"/>
+                                                        <JFXTreeTableColumn fx:id="NowEventDescribe" text="事件描述" prefWidth="150" resizable="true"/>
+                                                    </columns>
+                                                </JFXTreeTableView>
+                                            </VBox>
+                                        </ScrollPane>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 10 0 20 0">
+                                        <Label text="事件记录" style="-fx-padding: 5 0 5 5"/>
+                                        <ScrollPane>
+                                            <VBox>
+                                                <JFXTreeTableView fx:id="eventList" prefHeight="150">
+                                                    <columns>
+                                                        <JFXTreeTableColumn fx:id="EventBeginTime" text="开始时间" prefWidth="100" resizable="true"/>
+                                                        <JFXTreeTableColumn fx:id="EventEndTime" text="结束时间" prefWidth="100" resizable="true"/>
+                                                        <JFXTreeTableColumn fx:id="EventDescribe" text="时间描述" prefWidth="100" resizable="true"/>
+                                                    </columns>
+                                                </JFXTreeTableView>
+                                            </VBox>
+                                        </ScrollPane>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 10 0 20 0">
+                                        <Label text="授权信息:"/>
+                                        <HBox>
+                                            <JFXCheckBox fx:id="HasAll" disable="true" text="总值分析授权" style="-fx-padding: 0 0 5 0"/>
+                                            <JFXCheckBox fx:id="HasOct" disable="true" text="频谱分析授权" style="-fx-padding: 0 0 5 0"/>
+                                            <JFXCheckBox fx:id="HasRecord" disable="true" text="超标录音授权" style="-fx-padding: 0 0 5 0"/>
+                                            <JFXCheckBox fx:id="HasSoundtrans" disable="true" text="实时语音授权" style="-fx-padding: 0 0 5 0"/>
+                                        </HBox>
+                                        <HBox layoutX="280" layoutY="10">
+                                            <JFXButton text="更改授权"/>
+                                        </HBox>
+                                    </HBox>
+                                    <HBox>
+                                        <HBox>
+                                            <Label text="硬 件 版 本" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label fx:id="version_Hardware" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label text="内 核 版 本" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label fx:id="version_Linux" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label text="界 面 版 本" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label fx:id="version_N_VIEW" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label text="采 集 版 本" prefHeight="25.0" prefWidth="80.0"/>
+                                            <Label fx:id="version_NoiseMonitor" prefHeight="25.0" prefWidth="80.0"/>
+                                        </HBox>
+                                        <HBox layoutX="220">
+                                            <JFXButton text="远程升级"/>
+                                        </HBox>
+                                    </HBox>
+                                </VBox>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+                <Tab text="文件">
+                    <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0"
+                                    style="-fx-background-color: white">
+                            <VBox layoutX="50" layoutY="20">
+                                <HBox>
+                                    <JFXButton text="返回" style="-fx-padding: 0 10 10 0"/>
+                                    <TextField text="/" prefWidth="300" prefHeight="25"/>
+                                    <JFXButton text="下载" style="-fx-padding: 0 0 0 50"/>
+                                    <JFXButton text="刷新" style="-fx-padding: 0 0 0 50"/>
+                                </HBox>
+                                <ScrollPane>
+                                    <VBox>
+                                        <JFXTreeTableView fx:id="" prefHeight="200">
+                                            <columns>
+                                                <JFXTreeTableColumn fx:id="" text="名称" prefWidth="160" resizable="true"/>
+                                                <JFXTreeTableColumn fx:id="" text="大小" prefWidth="160" resizable="true"/>
+                                                <JFXTreeTableColumn fx:id="" text="创建时间" prefWidth="160" resizable="true"/>
+                                            </columns>
+                                        </JFXTreeTableView>
+                                    </VBox>
+                                </ScrollPane>
+                            </VBox>
+                        </AnchorPane>
+                    </ScrollPane>
+                </Tab>
+
+                <Tab text="操作">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0"
+                                        style="-fx-background-color: white">
+                                <VBox layoutY="20" layoutX="150">
+                                    <HBox style="-fx-padding: 20 0 0 0">
+                                        <JFXButton text="复位" style="-fx-padding: 0 0 0 50"/>
+                                        <JFXButton text="校准" style="-fx-padding: 0 0 0 50"/>
+                                        <JFXButton text="加热" style="-fx-padding: 0 0 0 50"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 20 0 0 0">
+                                        <ProgressBar prefWidth="200" prefHeight="20"/>
+                                        <JFXButton text="拍照" style="-fx-padding: 0 0 0 30"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 20 0 0 0">
+                                        <ProgressBar prefWidth="200" prefHeight="20"/>
+                                        <JFXButton text="录音" style="-fx-padding: 0 0 0 30"/>
+                                    </HBox>
+                                </VBox>
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+
+                <Tab text="节目">
+                    <content>
+                        <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0"
+                                        style="-fx-background-color: white">
+                            </AnchorPane>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </JFXTabPane>
+    </children>
+</AnchorPane>
