@@ -4,20 +4,8 @@
     <select id="queryByDeviceCode" resultType="com.hzaihua.jfoenix.entity.StateNoise">
         select * from ${deviceTableName} where deviceCode=#{deviceCode}
     </select>
-    <!-- 添加 -->
-    <!--<insert id="" parameterType="">
-
-    </insert>
-    &lt;!&ndash; 修改属性 &ndash;&gt;
-    <update id="" parameterType="">
-
-    </update>
-    &lt;!&ndash; 删除 &ndash;&gt;
-    <delete id="" parameterType="">
-
+    <!-- 删除 -->
+    <delete id="deleteStateNoise">
+        delete from ${deviceTableName} where deviceCode=#{deviceCode}
     </delete>
-    &lt;!&ndash; 根据ID查询 &ndash;&gt;
-    <select id="" resultType="">
-
-    </select>-->
 </mapper>

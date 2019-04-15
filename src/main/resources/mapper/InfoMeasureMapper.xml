@@ -8,20 +8,8 @@
     <select id="queryDevicesByMeasureCode" resultType="string">
         select deviceTypeAndIDs from Info_Measure where measureCode=#{measureCode}
     </select>
-    <!-- 添加 -->
-    <!--<insert id="" parameterType="">
-
-    </insert>
-    &lt;!&ndash; 修改属性 &ndash;&gt;
-    <update id="" parameterType="">
-
-    </update>
-    &lt;!&ndash; 删除 &ndash;&gt;
-    <delete id="" parameterType="">
-
+    <!-- 删除 -->
+    <delete id="deleteInfoMeasure">
+        delete from Info_Measure where measureCode=#{measureCode}
     </delete>
-    &lt;!&ndash; 根据ID查询 &ndash;&gt;
-    <select id="" resultType="">
-
-    </select>-->
 </mapper>
