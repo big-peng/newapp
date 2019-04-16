@@ -38,12 +38,6 @@ public class MoreInfoController implements Initializable {
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        ObservableList<StateDevice> dummyData = deviceManageService.queryDeviceByMeasureCode(MainController.deleteMeasureCode);
-        treeTableView.setRoot(new RecursiveTreeItem<>(dummyData, RecursiveTreeObject::getChildren));
-        treeTableView.setShowRoot(false);
-    }
-
-    private void setupReadOnlyTableView() {
         setupCellValueFactory(deviceCode,StateDevice::deviceCodeProperty);
         setupCellValueFactory(deviceType,StateDevice::deviceTypeProperty);
         setupCellValueFactory(linkState,StateDevice::linkStateProperty);
@@ -51,6 +45,9 @@ public class MoreInfoController implements Initializable {
         setupCellValueFactory(data,StateDevice::dataProperty);
         setupCellValueFactory(linkPort,StateDevice::linkPortProperty);
         setupCellValueFactory(address,StateDevice::addressProperty);
+        ObservableList<StateDevice> dummyData = deviceManageService.queryDeviceByMeasureCode(MainController.deleteMeasureCode);
+        treeTableView.setRoot(new RecursiveTreeItem<>(dummyData, RecursiveTreeObject::getChildren));
+        treeTableView.setShowRoot(false);
     }
 
     public <T> void setupCellValueFactory(JFXTreeTableColumn<StateDevice, T> column, Function<StateDevice, ObservableValue<T>> mapper) {
