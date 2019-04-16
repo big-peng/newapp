@@ -1,6 +1,7 @@
 package com.hzaihua.jfoenix.service;
 
 import com.hzaihua.jfoenix.controller.MainController;
+import com.hzaihua.jfoenix.controller.MoreInfoController;
 import com.hzaihua.jfoenix.dao.DeviceTypeDao;
 import com.hzaihua.jfoenix.dao.InfoMeasureDao;
 import com.hzaihua.jfoenix.dao.InfoNoiseDeviceDao;
@@ -26,6 +27,8 @@ public class DeviceManageService{
     private DeviceTypeDao deviceTypeDao;
     @Resource
     private StateNoiseDao stateNoiseDao;
+    @Resource
+    private InfoNoiseDeviceDao infoNoiseDeviceDao;
     /**
      * 该方法实现的是测点的新增功能，新增测点的过程中添加测点信息的时候，需要直接添加下级设备(当然，也可以不添加)，下级设备可以直接新增设备，也可以从没有测点归属的设备中添加，当然，这需要由页面的操作逻辑决定
      * 添加测点的逻辑也可以是软件中没有单独的设备添加，也就是设备添加之后就必须要选定测点，那么在该方法中就需要先向数据库中添加设备信息，在将测点信息添加到数据库中
@@ -50,8 +53,31 @@ public class DeviceManageService{
      * @param measureCode 要查询的测点编号
      * @return 返回该测点下的设备的信息对象集合，计划是将所有的设备信息字段都集中到同一个实体类中，根据类中的设备类型来决定显示哪些字段，这样会比较容易实现该方法；或者是通过switch来判断查询哪一个设备数据表
      */
-    public List<InfoNoiseDevice> queryDeviceByMeasureCode(String measureCode){
-        return null;
+    public ObservableList<MoreInfoController.StateDevice> queryDeviceByMeasureCode(String measureCode){
+        ObservableList<MoreInfoController.StateDevice> result = FXCollections.observableArrayList();
+        String devicesStr = infoMeasureDao.queryDevicesByMeasureCode(measureCode);
+        String[] devices = devicesStr.split(";");
+        for(int i=0;i<devices.length;i++){
+            String deviceStr = devices[i];
+            String typeCode = deviceStr.split(",")[0];
+            //得到要查询的表名
+            String tableName = deviceTypeDao.queryByTypeCode(typeCode);
+            //得到要查询的设备的编号
+            String deviceCode = deviceStr.split(",")[1];
+            StateNoise stateNoise = stateNoiseDao.queryByDeviceCode(deviceCode,tableName);
+            String linkState = "已连接";
+            if (stateNoise.getLinkState()==0){
+                linkState = "连接失败";
+            }else if(stateNoise.getLinkState()==1){
+                linkState = "正在连接";
+            }
+            InfoNoiseDevice infoNoiseDevice = infoNoiseDeviceDao.queryByDeviceCode(deviceCode,tableName);
+            int deviceType = infoNoiseDevice.getDeviceType();
+            int linkPort = infoNoiseDevice.getLinkPort();
+            MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode,deviceType+"",linkState,"","",linkPort+"","");
+            result.add(stateDevice);
+        }
+        return result;
     }
 
     /**
@@ -83,6 +109,7 @@ public class DeviceManageService{
         }
         return infoMeasureDao.deleteInfoMeasure(measureCode);
     }
+
     public ObservableList<MainController.StateMeasure> getIndexList(){
         ObservableList<MainController.StateMeasure> result = FXCollections.observableArrayList();
         List<InfoMeasure> allMeasure = infoMeasureDao.queryAll();

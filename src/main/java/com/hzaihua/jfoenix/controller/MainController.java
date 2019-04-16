@@ -103,7 +103,7 @@ public class MainController {
     //要删除的行数
     private int deleteRow;
     //要删除的数据的测点编号
-    private String deleteMeasureCode;
+    public static String deleteMeasureCode;
     @FXML
     private HBox disableHBox;
     @FXML
@@ -249,7 +249,7 @@ public class MainController {
         MainLoad.stage.heightProperty().addListener(heightListener);
     }
 
-    private <T> void setupCellValueFactory(JFXTreeTableColumn<StateMeasure, T> column, Function<StateMeasure, ObservableValue<T>> mapper) {
+    public <T> void setupCellValueFactory(JFXTreeTableColumn<StateMeasure, T> column, Function<StateMeasure, ObservableValue<T>> mapper) {
         column.setCellValueFactory((TreeTableColumn.CellDataFeatures<StateMeasure, T> param) -> {
             if (column.validateValue(param)) {
                 return mapper.apply(param.getValue().getValue());
@@ -295,6 +295,9 @@ public class MainController {
                 if (event.getButton().toString().equals("SECONDARY") && (! row.isEmpty()) ) {
                     StateMeasure emailInfo = row.getItem();
                     FXMLLoader moreInfo = new FXMLLoader(getClass().getResource("/views/fxml/system/MoreInfo.fxml"));
+                    deleteRow = row.getIndex();
+                    deleteMeasureCode = row.getItem().getMeasureCode();
+                    disableHBox.setDisable(false);
                     moreInfo.setController(new MoreInfoController());
                     try {
                         moreInfoPopup = new JFXPopup(moreInfo.load());
@@ -325,6 +328,7 @@ public class MainController {
             });
             return row;
         });
+        //占内存，需要改进
         searchFieldDummyData.addAll(dummyData);
         searchComboBoxDummyData.addAll(dummyData);
         searchField.textProperty().addListener(setupSearchField(treeTableView));
