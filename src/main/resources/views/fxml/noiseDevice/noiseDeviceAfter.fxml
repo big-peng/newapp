@@ -67,12 +67,12 @@
                                             </ComboBox>
                                             <Label prefHeight="25.0" prefWidth="80.0" text="积分统计时间:"
                                                    GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-                                            <TextField fx:id="null0" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                            <TextField fx:id="Initime" prefWidth="80.0" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                                             <Label GridPane.columnIndex="2" GridPane.rowIndex="5">秒 （60秒~3600秒）</Label>
                                         </children>
                                     </GridPane>
                                     <HBox style="-fx-padding: 15 0 0 0">
-                                        <JFXCheckBox fx:id="null1" text="分钟统计数据自动上传"/>
+                                        <JFXCheckBox fx:id="ON_OFF_MIN" text="分钟统计数据自动上传"/>
                                     </HBox>
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="ON_OFF_HOUR" text="小时统计数据自动上传"/>
@@ -83,7 +83,7 @@
                                 </VBox>
                                 <VBox layoutY="250" layoutX="170">
                                     <HBox style="-fx-padding: 5 0 0 0">
-                                        <JFXCheckBox fx:id="null4" text="噪声超标报警"/>
+                                        <Label text="噪声超标报警"/>
                                     </HBox>
                                     <GridPane>
                                         <Label prefHeight="25.0" prefWidth="80.0" text="昼间超标限值:"
@@ -247,7 +247,7 @@
                                         </VBox>
                                     </ScrollPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="1450" prefHeight="140">
+                                <VBox layoutX="170" layoutY="1450" prefHeight="200">
                                     <Label text="其他开关" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane prefWidth="260">
                                         <VBox>
@@ -317,66 +317,72 @@
                                         <Label fx:id="AvgSpeed" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
                                         <Label GridPane.columnIndex="0" GridPane.rowIndex="21" prefHeight="15" prefWidth="100"/>
                                         <Label GridPane.columnIndex="1" GridPane.rowIndex="21" prefHeight="15" prefWidth="100"/>
-                                        <Label text="空    气  PM2.5:" GridPane.columnIndex="0" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
-                                        <Label fx:id="PM25" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
-                                        <Label text="空    气   PM10:" GridPane.columnIndex="0" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
-                                        <Label fx:id="PM10" GridPane.columnIndex="1" GridPane.rowIndex="20" prefHeight="25" prefWidth="100"/>
+                                        <Label text="空    气  PM2.5:" GridPane.columnIndex="0" GridPane.rowIndex="22" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="PM25" GridPane.columnIndex="1" GridPane.rowIndex="22" prefHeight="25" prefWidth="100"/>
+                                        <Label text="空    气   PM10:" GridPane.columnIndex="0" GridPane.rowIndex="23" prefHeight="25" prefWidth="100"/>
+                                        <Label fx:id="PM10" GridPane.columnIndex="1" GridPane.rowIndex="23" prefHeight="25" prefWidth="100"/>
                                     </GridPane>
                                     </HBox>
-                                    <HBox style="-fx-padding: 20 0 10 0">
-                                        <Label text="当时实时事件" style="-fx-padding: 5 0 5 5"/>
-                                        <ScrollPane>
-                                            <VBox>
-                                                <JFXTreeTableView fx:id="newTimeEvent" prefHeight="150">
-                                                    <columns>
-                                                        <JFXTreeTableColumn fx:id="nowEvent" text="时间" prefWidth="150" resizable="true"/>
-                                                        <JFXTreeTableColumn fx:id="NowEventDescribe" text="事件描述" prefWidth="150" resizable="true"/>
-                                                    </columns>
-                                                </JFXTreeTableView>
-                                            </VBox>
-                                        </ScrollPane>
-                                    </HBox>
-                                    <HBox style="-fx-padding: 10 0 20 0">
-                                        <Label text="事件记录" style="-fx-padding: 5 0 5 5"/>
-                                        <ScrollPane>
-                                            <VBox>
-                                                <JFXTreeTableView fx:id="eventList" prefHeight="150">
-                                                    <columns>
-                                                        <JFXTreeTableColumn fx:id="EventBeginTime" text="开始时间" prefWidth="100" resizable="true"/>
-                                                        <JFXTreeTableColumn fx:id="EventEndTime" text="结束时间" prefWidth="100" resizable="true"/>
-                                                        <JFXTreeTableColumn fx:id="EventDescribe" text="时间描述" prefWidth="100" resizable="true"/>
-                                                    </columns>
-                                                </JFXTreeTableView>
-                                            </VBox>
-                                        </ScrollPane>
-                                    </HBox>
-                                    <HBox style="-fx-padding: 10 0 20 0">
-                                        <Label text="授权信息:"/>
+                                </VBox>
+                                <VBox  layoutX="170" layoutY="570">
+                                    <Label text="当时实时事件" style="-fx-padding: 5 0 5 5"/>
+                                    <ScrollPane>
                                         <HBox>
-                                            <JFXCheckBox fx:id="HasAll" disable="true" text="总值分析授权" style="-fx-padding: 0 0 5 0"/>
-                                            <JFXCheckBox fx:id="HasOct" disable="true" text="频谱分析授权" style="-fx-padding: 0 0 5 0"/>
-                                            <JFXCheckBox fx:id="HasRecord" disable="true" text="超标录音授权" style="-fx-padding: 0 0 5 0"/>
-                                            <JFXCheckBox fx:id="HasSoundtrans" disable="true" text="实时语音授权" style="-fx-padding: 0 0 5 0"/>
+                                            <JFXTreeTableView fx:id="newTimeEvent" prefHeight="150">
+                                                <columns>
+                                                    <JFXTreeTableColumn fx:id="nowEvent" text="时间" prefWidth="200" resizable="true"/>
+                                                    <JFXTreeTableColumn fx:id="NowEventDescribe" text="事件描述" prefWidth="200" resizable="true"/>
+                                                </columns>
+                                            </JFXTreeTableView>
                                         </HBox>
-                                        <HBox layoutX="280" layoutY="10">
-                                            <JFXButton text="更改授权"/>
-                                        </HBox>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="780">
+                                    <Label text="事件记录" style="-fx-padding: 5 0 5 5"/>
+                                    <ScrollPane>
+                                        <VBox>
+                                            <JFXTreeTableView fx:id="eventList" prefHeight="150">
+                                                <columns>
+                                                    <JFXTreeTableColumn fx:id="EventBeginTime" text="开始时间" prefWidth="130" resizable="true"/>
+                                                    <JFXTreeTableColumn fx:id="EventEndTime" text="结束时间" prefWidth="130" resizable="true"/>
+                                                    <JFXTreeTableColumn fx:id="EventDescribe" text="时间描述" prefWidth="140" resizable="true"/>
+                                                </columns>
+                                            </JFXTreeTableView>
+                                        </VBox>
+                                    </ScrollPane>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="990">
+                                    <HBox>
+                                    <Label text="授权信息:"/>
+                                        <VBox style="-fx-padding: 0 0 0 140">
+                                    <JFXButton text="更改授权" />
+                                        </VBox>
                                     </HBox>
                                     <HBox>
-                                        <HBox>
-                                            <Label text="硬 件 版 本" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label fx:id="version_Hardware" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label text="内 核 版 本" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label fx:id="version_Linux" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label text="界 面 版 本" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label fx:id="version_N_VIEW" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label text="采 集 版 本" prefHeight="25.0" prefWidth="80.0"/>
-                                            <Label fx:id="version_NoiseMonitor" prefHeight="25.0" prefWidth="80.0"/>
-                                        </HBox>
-                                        <HBox layoutX="220">
-                                            <JFXButton text="远程升级"/>
-                                        </HBox>
+                                        <JFXCheckBox fx:id="HasAll" disable="true" text="总值分析授权" style="-fx-padding: 0 0 5 0"/>
                                     </HBox>
+                                    <HBox>
+                                        <JFXCheckBox fx:id="HasOct" disable="true" text="频谱分析授权" style="-fx-padding: 0 0 5 0"/>
+                                    </HBox>
+                                    <HBox>
+                                        <JFXCheckBox fx:id="HasRecord" disable="true" text="超标录音授权" style="-fx-padding: 0 0 5 0"/>
+                                    </HBox>
+                                    <HBox>
+                                        <JFXCheckBox fx:id="HasSoundtrans" disable="true" text="实时语音授权" style="-fx-padding: 0 0 5 0"/>
+                                    </HBox>
+                                </VBox>
+                                <VBox layoutX="170" layoutY="1130" prefHeight="200">
+                                    <GridPane>
+                                        <Label text="硬 件 版 本:" prefHeight="20.0" prefWidth="80.0" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <Label fx:id="version_Hardware" prefHeight="20.0" prefWidth="113.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <JFXButton text="远程升级" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                                        <Label text="内 核 版 本:" prefHeight="20.0" prefWidth="80.0" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <Label fx:id="version_Linux" prefHeight="20.0" prefWidth="113.0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <Label text="界 面 版 本:" prefHeight="20.0" prefWidth="80.0" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                        <Label fx:id="version_N_VIEW" prefHeight="20.0" prefWidth="113.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <Label text="采 集 版 本:" prefHeight="20.0" prefWidth="80.0" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                        <Label fx:id="version_NoiseMonitor" prefHeight="20.0" prefWidth="113.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                    </GridPane>
                                 </VBox>
                             </AnchorPane>
                         </ScrollPane>
@@ -386,20 +392,28 @@
                     <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0"
                                     style="-fx-background-color: white">
-                            <VBox layoutX="50" layoutY="20">
+                            <VBox layoutX="50" layoutY="40">
                                 <HBox>
-                                    <JFXButton text="返回" style="-fx-padding: 0 10 10 0"/>
-                                    <TextField text="/" prefWidth="300" prefHeight="25"/>
-                                    <JFXButton text="下载" style="-fx-padding: 0 0 0 50"/>
-                                    <JFXButton text="刷新" style="-fx-padding: 0 0 0 50"/>
+                                    <HBox style="-fx-padding: 0 10 10 0">
+                                        <JFXButton text="返回" />
+                                    </HBox>
+                                    <HBox>
+                                        <TextField text="/" prefWidth="300" prefHeight="25"/>
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0 0 0 50">
+                                        <JFXButton text="下载" />
+                                    </HBox>
+                                    <HBox style="-fx-padding: 0 0 0 50">
+                                        <JFXButton text="刷新"/>
+                                    </HBox>
                                 </HBox>
                                 <ScrollPane>
                                     <VBox>
                                         <JFXTreeTableView fx:id="" prefHeight="200">
                                             <columns>
-                                                <JFXTreeTableColumn fx:id="" text="名称" prefWidth="160" resizable="true"/>
-                                                <JFXTreeTableColumn fx:id="" text="大小" prefWidth="160" resizable="true"/>
-                                                <JFXTreeTableColumn fx:id="" text="创建时间" prefWidth="160" resizable="true"/>
+                                                <JFXTreeTableColumn fx:id="" text="名称" prefWidth="175" resizable="true"/>
+                                                <JFXTreeTableColumn fx:id="" text="大小" prefWidth="180" resizable="true"/>
+                                                <JFXTreeTableColumn fx:id="" text="创建时间" prefWidth="175" resizable="true"/>
                                             </columns>
                                         </JFXTreeTableView>
                                     </VBox>
@@ -416,17 +430,27 @@
                                         style="-fx-background-color: white">
                                 <VBox layoutY="20" layoutX="150">
                                     <HBox style="-fx-padding: 20 0 0 0">
-                                        <JFXButton text="复位" style="-fx-padding: 0 0 0 50"/>
-                                        <JFXButton text="校准" style="-fx-padding: 0 0 0 50"/>
-                                        <JFXButton text="加热" style="-fx-padding: 0 0 0 50"/>
+                                        <HBox style="-fx-padding: 0 0 0 30">
+                                            <JFXButton text="复位"/>
+                                        </HBox>
+                                        <HBox style="-fx-padding: 0 0 0 20">
+                                            <JFXButton text="校准" />
+                                        </HBox>
+                                        <HBox style="-fx-padding: 0 0 0 20">
+                                            <JFXButton text="加热" />
+                                        </HBox>
                                     </HBox>
                                     <HBox style="-fx-padding: 20 0 0 0">
                                         <ProgressBar prefWidth="200" prefHeight="20"/>
-                                        <JFXButton text="拍照" style="-fx-padding: 0 0 0 30"/>
+                                        <HBox style="-fx-padding: 0 0 0 20">
+                                            <JFXButton text="拍照"/>
+                                        </HBox>
                                     </HBox>
-                                    <HBox style="-fx-padding: 20 0 0 0">
+                                    <HBox style="-fx-padding: 20 0 0 0" prefWidth="300" prefHeight="25">
                                         <ProgressBar prefWidth="200" prefHeight="20"/>
-                                        <JFXButton text="录音" style="-fx-padding: 0 0 0 30"/>
+                                        <HBox style="-fx-padding: 0 0 0 20">
+                                            <JFXButton text="录音" />
+                                        </HBox>
                                     </HBox>
                                 </VBox>
                             </AnchorPane>
@@ -439,6 +463,7 @@
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0"
                                         style="-fx-background-color: white">
+
                             </AnchorPane>
                         </ScrollPane>
                     </content>

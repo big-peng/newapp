@@ -63,7 +63,7 @@
                         </VBox>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="12" layoutX="50" layoutY="100">
                             <padding><Insets left="140.0" top="5.0"/></padding>
-                            <JFXButton text="分配测点" style="-fx-font-size: 13;-fx-background-color: blue;"/>
+                            <JFXButton fx:id="distributeMeasure" text="分配测点" style="-fx-font-size: 13;-fx-background-color: blue;"/>
                         </HBox>
                     </children>
                 </GridPane>
