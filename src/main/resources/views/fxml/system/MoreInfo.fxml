@@ -12,7 +12,7 @@
            xmlns="http://javafx.com/javafx/2.2" prefWidth="1000" prefHeight="300">
         <JFXTreeTableView fx:id="treeTableView">
             <columns>
-                <JFXTreeTableColumn fx:id="deviceCode" prefWidth="130" resizable="false" sortable="false" text="设备编码"/>
+                <JFXTreeTableColumn fx:id="deviceCode" prefWidth="130" resizable="false" sortable="false" text="设备编号"/>
                 <JFXTreeTableColumn fx:id="deviceType" prefWidth="130" resizable="false" sortable="false" text="设备类型"/>
                 <JFXTreeTableColumn fx:id="linkState" prefWidth="100" resizable="false" sortable="false" text="连接状态"/>
                 <JFXTreeTableColumn fx:id="dataTime" prefWidth="128" resizable="false" sortable="false" text="时间"/>
