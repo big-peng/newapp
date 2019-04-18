@@ -3,6 +3,8 @@ package com.hzaihua.jfoenix.service;
 import com.hzaihua.jfoenix.dao.InfoUserDao;
 import com.hzaihua.jfoenix.entity.InfoUser;
 import com.hzaihua.jfoenix.util.PswMD5;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -60,8 +62,10 @@ public class InfoUserService{
      * 查询全部的用户，该方法一般是在添加测点的时候调用的，因为添加测点需要填写该测点是由哪一个用户来进行管理的，所以需要将所有用户展示出来进行选择
      * @return 返回所有用户的对象集合
      */
-    public List<InfoUser> queryAllInfoUser(){
-        return null;
+    public ObservableList<InfoUser> queryAllInfoUser(){
+        ObservableList<InfoUser> result = FXCollections.observableArrayList();
+        result.setAll(infoUserDao.queryAll());
+        return result;
     }
 
     /**
@@ -89,5 +93,12 @@ public class InfoUserService{
      */
     public List<InfoUser> queryByParentUserName(String parentUserName){
         return null;
+    }
+
+    /**
+     * 根据用户名查询当前登录的用户信息
+     * */
+    public InfoUser queryByUserName(String userName){
+        return infoUserDao.queryByUserName(userName);
     }
 }

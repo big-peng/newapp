@@ -3,7 +3,7 @@
 <mapper namespace="com.hzaihua.jfoenix.dao.InfoUserDao">
     <!--查询所有  -->
     <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoUser">
-        select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName]
+        select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName],[status]
         from Info_User
     </select>
     <!-- 添加 -->
