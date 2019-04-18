@@ -80,7 +80,7 @@
                     </HBox>
                     <JFXTreeTableView fx:id="treeTableView">
                         <columns>
-                            <JFXTreeTableColumn style="-fx-background-color: rgba(82,100,174,0.6);" fx:id="measureCode" prefWidth="130" resizable="false" sortable="false" text="测点编号" />
+                            <JFXTreeTableColumn fx:id="measureCode" prefWidth="130" resizable="false" sortable="false" text="测点编号" />
                             <JFXTreeTableColumn fx:id="measureName" prefWidth="130" resizable="false" sortable="false" text="测点名称" />
                             <JFXTreeTableColumn fx:id="linkState" prefWidth="100" resizable="false" sortable="false" text="连接状态" />
                             <JFXTreeTableColumn fx:id="dataTime" prefWidth="128" resizable="false" sortable="false" text="时间" />
