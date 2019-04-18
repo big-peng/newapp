@@ -14,6 +14,7 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
     private StringProperty phone;//手机号
     private StringProperty occupation;//职业
     private StringProperty company;//工作单位
+    private SimpleIntegerProperty status;//登录状态
     private StringProperty headFileName;//头像文件所在地址
 
     public String getUserName() {
@@ -124,6 +125,31 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         this.headFileName = new SimpleStringProperty(headFileName);
     }
 
+    public InfoUser(StringProperty userName, StringProperty password, StringProperty nickName, SimpleIntegerProperty userType, StringProperty parentUser, StringProperty phone, StringProperty occupation, StringProperty company, SimpleIntegerProperty status, StringProperty headFileName) {
+        this.userName = userName;
+        this.password = password;
+        this.nickName = nickName;
+        this.userType = userType;
+        this.parentUser = parentUser;
+        this.phone = phone;
+        this.occupation = occupation;
+        this.company = company;
+        this.status = status;
+        this.headFileName = headFileName;
+    }
+
+    public int getStatus() {
+        return status.get();
+    }
+
+    public void setStatus(int status) {
+        this.status = new SimpleIntegerProperty(status);
+    }
+
+    public SimpleIntegerProperty statusProperty() {
+        return status;
+    }
+
     @Override
     public String toString() {
         return "InfoUser{" +
@@ -135,20 +161,9 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
                 ", phone=" + phone +
                 ", occupation=" + occupation +
                 ", company=" + company +
+                ", status=" + status +
                 ", headFileName=" + headFileName +
                 '}';
-    }
-
-    public InfoUser(String userName, String password, String nickName, int userType, String parentUser, String phone, String occupation, String company, String headFileName) {
-        this.userName = new SimpleStringProperty(userName);
-        this.password = new SimpleStringProperty(password);
-        this.nickName = new SimpleStringProperty(nickName);
-        this.userType = new SimpleIntegerProperty(userType);
-        this.parentUser = new SimpleStringProperty(parentUser);
-        this.phone = new SimpleStringProperty(phone);
-        this.occupation = new SimpleStringProperty(occupation);
-        this.company = new SimpleStringProperty(company);
-        this.headFileName = new SimpleStringProperty(headFileName);
     }
 
     public InfoUser() {

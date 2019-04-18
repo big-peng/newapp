@@ -1,6 +1,7 @@
 package com.hzaihua.jfoenix.dao;
 
 import com.hzaihua.jfoenix.entity.InfoUser;
+import javafx.collections.ObservableList;
 
 import java.util.List;
 

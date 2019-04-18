@@ -51,7 +51,7 @@
                     <HBox alignment="CENTER">
                         <children>
                                     <JFXButton fx:id="changeMeasure" buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="添加测点" />
-                            <HBox fx:id="disableHBox" disable="true" spacing="20" style="-fx-padding: 0 0 0 20;">
+                            <HBox fx:id="" disable="true" spacing="20" style="-fx-padding: 0 0 0 20;">
                                 <JFXButton buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="编辑测点" />
                                 <JFXButton fx:id="deleteButton" buttonType="RAISED" prefHeight="30" prefWidth="80" style="-fx-text-fill: #D34336" styleClass="custom-jfx-button-raised" text="删除测点" />
                                 <JFXButton buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="开始连接" />
