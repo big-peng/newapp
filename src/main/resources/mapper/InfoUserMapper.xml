@@ -4,7 +4,7 @@
     <!--查询所有  -->
     <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoUser">
         select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName],[status]
-        from Info_User
+        from Info_User where userType!=3
     </select>
     <!-- 添加 -->
     <insert id="insertUser" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
@@ -13,9 +13,13 @@
     </insert>
     <!-- 修改属性 -->
     <update id="updateByUserName" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
-        update Info_User set [password]=#{password},[nickName]=#{nickName},[userType]=#{userType},[parentUser]=#{parentUser},
+        update Info_User set [nickName]=#{nickName},[userType]=#{userType},[parentUser]=#{parentUser},
         [phone]=#{phone},[occupation]=#{occupation},[company]=#{company},[headFileName]=#{headFileName}
         where [userName]=#{userName}
+    </update>
+    <!--修改密码-->
+    <update id="updatePassword" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
+        update Info_User set [password]=#{password} where [userType]=#{userType}
     </update>
     <!-- 删除 -->
     <delete id="deleteByUserName" parameterType="string">
@@ -30,4 +34,10 @@
           select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName]
           from Info_User where [parentUser]=#{parentUser}
     </select>
+    <!--搜索下级用户-->
+    <select id="queryUserByNameOrPhone" resultType="com.hzaihua.jfoenix.entity.InfoUser" parameterType="string">
+        select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName],[status]
+        from Info_User where userName=#{userName} or nickName=#{nickName} or phone=#{phone}
+    </select>
 </mapper>
+

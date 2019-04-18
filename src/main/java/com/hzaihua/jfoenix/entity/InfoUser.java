@@ -9,12 +9,12 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
     private StringProperty userName;//用户的登录名，该字段为主键
     private StringProperty password;//用户的登录密码，后期需要使用加密Util处理
     private StringProperty nickName;//用户设置的昵称
-    private SimpleIntegerProperty userType;//用户的管理级别，级别不同所拥有的权限也不同
+    private StringProperty userType;//用户的管理级别，级别不同所拥有的权限也不同
     private StringProperty parentUser;//添加该用户的用户登录名
     private StringProperty phone;//手机号
     private StringProperty occupation;//职业
     private StringProperty company;//工作单位
-    private SimpleIntegerProperty status;//登录状态
+    private StringProperty status;//登录状态
     private StringProperty headFileName;//头像文件所在地址
 
     public String getUserName() {
@@ -53,16 +53,27 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         this.nickName = new SimpleStringProperty(nickName);
     }
 
-    public int getUserType() {
+    public String getUserType() {
         return userType.get();
     }
 
-    public SimpleIntegerProperty userTypeProperty() {
+    public StringProperty userTypeProperty() {
         return userType;
     }
 
-    public void setUserType(int userType) {
-        this.userType = new SimpleIntegerProperty(userType);
+    public void setUserType(String userType) {
+        if(userType.equals("0")) {
+            this.userType = new SimpleStringProperty("一般用户");
+        }
+        if(userType.equals("1")) {
+            this.userType = new SimpleStringProperty("运维");
+        }
+        if(userType.equals("2")) {
+            this.userType = new SimpleStringProperty("管理员");
+        }
+        if(userType.equals("3")) {
+            this.userType = new SimpleStringProperty("超级管理员");
+        }
     }
 
     public String getParentUser() {
@@ -125,7 +136,7 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         this.headFileName = new SimpleStringProperty(headFileName);
     }
 
-    public InfoUser(StringProperty userName, StringProperty password, StringProperty nickName, SimpleIntegerProperty userType, StringProperty parentUser, StringProperty phone, StringProperty occupation, StringProperty company, SimpleIntegerProperty status, StringProperty headFileName) {
+    public InfoUser(StringProperty userName, StringProperty password, StringProperty nickName, StringProperty userType, StringProperty parentUser, StringProperty phone, StringProperty occupation, StringProperty company, StringProperty status, StringProperty headFileName) {
         this.userName = userName;
         this.password = password;
         this.nickName = nickName;
@@ -138,15 +149,20 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         this.headFileName = headFileName;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status.get();
     }
 
-    public void setStatus(int status) {
-        this.status = new SimpleIntegerProperty(status);
+    public void setStatus(String status) {
+        if(status.equals("0")){
+            this.status = new SimpleStringProperty("离线");
+        }
+        if(status.equals("1")){
+            this.status = new SimpleStringProperty("在线");
+        }
     }
 
-    public SimpleIntegerProperty statusProperty() {
+    public StringProperty statusProperty() {
         return status;
     }
 

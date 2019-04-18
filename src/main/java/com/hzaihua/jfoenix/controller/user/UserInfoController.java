@@ -53,7 +53,7 @@ public class UserInfoController {
     //删除数据的编号
     private static String deleteUserName;
     //查询到的全部数据
-    ObservableList<InfoUser> downUserList = null;
+    static ObservableList<InfoUser> downUserList = null;
     @FXML
     private JFXDialog dialog;
     //下级用户表格框
@@ -157,18 +157,18 @@ public class UserInfoController {
                 alert.hideWithAnimation();
                 //先从数据库中删除，返回删除成功之后在删除表格中的
                 //删除不能以行数为标准删除，否则会出Bug
-                downUserList.remove(nowdownUserList.get(id));
-                nowdownUserList.remove(id);
-                //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
-                downUserTreeTableView.setRoot(new RecursiveTreeItem<>(nowdownUserList, RecursiveTreeObject::getChildren));
-                downUserTreeTableView.setShowRoot(false);
-                downUserHbox.setDisable(true);
-                //*treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
-                downUserTreeTableView.setShowRoot(false);
-                id = -1;
-                snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
-                        new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
-                        Duration.millis(2000), null));
+                if(infoUserService.deleteByUserName(deleteUserName)){
+                    downUserList.remove(id);
+                    //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
+                    downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
+                    downUserTreeTableView.setShowRoot(false);
+                    downUserHbox.setDisable(true);
+                    downUserTreeTableView.setShowRoot(false);
+                    id = -1;
+                    snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
+                            new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
+                            Duration.millis(2000), null));
+                }
             });
             List<JFXButton> buttons = new ArrayList<JFXButton>();
             buttons.add(trueButton);
@@ -195,42 +195,20 @@ public class UserInfoController {
         setupCellValueFactory(downname, InfoUser::nickNameProperty);
         setupCellValueFactory(status,InfoUser::statusProperty);
         setupCellValueFactory(downtype,InfoUser::userTypeProperty);
-        /*for (int i = 0;i<=downUserList.size();i++) {
-            if (downUserList.get(i).getStatus()==0) {
-                status.setText("在线");
-                setupCellValueFactory(status,InfoUser::statusProperty);
-            }else if(downUserList.get(i).getStatus()==1){
-                status.setText("离线");
-                setupCellValueFactory(status,InfoUser::statusProperty);
-            }
-        }
-        for(int i = 0;i<=downUserList.size();i++){
-            if(downUserList.get(i).getUserType()==2){
-                downtype.setText("管理员");
-                setupCellValueFactory(downtype,InfoUser::userTypeProperty);
-            }else if(downUserList.get(i).getUserType()==1){
-                downtype.setText("运维");
-                setupCellValueFactory(downtype,InfoUser::userTypeProperty);
-            }else if(downUserList.get(i).getUserType()==0){
-                downtype.setText("一般标准");
-                setupCellValueFactory(downtype,InfoUser::userTypeProperty);
-            }
-        }*/
         setupCellValueFactory(downphone,InfoUser::phoneProperty);
-        nowdownUserList.addAll(downUserList);
-        downUserTreeTableView.setRoot(new RecursiveTreeItem<>(nowdownUserList, RecursiveTreeObject::getChildren));
+        downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
         downUserTreeTableView.setShowRoot(false);
 
         //表格的点击事件
         downUserTreeTableView.setRowFactory(tv->{
             TreeTableRow<InfoUser> row = new TreeTableRow<InfoUser>();
             row.setOnMouseClicked(event -> {
+                if(event.getButton().toString().equals("PRIMARY") && event.getClickCount() == 1 && (! row.isEmpty())){
                     InfoUser emailInfo = row.getItem();
                     //记录选中的
-                    //id = emailInfo.firstNameProperty().getValue();
                     if (deleteRow == row.getIndex()){
                         //如果点击第二次，刷新表格以取消选中
-                        downUserTreeTableView.setRoot(new RecursiveTreeItem<>(nowdownUserList, RecursiveTreeObject::getChildren));
+                        downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
                         downUserTreeTableView.setShowRoot(false);
                         deleteRow = -1;
                         downUserHbox.setDisable(true);
@@ -239,6 +217,8 @@ public class UserInfoController {
                         deleteUserName = row.getItem().getUserName();
                         downUserHbox.setDisable(false);
                     }
+                }
+
             });
             return row;
         });
@@ -247,10 +227,8 @@ public class UserInfoController {
     private void userInfoGrid(){
         InfoUser infoUser = infoUserService.queryByUserName("admin");
         userName.setText(infoUser.getUserName());
-        if(infoUser.getUserType()==3){
-            userType.setText("超级管理员");
-        }
         nickName.setText(infoUser.getNickName());
+        userType.setText(infoUser.getUserType());
         phone.setText(infoUser.getPhone());
         occupation.setText(infoUser.getOccupation());
         company.setText(infoUser.getCompany());

@@ -29,9 +29,6 @@ public class LoginController extends AbstractFxmlView {
     @FXML
     protected void login(ActionEvent event) {
         System.out.println(username.getText()+","+password.getText());
-        /*System.out.println(studentDao);
-        List<Student> list = studentDao.selectAll();
-        System.out.println(list);*/
         String result = infoUserService.pwdIsTrue(username.getText(),password.getText());
         if ("登录成功".equals(result)){
             Stage stage = (Stage)exitLogin.getScene().getWindow();
