@@ -65,6 +65,10 @@ public class UserInfoController {
     @FXML
     //修改密码提交按钮
     private JFXButton comitEditPassword;
+    @FXML
+    //刷新列表
+    private JFXButton renovate;
+
     private int id;
     //表格中需要呈现的数据
     ObservableList<InfoUser> nowdownUserList = FXCollections.observableArrayList();
@@ -125,6 +129,12 @@ public class UserInfoController {
         //添加用户操作
         addDownUser.setOnAction(event -> {
             AddDownUserLoad addDownUserLoad = new AddDownUserLoad();
+        });
+        //刷新列表操作
+        renovate.setOnAction(event -> {
+            downUserList = infoUserService.queryAllInfoUser();
+            downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
+            downUserTreeTableView.setShowRoot(false);
         });
 
         //下级用户表格

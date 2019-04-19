@@ -8,6 +8,8 @@ import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import javax.annotation.PostConstruct;
 import static com.hzaihua.jfoenix.controller.user.UserInfoController.downUserList;
 
@@ -29,15 +31,17 @@ public class FindDownUserController {
     public void init(){
         InfoUserService infoUserService = BeanFactoryUtil.getApplicationContext().getBean(InfoUserService.class);
         comitFindDownUsers.setOnAction(event -> {
+            Stage stage = (Stage)comitFindDownUsers.getScene().getWindow();
             String username = downUserName.getText();
             String name = downName.getText();
             String phone = downTelephone.getText();
-            if(username == null && name == null && phone == null) {
+            if("".equals(username) && "".equals(name) && "".equals(phone)) {
                 actiontarget.setText("请至少输入一项搜索条件");
             }else{
                 InfoUser user = infoUserService.queryUserByNameOrPhone(username, name, phone);
                 downUserList.clear();
                 downUserList.add(user);
+                stage.close();
             }
         });
     }

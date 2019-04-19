@@ -13,8 +13,7 @@
     </insert>
     <!-- 修改属性 -->
     <update id="updateByUserName" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
-        update Info_User set [nickName]=#{nickName},[userType]=#{userType},[parentUser]=#{parentUser},
-        [phone]=#{phone},[occupation]=#{occupation},[company]=#{company},[headFileName]=#{headFileName}
+        update Info_User set [nickName]=#{nickName},[phone]=#{phone},[occupation]=#{occupation},[company]=#{company},[headFileName]=#{headFileName}
         where [userName]=#{userName}
     </update>
     <!--修改密码-->

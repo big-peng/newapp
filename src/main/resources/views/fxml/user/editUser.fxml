@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Text?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx" prefHeight="450.0" prefWidth="500.0">
     <BorderPane>
         <center>
@@ -17,18 +18,19 @@
                 <GridPane style="-fx-padding: 30 0 0 80">
                     <children>
                         <Label prefHeight="30.0" prefWidth="60.0" text="姓      名:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <TextField fx:id="username" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="nickName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label GridPane.columnIndex="2" GridPane.rowIndex="1">*</Label>
                         <Label prefHeight="30.0" prefWidth="60.0" text="电      话:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <TextField fx:id="telephone" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label GridPane.columnIndex="2" GridPane.rowIndex="2">*</Label>
                         <Label prefHeight="30.0" prefWidth="60.0" text="职      业:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <TextField fx:id="worktype" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="occupation" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label prefHeight="30.0" prefWidth="60.0" text="工作地址:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                        <TextField fx:id="workAddress" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="company" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label prefHeight="30.0" prefWidth="60.0" text="照      片:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                        <ImageView fx:id="photo" fitHeight="100" fitWidth="100" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <JFXButton fx:id="fileChoose" GridPane.columnIndex="2" GridPane.rowIndex="5" style="-fx-font-size: 13;" text="选择照片" />
+                        <ImageView fx:id="headFileName" fitHeight="100" fitWidth="160" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <JFXButton fx:id="photoChoose" GridPane.columnIndex="2" GridPane.rowIndex="5" style="-fx-font-size: 13;" text="选择照片" />
+                        <Text fx:id="actiontarget" GridPane.columnIndex="1" GridPane.rowIndex="6" style="-fx-fill: red"/>
                     </children>
                 </GridPane>
                 <Label style="-fx-padding: 20 0 0 155">提示：*为必填项</Label>

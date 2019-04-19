@@ -57,11 +57,15 @@
                 <children>
                     <Label text="下级用户"/>
                     <StackPane HBox.hgrow="ALWAYS">
-                        <StackPane maxWidth="300" StackPane.alignment="CENTER_RIGHT">
+                        <StackPane maxWidth="350" StackPane.alignment="CENTER_RIGHT">
                             <HBox alignment="CENTER_RIGHT">
                                 <children>
+                                    <JFXButton fx:id="renovate" prefHeight="30" buttonType="RAISED" text="刷    新"
+                                               styleClass="custom-jfx-button-raised"/>
+                                    <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
                                     <JFXButton fx:id="findDownUser" prefHeight="30" buttonType="RAISED" text="搜索用户"
                                                styleClass="custom-jfx-button-raised"/>
+                                    </HBox>
                                     <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
                                         <JFXButton fx:id="addDownUser" prefHeight="30" buttonType="RAISED" text="添加用户"
                                                styleClass="custom-jfx-button-raised"/>

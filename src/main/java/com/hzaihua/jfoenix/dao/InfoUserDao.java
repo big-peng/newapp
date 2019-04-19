@@ -31,7 +31,7 @@ public interface InfoUserDao {
      * @param user 传入一个包含要修改的登录名的新的用户信息
      * @return 返回是否修改成功
      */
-    public boolean updateByUserName(InfoUser user);
+    public void updateByUserName(InfoUser user);
 
     /**
      * 根据用户登录名进行用户的删除，一般情况下是不允许用户删除的，该接口只能最高级管理员进行调用

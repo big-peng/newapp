@@ -45,8 +45,8 @@ public class InfoUserService{
      * @param infoUser 用户修改之后的信息，其中要保证用户的登录名是不变的，因为我们需要根据用户登录名主键进行修改
      * @return 修改成功则返回字符串修改成功，某一项不符合要求则返回具体哪一项不符合要求
      */
-    public String updateInfoUser(InfoUser infoUser){
-        return null;
+    public void updateInfoUser(InfoUser infoUser){
+        infoUserDao.updateByUserName(infoUser);
     }
 
     /**
