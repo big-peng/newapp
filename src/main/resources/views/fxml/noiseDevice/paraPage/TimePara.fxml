@@ -1,14 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="views.fxml.noiseDevice.paraPage.NoisePara"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="205.0" prefWidth="273.0" style="-fx-padding: 2 0 0 2" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox spacing="10">
+        <HBox spacing="10">
+            <Label text="区域名:" />
+            <TextField prefWidth="217" />
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 28;">
+            <HBox spacing="10">
+                <Label text="X:" />
+                <TextField prefWidth="80" />
+            </HBox>
+            <HBox spacing="10">
+                <Label text="宽度:" />
+                <TextField prefWidth="80" />
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 28;">
+            <HBox spacing="10">
+                <Label text="Y:" />
+                <TextField prefWidth="80" />
+            </HBox>
+            <HBox spacing="10">
+                <Label text="高度:" />
+                <TextField prefWidth="80" />
+            </HBox>
+        </HBox>
+        <Separator prefWidth="200.0" />
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="字体:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>宋体</Label>
+                            <Label>微软雅黑</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="字号:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>16</Label>
+                            <Label>17</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="颜色:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="间距:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="横向:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="纵向:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="速度:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="停留:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="排版:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="左移:" />
+                <ComboBox prefWidth="80">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
+            <HBox spacing="10">
+                <Label text="风格:" />
+                <ComboBox prefWidth="217">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Label>0</Label>
+                            <Label>1</Label>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+        </HBox>
+    </VBox>
 </AnchorPane>

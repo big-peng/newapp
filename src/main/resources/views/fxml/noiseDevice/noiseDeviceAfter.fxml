@@ -19,6 +19,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ProgressBar?>
 <?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.layout.BorderPane?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0"
             xmlns="http://javafx.com/javafx/8.0.121">
     <children>
@@ -580,17 +581,13 @@
                                             <JFXButton prefWidth="65" text="噪声"/>
                                         </VBox>
                                             <JFXListView fx:id="sideList" prefHeight="200.0" prefWidth="130.0">
-                                                <Label fx:id="button">Buttons</Label>
-                                                <Label fx:id="checkbox">Check Box</Label>
-                                                <Label fx:id="combobox">Combo Box</Label>
-                                                <Label fx:id="dialogs">Dialogs &amp; Alert</Label>
+                                                <Label fx:id="button">文本</Label>
+                                                <Label fx:id="checkbox">字幕</Label>
+                                                <Label fx:id="combobox">时间</Label>
                                             </JFXListView>
                                         <ScrollPane style="-fx-background-color: white;-fx-border-color: #949494"
-                                                    prefHeight="200.0" prefWidth="300.0">
-                                            <VBox style="-fx-padding: 10 0 0 10" spacing="10">
-                                                <JFXButton text="放大"/>
-                                                <JFXButton text="缩小"/>
-                                            </VBox>
+                                                    prefHeight="200.0" prefWidth="300.0" >
+                                            <AnchorPane fx:id="editPara"></AnchorPane>
                                         </ScrollPane>
                                     </HBox>
                                 </VBox>
