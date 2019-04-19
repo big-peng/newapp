@@ -55,6 +55,9 @@ public class InfoUserService{
      * @return 返回是否删除成功
      */
     public boolean deleteByUserName(String userName){
+        if(infoUserDao.deleteByUserName(userName)){
+            return true;
+        }
         return false;
     }
 
@@ -100,5 +103,20 @@ public class InfoUserService{
      * */
     public InfoUser queryByUserName(String userName){
         return infoUserDao.queryByUserName(userName);
+    }
+
+    /**
+     * 模糊查询，根据用户名称或者姓名或者电话号码查询用户
+     * */
+    public InfoUser queryUserByNameOrPhone(String userName,String nickName,String phone){
+        InfoUser infoUser = infoUserDao.queryUserByNameOrPhone(userName,nickName,phone);
+        return infoUser;
+    }
+
+    /**
+     * 修改密码
+     * */
+    public void updatePassword(String userType,String password){
+        infoUserDao.updatePassword(userType,password);
     }
 }
