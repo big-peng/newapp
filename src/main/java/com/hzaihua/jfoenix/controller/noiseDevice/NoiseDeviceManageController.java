@@ -1,37 +1,47 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
+import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @ViewController(value = "/views/fxml/noiseDevice/noiseDeviceAfter.fxml")
 public class NoiseDeviceManageController {
-    @FXML private AnchorPane editPara;
-    @FXML private JFXListView<Label> sideList;
-    @FXML private JFXButton subTitleButton;
-    @FXML private JFXButton timeButton;
-    @FXML private JFXButton noiseButton;
+    @FXML
+    private AnchorPane editPara;
+    @FXML
+    private JFXListView<Label> sideList;
+    @FXML
+    private JFXButton textButton;
+    @FXML
+    private JFXButton subTitleButton;
+    @FXML
+    private JFXButton timeButton;
+    @FXML
+    private JFXButton noiseButton;
+    @FXML
+    private VBox previewWindow;
     private ObservableList<Label> programList = FXCollections.observableArrayList();
-    private Map<String,BasicPara> programParaList = new HashMap<String,BasicPara>();
+    private Map<String, BasicPara> programParaList = new HashMap<String, BasicPara>();
+
     @PostConstruct
-    public void init(){
+    public void init() {
         /*FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("/views/fxml/noiseDevice/noiseDeviceAfter.fxml"));
         FXMLLoader loaderChange = new FXMLLoader(getClass().getResource("/views/fxml/noiseDevice/paraPage/NoisePara.fxml"));
         //loaderChange.setController(new NoiseDeviceManageController());
@@ -42,34 +52,69 @@ public class NoiseDeviceManageController {
         }catch (Exception e){
             e.printStackTrace();
         }*/
-        subTitleButton.setOnAction(event -> {
-            String programName = "字幕"+((programList.size()==0)?"":programList.size());
+        Label label1 = new Label("123");
+
+        double sceneWidth = 200;
+        double msgWidth = label1.getLayoutBounds().getWidth();
+
+        KeyValue initKeyValue = new KeyValue(label1.translateXProperty(), -20);
+        KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
+
+        KeyValue endKeyValue = new KeyValue(label1.translateXProperty(), 200);
+        KeyFrame endFrame = new KeyFrame(Duration.seconds(3), endKeyValue);
+
+        Timeline timeline = new Timeline(initFrame, endFrame);
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+        previewWindow.getChildren().add(label1);
+        textButton.setOnAction(event -> {
+            String programName = "文本" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            programParaList.put(programName,new SubTitlePara());
-            subTitleParaPage();
+            TextPara textPara = new TextPara();
+            textPara.setProgramName(programName);
+            programParaList.put(programName, textPara);
+            textParaPage(textPara);
+            sideList.getSelectionModel().select(programList.size() - 1);
+        });
+        subTitleButton.setOnAction(event -> {
+            String programName = "字幕" + ((programList.size() == 0) ? "" : programList.size());
+            Label label = new Label(programName);
+            programList.add(label);
+            sideList.setItems(programList);
+            editPara.getChildren().clear();
+            SubTitlePara subTitlePara = new SubTitlePara();
+            subTitlePara.setProgramName(programName);
+            programParaList.put(programName, subTitlePara);
+            subTitleParaPage(subTitlePara);
+            sideList.getSelectionModel().select(programList.size() - 1);
         });
         timeButton.setOnAction(event -> {
-            String programName = "时间"+((programList.size()==0)?"":programList.size());
+            String programName = "时间" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            programParaList.put(programName,new TimePara());
-            timeParaPage();
+            TimePara timePara = new TimePara();
+            timePara.setProgramName(programName);
+            programParaList.put(programName, timePara);
+            timeParaPage(timePara);
+            sideList.getSelectionModel().select(programList.size() - 1);
         });
         noiseButton.setOnAction(event -> {
-            String programName = "噪声"+((programList.size()==0)?"":programList.size());
+            String programName = "噪声" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
             NoisePara noisePara = new NoisePara();
             noisePara.setProgramName(programName);
-            programParaList.put(programName,noisePara);
+            programParaList.put(programName, noisePara);
             noiseParaPage(noisePara);
+            sideList.getSelectionModel().select(programList.size() - 1);
         });
     }
 
@@ -77,26 +122,29 @@ public class NoiseDeviceManageController {
     private void changePage() {
         editPara.getChildren().clear();
         String typeMark = sideList.getSelectionModel().getSelectedItem().getText();
-        System.out.println(typeMark);
+        //System.out.println(typeMark);
         if (typeMark.contains("噪声")) {
-            noiseParaPage((NoisePara)programParaList.get(typeMark));
-        }else if(typeMark.contains("时间")){
-            timeParaPage();
-        }else if(typeMark.contains("字幕")){
-            subTitleParaPage();
+            noiseParaPage((NoisePara) programParaList.get(typeMark));
+        } else if (typeMark.contains("时间")) {
+            timeParaPage((TimePara) programParaList.get(typeMark));
+        } else if (typeMark.contains("字幕")) {
+            subTitleParaPage((SubTitlePara) programParaList.get(typeMark));
+        } else if (typeMark.contains("文本")) {
+            textParaPage((TextPara) programParaList.get(typeMark));
         }
     }
 
-    public void noiseParaPage(NoisePara noisePara){
+    public void textParaPage(TextPara textPara) {
         HBox hBox1 = new HBox(10);
 
         Label label1_1 = new Label("区域名:");
         TextField textField1_1 = new TextField();
-        textField1_1.setPrefWidth(217);
-        textField1_1.setText(noisePara.getProgramName());
+        textField1_1.setPrefWidth(267);
+        textField1_1.setText(textPara.getProgramName());
+        textField1_1.setDisable(true);
 
-        hBox1.getChildren().add(0,label1_1);
-        hBox1.getChildren().add(1,textField1_1);
+        hBox1.getChildren().add(0, label1_1);
+        hBox1.getChildren().add(1, textField1_1);
 
 
         HBox hBox2 = new HBox(20);
@@ -106,22 +154,22 @@ public class NoiseDeviceManageController {
 
         Label label2_1_1 = new Label("X:");
         TextField textField2_1_1 = new TextField();
-        textField2_1_1.setPrefWidth(80);
-        textField2_1_1.setText(noisePara.getX());
+        textField2_1_1.setPrefWidth(105);
+        textField2_1_1.setText(textPara.getX());
 
-        hBox2_1.getChildren().add(0,label2_1_1);
-        hBox2_1.getChildren().add(1,textField2_1_1);
+        hBox2_1.getChildren().add(0, label2_1_1);
+        hBox2_1.getChildren().add(1, textField2_1_1);
 
         HBox hBox2_2 = new HBox(10);
 
         Label label2_2_1 = new Label("宽度:");
         TextField textField2_2_1 = new TextField();
-        textField2_2_1.setPrefWidth(80);
-        textField2_2_1.setText(noisePara.getWidth());
+        textField2_2_1.setPrefWidth(105);
+        textField2_2_1.setText(textPara.getWidth());
 
-        hBox2_2.getChildren().add(0,label2_2_1);
-        hBox2_2.getChildren().add(1,textField2_2_1);
-        hBox2.getChildren().addAll(hBox2_1,hBox2_2);
+        hBox2_2.getChildren().add(0, label2_2_1);
+        hBox2_2.getChildren().add(1, textField2_2_1);
+        hBox2.getChildren().addAll(hBox2_1, hBox2_2);
 
 
         HBox hBox3 = new HBox(20);
@@ -131,7 +179,140 @@ public class NoiseDeviceManageController {
 
         Label label3_1_1 = new Label("Y:");
         TextField textField3_1_1 = new TextField();
-        textField3_1_1.setPrefWidth(80);
+        textField3_1_1.setPrefWidth(105);
+        textField3_1_1.setText(textPara.getY());
+
+        hBox3_1.getChildren().add(label3_1_1);
+        hBox3_1.getChildren().add(textField3_1_1);
+
+        HBox hBox3_2 = new HBox(10);
+
+        Label label3_2_1 = new Label("高度:");
+        TextField textField3_2_1 = new TextField();
+        textField3_2_1.setPrefWidth(105);
+        textField3_2_1.setText(textPara.getHeight());
+
+        hBox3_2.getChildren().add(label3_2_1);
+        hBox3_2.getChildren().add(textField3_2_1);
+        hBox3.getChildren().addAll(hBox3_1, hBox3_2);
+
+
+        Separator separator = new Separator();
+        separator.setPrefWidth(250);
+
+
+        HBox hBox4 = new HBox(20);
+        hBox4.setStyle("-fx-padding: 0 0 0 12;");
+
+        HBox hBox4_1 = new HBox(10);
+
+        Label label4_1_1 = new Label("字体:");
+        ComboBox<String> comboBox4_1_1 = new ComboBox<String>(FXCollections.observableArrayList("宋体", "微软雅黑"));
+        comboBox4_1_1.setPrefWidth(105);
+        comboBox4_1_1.setPromptText("选择");
+        //System.out.println(noisePara.getFontType());
+        comboBox4_1_1.getSelectionModel().select(textPara.getFontType());
+
+        hBox4_1.getChildren().add(label4_1_1);
+        hBox4_1.getChildren().add(comboBox4_1_1);
+
+        HBox hBox4_2 = new HBox(10);
+
+        Label label4_2_1 = new Label("字号:");
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox4_2_1.setPrefWidth(105);
+        comboBox4_2_1.getSelectionModel().select(textPara.getFontSize());
+
+        hBox4_2.getChildren().add(label4_2_1);
+        hBox4_2.getChildren().add(comboBox4_2_1);
+        hBox4.getChildren().addAll(hBox4_1, hBox4_2);
+
+
+        HBox hBox5 = new HBox(20);
+        hBox5.setStyle("-fx-padding: 0 0 0 12;");
+
+        HBox hBox5_1 = new HBox(10);
+
+        Label label5_1_1 = new Label("颜色:");
+        ComboBox<String> comboBox5_1_1 = new ComboBox<String>(FXCollections.observableArrayList("绿色", "红色"));
+        comboBox5_1_1.setPrefWidth(105);
+        comboBox5_1_1.setPromptText("选择");
+        //System.out.println(noisePara.getFontType());
+        ColorPicker colorPicker1 = new ColorPicker();
+        comboBox5_1_1.getSelectionModel().select(textPara.getColor());
+
+        hBox5_1.getChildren().add(label5_1_1);
+        hBox5_1.getChildren().add(comboBox5_1_1);
+
+        HBox hBox5_2 = new HBox(10);
+
+        Label label5_2_1 = new Label("间距:");
+        ComboBox<String> comboBox5_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox5_2_1.setPrefWidth(105);
+        comboBox5_2_1.getSelectionModel().select(textPara.getSpacing());
+
+        hBox5_2.getChildren().add(label5_2_1);
+        hBox5_2.getChildren().add(comboBox5_2_1);
+        hBox5.getChildren().addAll(hBox5_1, hBox5_2);
+
+
+        VBox vBox = new VBox(10);
+        JFXButton button = new JFXButton("预览");
+        button.setOnAction(event -> {
+            TextPara textPara1 = new TextPara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_2_1.getValue(), comboBox5_1_1.getValue());
+            //System.out.println(comboBox4_1_1.getValue());
+            programParaList.put(textField1_1.getText(), textPara1);
+        });
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, button);
+        editPara.getChildren().add(vBox);
+    }
+
+    public void noiseParaPage(NoisePara noisePara) {
+        HBox hBox1 = new HBox(10);
+
+        Label label1_1 = new Label("区域名:");
+        TextField textField1_1 = new TextField();
+        textField1_1.setPrefWidth(267);
+        textField1_1.setText(noisePara.getProgramName());
+        textField1_1.setDisable(true);
+
+        hBox1.getChildren().add(0, label1_1);
+        hBox1.getChildren().add(1, textField1_1);
+
+
+        HBox hBox2 = new HBox(20);
+        hBox2.setStyle("-fx-padding: 0 0 0 28;");
+
+        HBox hBox2_1 = new HBox(10);
+
+        Label label2_1_1 = new Label("X:");
+        TextField textField2_1_1 = new TextField();
+        textField2_1_1.setPrefWidth(105);
+        textField2_1_1.setText(noisePara.getX());
+
+        hBox2_1.getChildren().add(0, label2_1_1);
+        hBox2_1.getChildren().add(1, textField2_1_1);
+
+        HBox hBox2_2 = new HBox(10);
+
+        Label label2_2_1 = new Label("宽度:");
+        TextField textField2_2_1 = new TextField();
+        textField2_2_1.setPrefWidth(105);
+        textField2_2_1.setText(noisePara.getWidth());
+
+        hBox2_2.getChildren().add(0, label2_2_1);
+        hBox2_2.getChildren().add(1, textField2_2_1);
+        hBox2.getChildren().addAll(hBox2_1, hBox2_2);
+
+
+        HBox hBox3 = new HBox(20);
+        hBox3.setStyle("-fx-padding: 0 0 0 28;");
+
+        HBox hBox3_1 = new HBox(10);
+
+        Label label3_1_1 = new Label("Y:");
+        TextField textField3_1_1 = new TextField();
+        textField3_1_1.setPrefWidth(105);
         textField3_1_1.setText(noisePara.getY());
 
         hBox3_1.getChildren().add(label3_1_1);
@@ -141,16 +322,16 @@ public class NoiseDeviceManageController {
 
         Label label3_2_1 = new Label("高度:");
         TextField textField3_2_1 = new TextField();
-        textField3_2_1.setPrefWidth(80);
+        textField3_2_1.setPrefWidth(105);
         textField3_2_1.setText(noisePara.getHeight());
 
         hBox3_2.getChildren().add(label3_2_1);
         hBox3_2.getChildren().add(textField3_2_1);
-        hBox3.getChildren().addAll(hBox3_1,hBox3_2);
+        hBox3.getChildren().addAll(hBox3_1, hBox3_2);
 
 
         Separator separator = new Separator();
-        separator.setPrefWidth(200);
+        separator.setPrefWidth(250);
 
 
         HBox hBox4 = new HBox(20);
@@ -159,8 +340,11 @@ public class NoiseDeviceManageController {
         HBox hBox4_1 = new HBox(10);
 
         Label label4_1_1 = new Label("字体:");
-        ComboBox<Label> comboBox4_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("宋体"),new Label("微软雅黑")));
-        comboBox4_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_1_1 = new ComboBox<String>(FXCollections.observableArrayList("微软雅黑","宋体"));
+        comboBox4_1_1.setPrefWidth(105);
+        comboBox4_1_1.setPromptText("选择");
+        //System.out.println(noisePara.getFontType());
+        comboBox4_1_1.getSelectionModel().select(noisePara.getFontType());
 
         hBox4_1.getChildren().add(label4_1_1);
         hBox4_1.getChildren().add(comboBox4_1_1);
@@ -168,22 +352,24 @@ public class NoiseDeviceManageController {
         HBox hBox4_2 = new HBox(10);
 
         Label label4_2_1 = new Label("字号:");
-        ComboBox<Label> comboBox4_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("16"),new Label("17")));
-        comboBox4_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox4_2_1.setPrefWidth(105);
+        comboBox4_2_1.getSelectionModel().select(noisePara.getFontSize());
 
         hBox4_2.getChildren().add(label4_2_1);
         hBox4_2.getChildren().add(comboBox4_2_1);
-        hBox4.getChildren().addAll(hBox4_1,hBox4_2);
+        hBox4.getChildren().addAll(hBox4_1, hBox4_2);
 
 
         HBox hBox5 = new HBox(20);
-        hBox5.setStyle("-fx-padding: 0 0 0 149;");
+        hBox5.setStyle("-fx-padding: 0 0 0 174;");
 
         HBox hBox5_1 = new HBox(10);
 
         Label label5_1_1 = new Label("间距:");
-        ComboBox<Label> comboBox5_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("1")));
-        comboBox5_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox5_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "1"));
+        comboBox5_1_1.setPrefWidth(105);
+        comboBox5_1_1.getSelectionModel().select(noisePara.getSpacing());
 
         hBox5_1.getChildren().add(label5_1_1);
         hBox5_1.getChildren().add(comboBox5_1_1);
@@ -195,8 +381,9 @@ public class NoiseDeviceManageController {
         HBox hBox6_1 = new HBox(10);
 
         Label label6_1_1 = new Label("达标颜色:");
-        ComboBox<Label> comboBox6_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("1")));
-        comboBox6_1_1.setPrefWidth(69);
+        ComboBox<String> comboBox6_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0","1"));
+        comboBox6_1_1.setPrefWidth(94);
+        comboBox6_1_1.getSelectionModel().select(noisePara.getTrueColor());
 
         hBox6_1.getChildren().add(label6_1_1);
         hBox6_1.getChildren().add(comboBox6_1_1);
@@ -204,34 +391,37 @@ public class NoiseDeviceManageController {
         HBox hBox6_2 = new HBox(10);
 
         Label label6_2_1 = new Label("超标颜色:");
-        ComboBox<Label> comboBox6_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("16"),new Label("17")));
-        comboBox6_2_1.setPrefWidth(56);
+        ComboBox<String> comboBox6_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox6_2_1.setPrefWidth(81);
+        comboBox6_2_1.getSelectionModel().select(noisePara.getFalseColor());
 
         hBox6_2.getChildren().add(label6_2_1);
         hBox6_2.getChildren().add(comboBox6_2_1);
-        hBox6.getChildren().addAll(hBox6_1,hBox6_2);
+        hBox6.getChildren().addAll(hBox6_1, hBox6_2);
 
 
         VBox vBox = new VBox(10);
         JFXButton button = new JFXButton("预览");
         button.setOnAction(event -> {
-            NoisePara noisePara1 = new NoisePara(textField1_1.getText(),textField2_1_1.getText(),textField3_1_1.getText(),textField2_2_1.getText(),textField3_2_1.getText(),"","","","","");
-            System.out.println(noisePara1.getProgramName());
-            programParaList.put(textField1_1.getText(),noisePara1);
+            NoisePara noisePara1 = new NoisePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue());
+            //System.out.println(comboBox4_1_1.getValue());
+            programParaList.put(textField1_1.getText(), noisePara1);
         });
-        vBox.getChildren().addAll(hBox1,hBox2,hBox3,separator,hBox4,hBox5,hBox6,button);
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, button);
         editPara.getChildren().add(vBox);
     }
 
-    public void subTitleParaPage(){
+    public void subTitleParaPage(SubTitlePara subTitlePara) {
         HBox hBox1 = new HBox(10);
 
         Label label1_1 = new Label("区域名:");
         TextField textField1_1 = new TextField();
-        textField1_1.setPrefWidth(217);
+        textField1_1.setPrefWidth(267);
+        textField1_1.setText(subTitlePara.getProgramName());
+        textField1_1.setDisable(true);
 
-        hBox1.getChildren().add(0,label1_1);
-        hBox1.getChildren().add(1,textField1_1);
+        hBox1.getChildren().add(0, label1_1);
+        hBox1.getChildren().add(1, textField1_1);
 
 
         HBox hBox2 = new HBox(20);
@@ -241,20 +431,22 @@ public class NoiseDeviceManageController {
 
         Label label2_1_1 = new Label("X:");
         TextField textField2_1_1 = new TextField();
-        textField2_1_1.setPrefWidth(80);
+        textField2_1_1.setPrefWidth(105);
+        textField2_1_1.setText(subTitlePara.getX());
 
-        hBox2_1.getChildren().add(0,label2_1_1);
-        hBox2_1.getChildren().add(1,textField2_1_1);
+        hBox2_1.getChildren().add(0, label2_1_1);
+        hBox2_1.getChildren().add(1, textField2_1_1);
 
         HBox hBox2_2 = new HBox(10);
 
         Label label2_2_1 = new Label("宽度:");
         TextField textField2_2_1 = new TextField();
-        textField2_2_1.setPrefWidth(80);
+        textField2_2_1.setPrefWidth(105);
+        textField2_2_1.setText(subTitlePara.getWidth());
 
-        hBox2_2.getChildren().add(0,label2_2_1);
-        hBox2_2.getChildren().add(1,textField2_2_1);
-        hBox2.getChildren().addAll(hBox2_1,hBox2_2);
+        hBox2_2.getChildren().add(0, label2_2_1);
+        hBox2_2.getChildren().add(1, textField2_2_1);
+        hBox2.getChildren().addAll(hBox2_1, hBox2_2);
 
 
         HBox hBox3 = new HBox(20);
@@ -264,7 +456,8 @@ public class NoiseDeviceManageController {
 
         Label label3_1_1 = new Label("Y:");
         TextField textField3_1_1 = new TextField();
-        textField3_1_1.setPrefWidth(80);
+        textField3_1_1.setPrefWidth(105);
+        textField3_1_1.setText(subTitlePara.getY());
 
         hBox3_1.getChildren().add(label3_1_1);
         hBox3_1.getChildren().add(textField3_1_1);
@@ -273,15 +466,16 @@ public class NoiseDeviceManageController {
 
         Label label3_2_1 = new Label("高度:");
         TextField textField3_2_1 = new TextField();
-        textField3_2_1.setPrefWidth(80);
+        textField3_2_1.setPrefWidth(105);
+        textField3_2_1.setText(subTitlePara.getHeight());
 
         hBox3_2.getChildren().add(label3_2_1);
         hBox3_2.getChildren().add(textField3_2_1);
-        hBox3.getChildren().addAll(hBox3_1,hBox3_2);
+        hBox3.getChildren().addAll(hBox3_1, hBox3_2);
 
 
         Separator separator = new Separator();
-        separator.setPrefWidth(200);
+        separator.setPrefWidth(250);
 
 
         HBox hBox4 = new HBox(20);
@@ -290,8 +484,9 @@ public class NoiseDeviceManageController {
         HBox hBox4_1 = new HBox(10);
 
         Label label4_1_1 = new Label("字体:");
-        ComboBox<Label> comboBox4_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("宋体"),new Label("微软雅黑")));
-        comboBox4_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_1_1 = new ComboBox<String>(FXCollections.observableArrayList("宋体","微软雅黑"));
+        comboBox4_1_1.setPrefWidth(105);
+        comboBox4_1_1.getSelectionModel().select(subTitlePara.getFontType());
 
         hBox4_1.getChildren().add(label4_1_1);
         hBox4_1.getChildren().add(comboBox4_1_1);
@@ -299,12 +494,13 @@ public class NoiseDeviceManageController {
         HBox hBox4_2 = new HBox(10);
 
         Label label4_2_1 = new Label("字号:");
-        ComboBox<Label> comboBox4_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("16"),new Label("17")));
-        comboBox4_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox4_2_1.setPrefWidth(105);
+        comboBox4_2_1.getSelectionModel().select(subTitlePara.getFontSize());
 
         hBox4_2.getChildren().add(label4_2_1);
         hBox4_2.getChildren().add(comboBox4_2_1);
-        hBox4.getChildren().addAll(hBox4_1,hBox4_2);
+        hBox4.getChildren().addAll(hBox4_1, hBox4_2);
 
 
         HBox hBox5 = new HBox(20);
@@ -313,8 +509,9 @@ public class NoiseDeviceManageController {
         HBox hBox5_1 = new HBox(10);
 
         Label label5_1_1 = new Label("颜色:");
-        ComboBox<Label> comboBox5_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("红"),new Label("黑")));
-        comboBox5_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox5_1_1 = new ComboBox<String>(FXCollections.observableArrayList("红", "黑"));
+        comboBox5_1_1.setPrefWidth(105);
+        comboBox5_1_1.getSelectionModel().select(subTitlePara.getColor());
 
         hBox5_1.getChildren().add(label5_1_1);
         hBox5_1.getChildren().add(comboBox5_1_1);
@@ -322,12 +519,13 @@ public class NoiseDeviceManageController {
         HBox hBox5_2 = new HBox(10);
 
         Label label5_2_1 = new Label("间距:");
-        ComboBox<Label> comboBox5_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("1")));
-        comboBox5_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox5_2_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "1"));
+        comboBox5_2_1.setPrefWidth(105);
+        comboBox5_2_1.getSelectionModel().select(subTitlePara.getSpacing());
 
         hBox5_2.getChildren().add(label5_2_1);
         hBox5_2.getChildren().add(comboBox5_2_1);
-        hBox5.getChildren().addAll(hBox5_1,hBox5_2);
+        hBox5.getChildren().addAll(hBox5_1, hBox5_2);
 
 
         HBox hBox6 = new HBox(20);
@@ -336,8 +534,9 @@ public class NoiseDeviceManageController {
         HBox hBox6_1 = new HBox(10);
 
         Label label6_1_1 = new Label("横向:");
-        ComboBox<Label> comboBox6_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("2")));
-        comboBox6_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox6_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "2"));
+        comboBox6_1_1.setPrefWidth(105);
+        comboBox6_1_1.getSelectionModel().select(subTitlePara.getBroadwise());
 
         hBox6_1.getChildren().add(label6_1_1);
         hBox6_1.getChildren().add(comboBox6_1_1);
@@ -345,12 +544,13 @@ public class NoiseDeviceManageController {
         HBox hBox6_2 = new HBox(10);
 
         Label label6_2_1 = new Label("纵向:");
-        ComboBox<Label> comboBox6_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("5"),new Label("6")));
-        comboBox6_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox6_2_1 = new ComboBox<String>(FXCollections.observableArrayList("5", "6"));
+        comboBox6_2_1.setPrefWidth(105);
+        comboBox6_2_1.getSelectionModel().select(subTitlePara.getPortrait());
 
         hBox6_2.getChildren().add(label6_2_1);
         hBox6_2.getChildren().add(comboBox6_2_1);
-        hBox6.getChildren().addAll(hBox6_1,hBox6_2);
+        hBox6.getChildren().addAll(hBox6_1, hBox6_2);
 
 
         HBox hBox7 = new HBox(20);
@@ -359,8 +559,9 @@ public class NoiseDeviceManageController {
         HBox hBox7_1 = new HBox(10);
 
         Label label7_1_1 = new Label("速度:");
-        ComboBox<Label> comboBox7_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("1"),new Label("2")));
-        comboBox7_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox7_1_1 = new ComboBox<String>(FXCollections.observableArrayList("1", "2"));
+        comboBox7_1_1.setPrefWidth(105);
+        comboBox7_1_1.getSelectionModel().select(subTitlePara.getSpeed());
 
         hBox7_1.getChildren().add(label7_1_1);
         hBox7_1.getChildren().add(comboBox7_1_1);
@@ -368,12 +569,13 @@ public class NoiseDeviceManageController {
         HBox hBox7_2 = new HBox(10);
 
         Label label7_2_1 = new Label("停留:");
-        ComboBox<Label> comboBox7_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("3"),new Label("4")));
-        comboBox7_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox7_2_1 = new ComboBox<String>(FXCollections.observableArrayList("3", "4"));
+        comboBox7_2_1.setPrefWidth(105);
+        comboBox7_2_1.getSelectionModel().select(subTitlePara.getStay());
 
         hBox7_2.getChildren().add(label7_2_1);
         hBox7_2.getChildren().add(comboBox7_2_1);
-        hBox7.getChildren().addAll(hBox7_1,hBox7_2);
+        hBox7.getChildren().addAll(hBox7_1, hBox7_2);
 
 
         HBox hBox8 = new HBox(20);
@@ -382,8 +584,9 @@ public class NoiseDeviceManageController {
         HBox hBox8_1 = new HBox(10);
 
         Label label8_1_1 = new Label("排版:");
-        ComboBox<Label> comboBox8_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("2")));
-        comboBox8_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox8_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "2"));
+        comboBox8_1_1.setPrefWidth(105);
+        comboBox8_1_1.getSelectionModel().select(subTitlePara.getTypesetting());
 
         hBox8_1.getChildren().add(label8_1_1);
         hBox8_1.getChildren().add(comboBox8_1_1);
@@ -391,29 +594,36 @@ public class NoiseDeviceManageController {
         HBox hBox8_2 = new HBox(10);
 
         Label label8_2_1 = new Label("特技:");
-        ComboBox<Label> comboBox8_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("5"),new Label("6")));
-        comboBox8_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox8_2_1 = new ComboBox<String>(FXCollections.observableArrayList("5","6"));
+        comboBox8_2_1.setPrefWidth(105);
+        comboBox8_2_1.getSelectionModel().select(subTitlePara.getStunt());
 
         hBox8_2.getChildren().add(label8_2_1);
         hBox8_2.getChildren().add(comboBox8_2_1);
-        hBox8.getChildren().addAll(hBox8_1,hBox8_2);
+        hBox8.getChildren().addAll(hBox8_1, hBox8_2);
 
 
         VBox vBox = new VBox(10);
         JFXButton button = new JFXButton("预览");
-        vBox.getChildren().addAll(hBox1,hBox2,hBox3,separator,hBox4,hBox5,hBox6,hBox7,hBox8,button);
+        button.setOnAction(event -> {
+            SubTitlePara subTitlePara1 = new SubTitlePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox5_2_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue(), comboBox7_1_1.getValue(), comboBox7_2_1.getValue(), comboBox8_1_1.getValue(), comboBox8_2_1.getValue());
+            programParaList.put(textField1_1.getText(), subTitlePara1);
+        });
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, hBox7, hBox8, button);
         editPara.getChildren().add(vBox);
     }
 
-    public void timeParaPage(){
+    public void timeParaPage(TimePara timePara) {
         HBox hBox1 = new HBox(10);
 
         Label label1_1 = new Label("区域名:");
         TextField textField1_1 = new TextField();
-        textField1_1.setPrefWidth(217);
+        textField1_1.setPrefWidth(267);
+        textField1_1.setDisable(true);
+        textField1_1.setText(timePara.getProgramName());
 
-        hBox1.getChildren().add(0,label1_1);
-        hBox1.getChildren().add(1,textField1_1);
+        hBox1.getChildren().add(0, label1_1);
+        hBox1.getChildren().add(1, textField1_1);
 
 
         HBox hBox2 = new HBox(20);
@@ -423,20 +633,22 @@ public class NoiseDeviceManageController {
 
         Label label2_1_1 = new Label("X:");
         TextField textField2_1_1 = new TextField();
-        textField2_1_1.setPrefWidth(80);
+        textField2_1_1.setPrefWidth(105);
+        textField2_1_1.setText(timePara.getX());
 
-        hBox2_1.getChildren().add(0,label2_1_1);
-        hBox2_1.getChildren().add(1,textField2_1_1);
+        hBox2_1.getChildren().add(0, label2_1_1);
+        hBox2_1.getChildren().add(1, textField2_1_1);
 
         HBox hBox2_2 = new HBox(10);
 
         Label label2_2_1 = new Label("宽度:");
         TextField textField2_2_1 = new TextField();
-        textField2_2_1.setPrefWidth(80);
+        textField2_2_1.setPrefWidth(105);
+        textField2_2_1.setText(timePara.getWidth());
 
-        hBox2_2.getChildren().add(0,label2_2_1);
-        hBox2_2.getChildren().add(1,textField2_2_1);
-        hBox2.getChildren().addAll(hBox2_1,hBox2_2);
+        hBox2_2.getChildren().add(0, label2_2_1);
+        hBox2_2.getChildren().add(1, textField2_2_1);
+        hBox2.getChildren().addAll(hBox2_1, hBox2_2);
 
 
         HBox hBox3 = new HBox(20);
@@ -446,7 +658,8 @@ public class NoiseDeviceManageController {
 
         Label label3_1_1 = new Label("Y:");
         TextField textField3_1_1 = new TextField();
-        textField3_1_1.setPrefWidth(80);
+        textField3_1_1.setPrefWidth(105);
+        textField3_1_1.setText(timePara.getY());
 
         hBox3_1.getChildren().add(label3_1_1);
         hBox3_1.getChildren().add(textField3_1_1);
@@ -455,15 +668,16 @@ public class NoiseDeviceManageController {
 
         Label label3_2_1 = new Label("高度:");
         TextField textField3_2_1 = new TextField();
-        textField3_2_1.setPrefWidth(80);
+        textField3_2_1.setPrefWidth(105);
+        textField3_2_1.setText(timePara.getHeight());
 
         hBox3_2.getChildren().add(label3_2_1);
         hBox3_2.getChildren().add(textField3_2_1);
-        hBox3.getChildren().addAll(hBox3_1,hBox3_2);
+        hBox3.getChildren().addAll(hBox3_1, hBox3_2);
 
 
         Separator separator = new Separator();
-        separator.setPrefWidth(200);
+        separator.setPrefWidth(250);
 
 
         HBox hBox4 = new HBox(20);
@@ -472,8 +686,9 @@ public class NoiseDeviceManageController {
         HBox hBox4_1 = new HBox(10);
 
         Label label4_1_1 = new Label("字体:");
-        ComboBox<Label> comboBox4_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("宋体"),new Label("微软雅黑")));
-        comboBox4_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_1_1 = new ComboBox<String>(FXCollections.observableArrayList("宋体", "微软雅黑"));
+        comboBox4_1_1.setPrefWidth(105);
+        comboBox4_1_1.getSelectionModel().select(timePara.getFontType());
 
         hBox4_1.getChildren().add(label4_1_1);
         hBox4_1.getChildren().add(comboBox4_1_1);
@@ -481,12 +696,13 @@ public class NoiseDeviceManageController {
         HBox hBox4_2 = new HBox(10);
 
         Label label4_2_1 = new Label("字号:");
-        ComboBox<Label> comboBox4_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("16"),new Label("17")));
-        comboBox4_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        comboBox4_2_1.setPrefWidth(105);
+        comboBox4_2_1.getSelectionModel().select(timePara.getFontSize());
 
         hBox4_2.getChildren().add(label4_2_1);
         hBox4_2.getChildren().add(comboBox4_2_1);
-        hBox4.getChildren().addAll(hBox4_1,hBox4_2);
+        hBox4.getChildren().addAll(hBox4_1, hBox4_2);
 
 
         HBox hBox5 = new HBox(20);
@@ -495,8 +711,9 @@ public class NoiseDeviceManageController {
         HBox hBox5_1 = new HBox(10);
 
         Label label5_1_1 = new Label("颜色:");
-        ComboBox<Label> comboBox5_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("红"),new Label("黑")));
-        comboBox5_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox5_1_1 = new ComboBox<String>(FXCollections.observableArrayList("红", "黑"));
+        comboBox5_1_1.setPrefWidth(105);
+        comboBox5_1_1.getSelectionModel().select(timePara.getColor());
 
         hBox5_1.getChildren().add(label5_1_1);
         hBox5_1.getChildren().add(comboBox5_1_1);
@@ -504,12 +721,13 @@ public class NoiseDeviceManageController {
         HBox hBox5_2 = new HBox(10);
 
         Label label5_2_1 = new Label("间距:");
-        ComboBox<Label> comboBox5_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("1")));
-        comboBox5_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox5_2_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "1"));
+        comboBox5_2_1.setPrefWidth(105);
+        comboBox5_2_1.getSelectionModel().select(timePara.getSpacing());
 
         hBox5_2.getChildren().add(label5_2_1);
         hBox5_2.getChildren().add(comboBox5_2_1);
-        hBox5.getChildren().addAll(hBox5_1,hBox5_2);
+        hBox5.getChildren().addAll(hBox5_1, hBox5_2);
 
 
         HBox hBox6 = new HBox(20);
@@ -518,8 +736,9 @@ public class NoiseDeviceManageController {
         HBox hBox6_1 = new HBox(10);
 
         Label label6_1_1 = new Label("横向:");
-        ComboBox<Label> comboBox6_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("2")));
-        comboBox6_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox6_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "2"));
+        comboBox6_1_1.setPrefWidth(105);
+        comboBox6_1_1.getSelectionModel().select(timePara.getBroadwise());
 
         hBox6_1.getChildren().add(label6_1_1);
         hBox6_1.getChildren().add(comboBox6_1_1);
@@ -527,12 +746,13 @@ public class NoiseDeviceManageController {
         HBox hBox6_2 = new HBox(10);
 
         Label label6_2_1 = new Label("纵向:");
-        ComboBox<Label> comboBox6_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("5"),new Label("6")));
-        comboBox6_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox6_2_1 = new ComboBox<String>(FXCollections.observableArrayList("5","6"));
+        comboBox6_2_1.setPrefWidth(105);
+        comboBox6_2_1.getSelectionModel().select(timePara.getPortrait());
 
         hBox6_2.getChildren().add(label6_2_1);
         hBox6_2.getChildren().add(comboBox6_2_1);
-        hBox6.getChildren().addAll(hBox6_1,hBox6_2);
+        hBox6.getChildren().addAll(hBox6_1, hBox6_2);
 
 
         HBox hBox7 = new HBox(20);
@@ -541,8 +761,9 @@ public class NoiseDeviceManageController {
         HBox hBox7_1 = new HBox(10);
 
         Label label7_1_1 = new Label("速度:");
-        ComboBox<Label> comboBox7_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("1"),new Label("2")));
-        comboBox7_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox7_1_1 = new ComboBox<String>(FXCollections.observableArrayList("1", "2"));
+        comboBox7_1_1.setPrefWidth(105);
+        comboBox7_1_1.getSelectionModel().select(timePara.getSpeed());
 
         hBox7_1.getChildren().add(label7_1_1);
         hBox7_1.getChildren().add(comboBox7_1_1);
@@ -550,12 +771,13 @@ public class NoiseDeviceManageController {
         HBox hBox7_2 = new HBox(10);
 
         Label label7_2_1 = new Label("停留:");
-        ComboBox<Label> comboBox7_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("3"),new Label("4")));
-        comboBox7_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox7_2_1 = new ComboBox<String>(FXCollections.observableArrayList("3", "4"));
+        comboBox7_2_1.setPrefWidth(105);
+        comboBox7_2_1.getSelectionModel().select(timePara.getStay());
 
         hBox7_2.getChildren().add(label7_2_1);
         hBox7_2.getChildren().add(comboBox7_2_1);
-        hBox7.getChildren().addAll(hBox7_1,hBox7_2);
+        hBox7.getChildren().addAll(hBox7_1, hBox7_2);
 
 
         HBox hBox8 = new HBox(20);
@@ -564,8 +786,9 @@ public class NoiseDeviceManageController {
         HBox hBox8_1 = new HBox(10);
 
         Label label8_1_1 = new Label("排版:");
-        ComboBox<Label> comboBox8_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("0"),new Label("2")));
-        comboBox8_1_1.setPrefWidth(80);
+        ComboBox<String> comboBox8_1_1 = new ComboBox<String>(FXCollections.observableArrayList("0", "2"));
+        comboBox8_1_1.setPrefWidth(105);
+        comboBox8_1_1.getSelectionModel().select(timePara.getTypesetting());
 
         hBox8_1.getChildren().add(label8_1_1);
         hBox8_1.getChildren().add(comboBox8_1_1);
@@ -573,12 +796,13 @@ public class NoiseDeviceManageController {
         HBox hBox8_2 = new HBox(10);
 
         Label label8_2_1 = new Label("特技:");
-        ComboBox<Label> comboBox8_2_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("5"),new Label("6")));
-        comboBox8_2_1.setPrefWidth(80);
+        ComboBox<String> comboBox8_2_1 = new ComboBox<String>(FXCollections.observableArrayList("5", "6"));
+        comboBox8_2_1.setPrefWidth(105);
+        comboBox8_2_1.getSelectionModel().select(timePara.getStunt());
 
         hBox8_2.getChildren().add(label8_2_1);
         hBox8_2.getChildren().add(comboBox8_2_1);
-        hBox8.getChildren().addAll(hBox8_1,hBox8_2);
+        hBox8.getChildren().addAll(hBox8_1, hBox8_2);
 
 
         HBox hBox9 = new HBox(20);
@@ -587,8 +811,9 @@ public class NoiseDeviceManageController {
         HBox hBox9_1 = new HBox(10);
 
         Label label9_1_1 = new Label("风格:");
-        ComboBox<Label> comboBox9_1_1 = new ComboBox<Label>(FXCollections.observableArrayList(new Label("YYYY-MM-DD HH:mm:ss")));
-        comboBox9_1_1.setPrefWidth(217);
+        ComboBox<String> comboBox9_1_1 = new ComboBox<String>(FXCollections.observableArrayList("YYYY-MM-DD HH:mm:ss"));
+        comboBox9_1_1.setPrefWidth(267);
+        comboBox9_1_1.getSelectionModel().select(timePara.getTimeStyle());
 
         hBox9_1.getChildren().add(label9_1_1);
         hBox9_1.getChildren().add(comboBox9_1_1);
@@ -596,14 +821,19 @@ public class NoiseDeviceManageController {
 
         VBox vBox = new VBox(10);
         JFXButton button = new JFXButton("预览");
-        vBox.getChildren().addAll(hBox1,hBox2,hBox3,separator,hBox4,hBox5,hBox6,hBox7,hBox8,hBox9,button);
+        button.setOnAction(event -> {
+            TimePara timePara1 = new TimePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox5_2_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue(), comboBox7_1_1.getValue(), comboBox7_2_1.getValue(), comboBox8_1_1.getValue(), comboBox8_2_1.getValue(), comboBox9_1_1.getValue());
+            programParaList.put(textField1_1.getText(), timePara1);
+        });
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, hBox7, hBox8, hBox9, button);
         editPara.getChildren().add(vBox);
     }
 
-    public static class NoiseParaController{
+    public static class NoiseParaController {
 
     }
-    public class BasicPara{
+
+    public class BasicPara {
         private String programName;
         private String X;
         private String Y;
@@ -706,7 +936,7 @@ public class NoiseDeviceManageController {
         }
     }
 
-    public class NoisePara extends BasicPara{
+    public class NoisePara extends BasicPara {
         private String trueColor;
         private String falseColor;
 
@@ -726,8 +956,8 @@ public class NoiseDeviceManageController {
             this.falseColor = falseColor;
         }
 
-        public NoisePara(String programName,String X,String Y,String width,String height,String fontType,String fontSize,String spacing,String trueColor, String falseColor) {
-            super(programName,X,Y,width,height,fontType,fontSize,spacing);
+        public NoisePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String trueColor, String falseColor) {
+            super(programName, X, Y, width, height, fontType, fontSize, spacing);
             this.trueColor = trueColor;
             this.falseColor = falseColor;
         }
@@ -752,7 +982,7 @@ public class NoiseDeviceManageController {
         }
     }
 
-    public class SubTitlePara extends BasicPara{
+    public class SubTitlePara extends BasicPara {
         private String color;
         private String broadwise;//横向
         private String portrait;//纵向
@@ -817,8 +1047,8 @@ public class NoiseDeviceManageController {
             this.stunt = stunt;
         }
 
-        public SubTitlePara(String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt,String programName,String X,String Y,String width,String height,String fontType,String fontSize,String spacing) {
-            super(programName,X,Y,width,height,fontType,fontSize,spacing);
+        public SubTitlePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt) {
+            super(programName, X, Y, width, height, fontType, fontSize, spacing);
             this.color = color;
             this.broadwise = broadwise;
             this.portrait = portrait;
@@ -853,11 +1083,11 @@ public class NoiseDeviceManageController {
         }
     }
 
-    public class TimePara extends SubTitlePara{
+    public class TimePara extends SubTitlePara {
         private String timeStyle;
 
-        public TimePara(String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt, String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String timeStyle) {
-            super(color, broadwise, portrait, speed, stay, typesetting, stunt, programName, X, Y, width, height, fontType, fontSize, spacing);
+        public TimePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt, String timeStyle) {
+            super(programName, X, Y, width, height, fontType, fontSize, spacing, color, broadwise, portrait, speed, stay, typesetting, stunt);
             this.timeStyle = timeStyle;
         }
 
@@ -872,6 +1102,25 @@ public class NoiseDeviceManageController {
         public TimePara() {
         }
 
+    }
 
+    public class TextPara extends BasicPara {
+        private String color;
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
+        }
+
+        public TextPara(String programName, String x, String y, String width, String height, String fontType, String fontSize, String spacing, String color) {
+            super(programName, x, y, width, height, fontType, fontSize, spacing);
+            this.color = color;
+        }
+
+        public TextPara() {
+        }
     }
 }

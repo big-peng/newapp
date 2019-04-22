@@ -20,6 +20,7 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import java.lang.String?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0"
             xmlns="http://javafx.com/javafx/8.0.121">
     <children>
@@ -49,6 +50,9 @@
                                                       promptText="F" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                 <items>
                                                     <FXCollections fx:factory="observableArrayList">
+                                                        <String fx:value="12"></String>
+                                                        <String fx:value="123"></String>
+                                                        <String fx:value="1234"></String>
                                                     </FXCollections>
                                                 </items>
                                             </ComboBox>
@@ -563,9 +567,7 @@
                                     <HBox style="-fx-padding: 5 0 0 85">
                                         <ScrollPane style="-fx-background-color: white;-fx-border-color: #949494"
                                                     prefHeight="150.0" prefWidth="450.0">
-                                            <VBox style="-fx-padding: 10 0 0 10" spacing="10">
-                                                <JFXButton text="放大"/>
-                                                <JFXButton text="缩小"/>
+                                            <VBox fx:id="previewWindow" style="-fx-padding: 10 0 0 10" spacing="10">
                                             </VBox>
                                         </ScrollPane>
                                         <VBox style="-fx-padding: 10 0 0 10" spacing="10">
@@ -575,18 +577,15 @@
                                     </HBox>
                                     <HBox style="-fx-padding: 5 0 0 55" spacing="10">
                                         <VBox spacing="10" style="-fx-padding: 10 0 0 0">
-                                            <JFXButton prefWidth="65" text="静态文本"/>
+                                            <JFXButton fx:id="textButton" prefWidth="65" text="静态文本"/>
                                             <JFXButton fx:id="subTitleButton" prefWidth="65" text="动态字幕"/>
                                             <JFXButton fx:id="timeButton" prefWidth="65" text="时间"/>
                                             <JFXButton fx:id="noiseButton" prefWidth="65" text="噪声"/>
                                         </VBox>
-                                            <JFXListView fx:id="sideList" onMouseClicked="#changePage" prefHeight="200.0" prefWidth="130.0">
-                                                <Label styleClass="noise">噪声</Label>
-                                                <Label styleClass="subTitle">字幕</Label>
-                                                <Label styleClass="time">时间</Label>
+                                            <JFXListView fx:id="sideList" onMouseClicked="#changePage" prefHeight="200.0" prefWidth="80.0">
                                             </JFXListView>
                                         <ScrollPane style="-fx-background-color: white;-fx-border-color: #949494"
-                                                    prefHeight="200.0" prefWidth="300.0" >
+                                                    prefHeight="200.0" prefWidth="350.0" >
                                             <AnchorPane fx:id="editPara"></AnchorPane>
                                         </ScrollPane>
                                     </HBox>
