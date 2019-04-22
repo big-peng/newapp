@@ -1,12 +1,7 @@
 package com.hzaihua.jfoenix.controller.user;
 
-import com.hzaihua.jfoenix.controller.MainController;
-import com.hzaihua.jfoenix.controller.MoreInfoController;
 import com.hzaihua.jfoenix.entity.InfoUser;
-import com.hzaihua.jfoenix.load.User.AddDownUserLoad;
-import com.hzaihua.jfoenix.load.User.FindDownUserLoad;
-import com.hzaihua.jfoenix.load.User.EditPasswordLoad;
-import com.hzaihua.jfoenix.load.User.EditUserLoad;
+import com.hzaihua.jfoenix.load.User.*;
 import com.hzaihua.jfoenix.service.InfoUserService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.*;
@@ -16,7 +11,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableRow;
@@ -24,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -51,7 +44,7 @@ public class UserInfoController {
     @FXML
     private JFXButton addDownUser;
     //删除数据的编号
-    private static String deleteUserName;
+    static String deleteUserName;
     //查询到的全部数据
     static ObservableList<InfoUser> downUserList = null;
     @FXML
@@ -68,6 +61,8 @@ public class UserInfoController {
     @FXML
     //刷新列表
     private JFXButton renovate;
+    @FXML
+    private JFXButton editDownUser;
 
     private int id;
     //表格中需要呈现的数据
@@ -136,6 +131,10 @@ public class UserInfoController {
             downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
             downUserTreeTableView.setShowRoot(false);
         });
+        //编辑下级用户操作
+        editDownUser.setOnAction(event -> {
+            EditDownUserLoad editDownUserLoad = new EditDownUserLoad();
+        });
 
         //下级用户表格
         downUserTableView();
@@ -155,7 +154,7 @@ public class UserInfoController {
             alert.setOverlayClose(false);
             JFXDialogLayout layout = new JFXDialogLayout();
             layout.setHeading(new Label("提示！"));
-            layout.setBody(new Label("你确定要删除测点"+id+"吗？\n" +
+            layout.setBody(new Label("你确定要删除用户"+deleteUserName+"吗？\n" +
                     "删除后将无法恢复"));
             JFXButton trueButton = new JFXButton("确认");
             JFXButton closeButton = new JFXButton("取消");

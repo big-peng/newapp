@@ -5,6 +5,12 @@
     <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
         select * from Info_Measure
     </select>
+    <!--查询所有未分配测点-->
+    <select id="queryAllUndisMeasure" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
+        select measureCode,measureName
+        from Info_Measure
+        where userName is null
+    </select>
     <select id="queryDevicesByMeasureCode" resultType="string">
         select deviceTypeAndIDs from Info_Measure where measureCode=#{measureCode}
     </select>
