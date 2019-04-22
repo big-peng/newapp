@@ -145,17 +145,17 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         this.headFileName = new SimpleStringProperty(headFileName);
     }
 
-    public InfoUser(StringProperty userName, StringProperty password, StringProperty nickName, StringProperty userType, StringProperty parentUser, StringProperty phone, StringProperty occupation, StringProperty company, StringProperty status, StringProperty headFileName) {
-        this.userName = userName;
-        this.password = password;
-        this.nickName = nickName;
-        this.userType = userType;
-        this.parentUser = parentUser;
-        this.phone = phone;
-        this.occupation = occupation;
-        this.company = company;
-        this.status = status;
-        this.headFileName = headFileName;
+    public InfoUser(String userName, String password, String nickName, String userType, String parentUser, String phone, String occupation, String company, String status, String headFileName) {
+        this.userName = new SimpleStringProperty(userName);
+        this.password = new SimpleStringProperty(password);
+        this.nickName = new SimpleStringProperty(nickName);
+        this.userType = new SimpleStringProperty(userType);
+        this.parentUser = new SimpleStringProperty(parentUser);
+        this.phone = new SimpleStringProperty(phone);
+        this.occupation = new SimpleStringProperty(occupation);
+        this.company = new SimpleStringProperty(company);
+        this.status = new SimpleStringProperty(status);
+        this.headFileName = new SimpleStringProperty(headFileName);
     }
 
     public String getStatus() {
