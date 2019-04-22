@@ -1,23 +1,20 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
 import javafx.animation.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,9 +33,10 @@ public class NoiseDeviceManageController {
     @FXML
     private JFXButton noiseButton;
     @FXML
-    private VBox previewWindow;
+    private AnchorPane previewWindow;
+    private int y = 0;
     private ObservableList<Label> programList = FXCollections.observableArrayList();
-    private Map<String, BasicPara> programParaList = new HashMap<String, BasicPara>();
+    private Map<String, BasicPara> programParaMap = new HashMap<String, BasicPara>();
 
     @PostConstruct
     public void init() {
@@ -52,14 +50,17 @@ public class NoiseDeviceManageController {
         }catch (Exception e){
             e.printStackTrace();
         }*/
-        Label label1 = new Label("123");
+        /*Label label1 = new Label("哈哈哈");
+        label1.setStyle("-fx-padding: 5;-fx-font-family: KaiTi;-fx-font-size: 22.5;");
 
         double sceneWidth = 200;
         double msgWidth = label1.getLayoutBounds().getWidth();
 
-        KeyValue initKeyValue = new KeyValue(label1.translateXProperty(), -20);
+        //动画开始的位置
+        KeyValue initKeyValue = new KeyValue(label1.translateXProperty(), -100);
         KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
 
+        //动画结束的位置
         KeyValue endKeyValue = new KeyValue(label1.translateXProperty(), 200);
         KeyFrame endFrame = new KeyFrame(Duration.seconds(3), endKeyValue);
 
@@ -67,18 +68,24 @@ public class NoiseDeviceManageController {
 
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-        previewWindow.getChildren().add(label1);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(label1);
+        scrollPane.setPrefSize(100,40);
+        scrollPane.setStyle("-fx-border-color: #949494");
+        previewWindow.getChildren().add(scrollPane);*/
         textButton.setOnAction(event -> {
             String programName = "文本" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            TextPara textPara = new TextPara();
+            TextPara textPara = new TextPara(programName,"0",y+"","200","40","宋体","16","0","红色","文本");
             textPara.setProgramName(programName);
-            programParaList.put(programName, textPara);
+            programParaMap.put(programName, textPara);
             textParaPage(textPara);
             sideList.getSelectionModel().select(programList.size() - 1);
+            y+=40;
+            preview();
         });
         subTitleButton.setOnAction(event -> {
             String programName = "字幕" + ((programList.size() == 0) ? "" : programList.size());
@@ -86,11 +93,12 @@ public class NoiseDeviceManageController {
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            SubTitlePara subTitlePara = new SubTitlePara();
-            subTitlePara.setProgramName(programName);
-            programParaList.put(programName, subTitlePara);
+            SubTitlePara subTitlePara = new SubTitlePara(programName,"0",y+"","200","40","宋体","16","0","红色","0","0","1","3","0","5","爱护环境，人人有责");
+            programParaMap.put(programName, subTitlePara);
             subTitleParaPage(subTitlePara);
             sideList.getSelectionModel().select(programList.size() - 1);
+            y+=40;
+            preview();
         });
         timeButton.setOnAction(event -> {
             String programName = "时间" + ((programList.size() == 0) ? "" : programList.size());
@@ -98,11 +106,12 @@ public class NoiseDeviceManageController {
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            TimePara timePara = new TimePara();
-            timePara.setProgramName(programName);
-            programParaList.put(programName, timePara);
+            TimePara timePara = new TimePara(programName,"0",y+"","200","40","宋体","16","0","红色","0","0","1","3","0","5","yyyy-MM-dd HH:mm:ss");
+            programParaMap.put(programName, timePara);
             timeParaPage(timePara);
             sideList.getSelectionModel().select(programList.size() - 1);
+            y+=40;
+            preview();
         });
         noiseButton.setOnAction(event -> {
             String programName = "噪声" + ((programList.size() == 0) ? "" : programList.size());
@@ -110,11 +119,12 @@ public class NoiseDeviceManageController {
             programList.add(label);
             sideList.setItems(programList);
             editPara.getChildren().clear();
-            NoisePara noisePara = new NoisePara();
-            noisePara.setProgramName(programName);
-            programParaList.put(programName, noisePara);
+            NoisePara noisePara = new NoisePara(programName,"0",y+"","200","40","宋体","16","0","红色","红色");
+            programParaMap.put(programName, noisePara);
             noiseParaPage(noisePara);
             sideList.getSelectionModel().select(programList.size() - 1);
+            y+=40;
+            preview();
         });
     }
 
@@ -124,13 +134,76 @@ public class NoiseDeviceManageController {
         String typeMark = sideList.getSelectionModel().getSelectedItem().getText();
         //System.out.println(typeMark);
         if (typeMark.contains("噪声")) {
-            noiseParaPage((NoisePara) programParaList.get(typeMark));
+            noiseParaPage((NoisePara) programParaMap.get(typeMark));
         } else if (typeMark.contains("时间")) {
-            timeParaPage((TimePara) programParaList.get(typeMark));
+            timeParaPage((TimePara) programParaMap.get(typeMark));
         } else if (typeMark.contains("字幕")) {
-            subTitleParaPage((SubTitlePara) programParaList.get(typeMark));
+            subTitleParaPage((SubTitlePara) programParaMap.get(typeMark));
         } else if (typeMark.contains("文本")) {
-            textParaPage((TextPara) programParaList.get(typeMark));
+            textParaPage((TextPara) programParaMap.get(typeMark));
+        }
+    }
+
+    public void preview(){
+        previewWindow.getChildren().clear();
+        for (BasicPara basicPara:programParaMap.values()){
+            Label label1 = null;
+            if (basicPara instanceof NoisePara){
+                NoisePara noisePara = (NoisePara)basicPara;
+                label1 = new Label("56.7");
+
+            }else if(basicPara instanceof TimePara){
+                TimePara timePara = (TimePara)basicPara;
+
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat(timePara.getTimeStyle());
+                String nowDate = sdf.format(date);
+
+                label1 = new Label(nowDate);
+
+                //动画开始的位置
+                KeyValue initKeyValue = new KeyValue(label1.translateXProperty(), nowDate.length()*10+Integer.valueOf(timePara.getWidth())-50);
+                KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
+
+                //动画结束的位置
+                KeyValue endKeyValue = new KeyValue(label1.translateXProperty(), nowDate.length()*-10-10);
+                KeyFrame endFrame = new KeyFrame(Duration.seconds(10-Integer.valueOf(timePara.getSpeed())), endKeyValue);
+
+                Timeline timeline = new Timeline(initFrame, endFrame);
+
+                timeline.setCycleCount(Timeline.INDEFINITE);
+                timeline.play();
+            }else if(basicPara instanceof SubTitlePara){
+                SubTitlePara subTitlePara = (SubTitlePara)basicPara;
+
+                label1 = new Label(subTitlePara.getContent());
+
+                //动画开始的位置
+                KeyValue initKeyValue = new KeyValue(label1.translateXProperty(), subTitlePara.getContent().length()*10+Integer.valueOf(subTitlePara.getWidth())-50);
+                KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
+
+                //动画结束的位置
+                KeyValue endKeyValue = new KeyValue(label1.translateXProperty(), subTitlePara.getContent().length()*-12-10);
+                KeyFrame endFrame = new KeyFrame(Duration.seconds(10-Integer.valueOf(subTitlePara.getSpeed())), endKeyValue);
+
+                Timeline timeline = new Timeline(initFrame, endFrame);
+
+                timeline.setCycleCount(Timeline.INDEFINITE);
+                timeline.play();
+            }else if(basicPara instanceof TextPara){
+                TextPara textPara = (TextPara)basicPara;
+                label1 = new Label(textPara.getContent());
+            }
+            label1.setStyle("-fx-font-family: STSong;-fx-font-size: "+basicPara.getFontSize()+";");
+            label1.setAlignment(Pos.CENTER);
+            label1.setPrefSize(Integer.valueOf(basicPara.getWidth())-4,Integer.valueOf(basicPara.getHeight())-4);
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setContent(label1);
+            scrollPane.setPrefSize(Integer.valueOf(basicPara.getWidth()),Integer.valueOf(basicPara.getHeight()));
+            scrollPane.setLayoutX(Integer.valueOf(basicPara.getX()));
+            scrollPane.setLayoutY(Integer.valueOf(basicPara.getY()));
+            scrollPane.setStyle("-fx-border-color: #949494;");
+            previewWindow.getChildren().add(scrollPane);
         }
     }
 
@@ -219,7 +292,7 @@ public class NoiseDeviceManageController {
         HBox hBox4_2 = new HBox(10);
 
         Label label4_2_1 = new Label("字号:");
-        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("13","14","15","16", "17", "18", "19", "20"));
         comboBox4_2_1.setPrefWidth(105);
         comboBox4_2_1.getSelectionModel().select(textPara.getFontSize());
 
@@ -255,15 +328,17 @@ public class NoiseDeviceManageController {
         hBox5_2.getChildren().add(comboBox5_2_1);
         hBox5.getChildren().addAll(hBox5_1, hBox5_2);
 
-
+        TextField textField6 = new TextField();
+        textField6.setText(textPara.getContent());
         VBox vBox = new VBox(10);
         JFXButton button = new JFXButton("预览");
         button.setOnAction(event -> {
-            TextPara textPara1 = new TextPara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_2_1.getValue(), comboBox5_1_1.getValue());
+            TextPara textPara1 = new TextPara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_2_1.getValue(), comboBox5_1_1.getValue(),textField6.getText());
             //System.out.println(comboBox4_1_1.getValue());
-            programParaList.put(textField1_1.getText(), textPara1);
+            programParaMap.put(textField1_1.getText(), textPara1);
+            preview();
         });
-        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, button);
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5,textField6, button);
         editPara.getChildren().add(vBox);
     }
 
@@ -352,7 +427,7 @@ public class NoiseDeviceManageController {
         HBox hBox4_2 = new HBox(10);
 
         Label label4_2_1 = new Label("字号:");
-        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("16", "17"));
+        ComboBox<String> comboBox4_2_1 = new ComboBox<String>(FXCollections.observableArrayList("13","14","15","16", "17", "18", "19", "20"));
         comboBox4_2_1.setPrefWidth(105);
         comboBox4_2_1.getSelectionModel().select(noisePara.getFontSize());
 
@@ -405,7 +480,8 @@ public class NoiseDeviceManageController {
         button.setOnAction(event -> {
             NoisePara noisePara1 = new NoisePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue());
             //System.out.println(comboBox4_1_1.getValue());
-            programParaList.put(textField1_1.getText(), noisePara1);
+            programParaMap.put(textField1_1.getText(), noisePara1);
+            preview();
         });
         vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, button);
         editPara.getChildren().add(vBox);
@@ -603,13 +679,16 @@ public class NoiseDeviceManageController {
         hBox8.getChildren().addAll(hBox8_1, hBox8_2);
 
 
+        TextField textField9 = new TextField();
+        textField9.setText(subTitlePara.getContent());
         VBox vBox = new VBox(10);
         JFXButton button = new JFXButton("预览");
         button.setOnAction(event -> {
-            SubTitlePara subTitlePara1 = new SubTitlePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox5_2_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue(), comboBox7_1_1.getValue(), comboBox7_2_1.getValue(), comboBox8_1_1.getValue(), comboBox8_2_1.getValue());
-            programParaList.put(textField1_1.getText(), subTitlePara1);
+            SubTitlePara subTitlePara1 = new SubTitlePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox5_2_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue(), comboBox7_1_1.getValue(), comboBox7_2_1.getValue(), comboBox8_1_1.getValue(), comboBox8_2_1.getValue(),textField9.getText());
+            programParaMap.put(textField1_1.getText(), subTitlePara1);
+            preview();
         });
-        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, hBox7, hBox8, button);
+        vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, hBox7, hBox8, textField9,button);
         editPara.getChildren().add(vBox);
     }
 
@@ -811,7 +890,7 @@ public class NoiseDeviceManageController {
         HBox hBox9_1 = new HBox(10);
 
         Label label9_1_1 = new Label("风格:");
-        ComboBox<String> comboBox9_1_1 = new ComboBox<String>(FXCollections.observableArrayList("YYYY-MM-DD HH:mm:ss"));
+        ComboBox<String> comboBox9_1_1 = new ComboBox<String>(FXCollections.observableArrayList("yyyy-MM-dd HH:mm:ss"));
         comboBox9_1_1.setPrefWidth(267);
         comboBox9_1_1.getSelectionModel().select(timePara.getTimeStyle());
 
@@ -823,7 +902,8 @@ public class NoiseDeviceManageController {
         JFXButton button = new JFXButton("预览");
         button.setOnAction(event -> {
             TimePara timePara1 = new TimePara(textField1_1.getText(), textField2_1_1.getText(), textField3_1_1.getText(), textField2_2_1.getText(), textField3_2_1.getText(), comboBox4_1_1.getValue(), comboBox4_2_1.getValue(), comboBox5_1_1.getValue(), comboBox5_2_1.getValue(), comboBox6_1_1.getValue(), comboBox6_2_1.getValue(), comboBox7_1_1.getValue(), comboBox7_2_1.getValue(), comboBox8_1_1.getValue(), comboBox8_2_1.getValue(), comboBox9_1_1.getValue());
-            programParaList.put(textField1_1.getText(), timePara1);
+            programParaMap.put(textField1_1.getText(), timePara1);
+            preview();
         });
         vBox.getChildren().addAll(hBox1, hBox2, hBox3, separator, hBox4, hBox5, hBox6, hBox7, hBox8, hBox9, button);
         editPara.getChildren().add(vBox);
@@ -990,6 +1070,15 @@ public class NoiseDeviceManageController {
         private String stay;
         private String typesetting;//排版
         private String stunt;//特技
+        private String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
 
         public String getColor() {
             return color;
@@ -1047,7 +1136,7 @@ public class NoiseDeviceManageController {
             this.stunt = stunt;
         }
 
-        public SubTitlePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt) {
+        public SubTitlePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt,String content) {
             super(programName, X, Y, width, height, fontType, fontSize, spacing);
             this.color = color;
             this.broadwise = broadwise;
@@ -1056,6 +1145,7 @@ public class NoiseDeviceManageController {
             this.stay = stay;
             this.typesetting = typesetting;
             this.stunt = stunt;
+            this.content = content;
         }
 
         public SubTitlePara() {
@@ -1079,6 +1169,7 @@ public class NoiseDeviceManageController {
                     ", stay='" + stay + '\'' +
                     ", typesetting='" + typesetting + '\'' +
                     ", stunt='" + stunt + '\'' +
+                    ", content='" + content + '\'' +
                     '}';
         }
     }
@@ -1087,7 +1178,7 @@ public class NoiseDeviceManageController {
         private String timeStyle;
 
         public TimePara(String programName, String X, String Y, String width, String height, String fontType, String fontSize, String spacing, String color, String broadwise, String portrait, String speed, String stay, String typesetting, String stunt, String timeStyle) {
-            super(programName, X, Y, width, height, fontType, fontSize, spacing, color, broadwise, portrait, speed, stay, typesetting, stunt);
+            super(programName, X, Y, width, height, fontType, fontSize, spacing, color, broadwise, portrait, speed, stay, typesetting, stunt,"");
             this.timeStyle = timeStyle;
         }
 
@@ -1106,6 +1197,15 @@ public class NoiseDeviceManageController {
 
     public class TextPara extends BasicPara {
         private String color;
+        private String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
 
         public String getColor() {
             return color;
@@ -1115,9 +1215,10 @@ public class NoiseDeviceManageController {
             this.color = color;
         }
 
-        public TextPara(String programName, String x, String y, String width, String height, String fontType, String fontSize, String spacing, String color) {
+        public TextPara(String programName, String x, String y, String width, String height, String fontType, String fontSize, String spacing, String color,String content) {
             super(programName, x, y, width, height, fontType, fontSize, spacing);
             this.color = color;
+            this.content = content;
         }
 
         public TextPara() {

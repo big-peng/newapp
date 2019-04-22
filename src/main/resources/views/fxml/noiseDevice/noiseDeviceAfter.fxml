@@ -567,8 +567,8 @@
                                     <HBox style="-fx-padding: 5 0 0 85">
                                         <ScrollPane style="-fx-background-color: white;-fx-border-color: #949494"
                                                     prefHeight="150.0" prefWidth="450.0">
-                                            <VBox fx:id="previewWindow" style="-fx-padding: 10 0 0 10" spacing="10">
-                                            </VBox>
+                                            <AnchorPane fx:id="previewWindow" style="-fx-padding: 10 0 0 10">
+                                            </AnchorPane>
                                         </ScrollPane>
                                         <VBox style="-fx-padding: 10 0 0 10" spacing="10">
                                             <JFXButton text="放大"/>
@@ -581,6 +581,7 @@
                                             <JFXButton fx:id="subTitleButton" prefWidth="65" text="动态字幕"/>
                                             <JFXButton fx:id="timeButton" prefWidth="65" text="时间"/>
                                             <JFXButton fx:id="noiseButton" prefWidth="65" text="噪声"/>
+                                            <JFXButton fx:id="deleteButton" prefWidth="65" text="删除节目"/>
                                         </VBox>
                                             <JFXListView fx:id="sideList" onMouseClicked="#changePage" prefHeight="200.0" prefWidth="80.0">
                                             </JFXListView>
