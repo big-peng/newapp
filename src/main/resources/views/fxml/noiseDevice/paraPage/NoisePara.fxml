@@ -8,36 +8,38 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="320.0" prefWidth="446.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.Separator?>
+<fx:root type="javafx.scene.layout.AnchorPane" style="-fx-padding: 2 0 0 2" prefHeight="205.0" prefWidth="273.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <VBox spacing="10">
         <HBox spacing="10">
-            <Label text="区域名" />
-            <TextField />
+            <Label text="区域名:" />
+            <TextField prefWidth="217" />
         </HBox>
         <HBox spacing="20" style="-fx-padding: 0 0 0 28;">
             <HBox spacing="10">
-                <Label text="X" />
-                <TextField />
+                <Label text="X:" />
+                <TextField prefWidth="80" />
             </HBox>
             <HBox spacing="10">
-                <Label text="宽度" />
-                <TextField />
+                <Label text="宽度:" />
+                <TextField prefWidth="80" />
             </HBox>
         </HBox>
         <HBox spacing="20" style="-fx-padding: 0 0 0 28;">
             <HBox spacing="10">
-                <Label text="Y" />
-                <TextField />
+                <Label text="Y:" />
+                <TextField prefWidth="80" />
             </HBox>
             <HBox spacing="10">
-                <Label text="高度" />
-                <TextField />
+                <Label text="高度:" />
+                <TextField prefWidth="80" />
             </HBox>
         </HBox>
-        <HBox spacing="20" style="-fx-padding: 20 0 0 28;">
+        <Separator prefWidth="200.0" />
+        <HBox spacing="20" style="-fx-padding: 0 0 0 12;">
             <HBox spacing="10">
-                <Label text="字体" />
-                <ComboBox>
+                <Label text="字体:" />
+                <ComboBox prefWidth="80">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Label>宋体</Label>
@@ -47,8 +49,8 @@
                 </ComboBox>
             </HBox>
             <HBox spacing="10">
-                <Label text="字号" />
-                <ComboBox>
+                <Label text="字号:" />
+                <ComboBox prefWidth="80">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Label>16</Label>
@@ -58,10 +60,10 @@
                 </ComboBox>
             </HBox>
         </HBox>
-        <HBox spacing="20" style="-fx-padding: 20 0 0 176;">
+        <HBox spacing="20" style="-fx-padding: 0 0 0 149;">
             <HBox spacing="10">
-                <Label text="间距" />
-                <ComboBox>
+                <Label text="间距:" />
+                <ComboBox prefWidth="80">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Label>0</Label>
@@ -71,10 +73,10 @@
                 </ComboBox>
             </HBox>
         </HBox>
-        <HBox spacing="20" style="-fx-padding: 20 0 0 28;">
+        <HBox spacing="19">
             <HBox spacing="10">
-                <Label text="达标颜色" />
-                <ComboBox>
+                <Label text="达标颜色:" />
+                <ComboBox prefWidth="69">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Label>0</Label>
@@ -83,11 +85,9 @@
                     </items>
                 </ComboBox>
             </HBox>
-        </HBox>
-        <HBox spacing="20" style="-fx-padding: 20 0 0 28;">
             <HBox spacing="10">
-                <Label text="超标颜色" />
-                <ComboBox>
+                <Label text="超标颜色:" />
+                <ComboBox prefWidth="56">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                             <Label>0</Label>
@@ -98,4 +98,4 @@
             </HBox>
         </HBox>
     </VBox>
-</AnchorPane>
+</fx:root>
