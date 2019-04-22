@@ -63,7 +63,7 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
 
     public void setUserType(String userType) {
         if(userType.equals("0")) {
-            this.userType = new SimpleStringProperty("一般用户");
+            this.userType = new SimpleStringProperty("一般标准用户");
         }
         if(userType.equals("1")) {
             this.userType = new SimpleStringProperty("运维");
@@ -73,6 +73,15 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         }
         if(userType.equals("3")) {
             this.userType = new SimpleStringProperty("超级管理员");
+        }
+        if("一般标准用户".equals(userType)){
+            this.userType = new SimpleStringProperty("0");
+        }
+        if("运维".equals(userType)){
+            this.userType = new SimpleStringProperty("1");
+        }
+        if("管理员".equals(userType)){
+            this.userType = new SimpleStringProperty("2");
         }
     }
 
@@ -159,6 +168,12 @@ public class InfoUser extends RecursiveTreeObject<InfoUser> {
         }
         if(status.equals("1")){
             this.status = new SimpleStringProperty("在线");
+        }
+        if("离线".equals(status)){
+            this.status = new SimpleStringProperty("0");
+        }
+        if("在线".equals(status)){
+            this.status = new SimpleStringProperty("1");
         }
     }
 

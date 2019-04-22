@@ -8,8 +8,7 @@
     </select>
     <!-- 添加 -->
     <insert id="insertUser" parameterType="com.hzaihua.jfoenix.entity.InfoUser">
-        insert into Info_User values(#{userName},#{password},#{nickName},#{userType},
-        #{parentUser},#{phone},#{occupation},#{company},#{headFileName})
+        insert into Info_User values(#{userName},#{password},#{nickName},#{userType},#{parentUser},#{phone},#{occupation},#{company},#{headFileName},#{status})
     </insert>
     <!-- 修改属性 -->
     <update id="updateByUserName" parameterType="com.hzaihua.jfoenix.entity.InfoUser">

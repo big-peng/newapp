@@ -85,8 +85,8 @@ public class InfoUserService{
      * @param infoUser 新增的用户信息对象
      * @return 新增成功则返回字符串新增成功，某一项不符合要求则返回具体哪一项不符合要求
      */
-    public String addInfoUser(InfoUser infoUser){
-        return null;
+    public void addInfoUser(InfoUser infoUser){
+        infoUserDao.insertUser(infoUser);
     }
 
     /**

@@ -49,8 +49,6 @@ public class EditUserPasswordController {
             }else if("".equals(newWord) || "".equals(oldWord)){
                 actiontarget.setText("新密码不能为空");
             }else if(!(newWord.matches(check))){
-                System.out.println(newWord);
-                System.out.println(newWord.matches(check));
                 actiontarget.setText("新密码长度不正确");
             }else if(!(PswMD5.EncoderByMD5(newWord).equals(PswMD5.EncoderByMD5(againWord)))){
                 actiontarget.setText("两次输入的密码不相同，请确认");

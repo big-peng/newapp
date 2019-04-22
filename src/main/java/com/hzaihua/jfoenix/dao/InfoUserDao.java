@@ -46,7 +46,7 @@ public interface InfoUserDao {
      * @param user 新的用户信息，需要该对象中的用户登录名为唯一
      * @return 返回是否插入成功
      */
-    public boolean insertUser(InfoUser user);
+    public void insertUser(InfoUser user);
 
     /**
     * 模糊查询，根据用户名称或者姓名或者电话号码查询用户

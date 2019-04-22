@@ -1,6 +1,8 @@
 package com.hzaihua.jfoenix.entity;
 
-public class InfoMeasure {
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+
+public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
     private String measureCode;//测点的编号，固定测点采用HJ-661编号，非固定点位使用设备编号，级联服务器使用级联服务器编号
     private String UserName;//管理该测点的用户登录名，需要与用户信息表主键建立约束
     private int measureType;//测点的类型，0为固定点位，1为移动点位，2为级联服务器
