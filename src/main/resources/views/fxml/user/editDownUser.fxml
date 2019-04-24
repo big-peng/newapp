@@ -29,14 +29,12 @@
                         <Label GridPane.columnIndex="0" GridPane.rowIndex="2" text=""/>
                         <Label GridPane.columnIndex="1" GridPane.rowIndex="2" text=""/>
                         <Label prefHeight="60.0" text="测      点:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="3" prefHeight="100">
-                            <TreeTableView fx:id="treeTableView" prefWidth="90" prefHeight="100">
-                                <columns>
-                                    <JFXTreeTableColumn fx:id="measureCode" prefWidth="100.0" text="测点编号"/>
-                                    <JFXTreeTableColumn fx:id="measureName" prefWidth="109.0" text="测点名称"/>
-                                </columns>
-                            </TreeTableView>
-                        </VBox>
+                        <TableView fx:id="editUserTreeTableView" prefWidth="90" prefHeight="150" GridPane.columnIndex="1" GridPane.rowIndex="3" >
+                            <columns>
+                                <TableColumn fx:id="measureCode" prefWidth="100.0" text="测点编号"/>
+                                <TableColumn fx:id="measureName" prefWidth="109.0" text="测点名称"/>
+                            </columns>
+                        </TableView>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="4" layoutX="50" layoutY="100">
                             <padding><Insets left="140.0" top="5.0"/></padding>
                             <JFXButton fx:id="undistributeMeasure" text="分配测点" style="-fx-font-size: 13;-fx-background-color: blue;"/>
@@ -44,7 +42,7 @@
                     </children>
                 </GridPane>
                 <HBox style="-fx-padding: 20 0 0 230;-fx-font-size: 14">
-                    <JFXButton fx:id="comitEditDownUser" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+                    <JFXButton fx:id="commitEditDownUser" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
                 </HBox>
             </VBox>
         </center>

@@ -58,4 +58,9 @@ public interface InfoMeasureDao {
      * @return 返回是否删除成功
      */
     public boolean deleteInfoMeasure(String measureCode);
+
+    /**
+     * 根据测点ID分配测点，修改测点用户属性
+     * */
+    public void updateMeasureUserName(InfoMeasure infoMeasure);
 }

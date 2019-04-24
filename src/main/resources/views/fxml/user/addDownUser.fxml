@@ -19,6 +19,8 @@
 <?import javafx.scene.text.Text?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import java.lang.String?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx" prefHeight="700.0" prefWidth="520.0">
     <BorderPane>
         <center>
@@ -60,14 +62,12 @@
                         <ImageView fx:id="headFileName" fitHeight="100" fitWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
                         <JFXButton fx:id="fileChoose" GridPane.columnIndex="2" GridPane.rowIndex="10" style="-fx-font-size: 13;-fx-background-color: pink" text="选择照片" />
                         <Label prefHeight="60.0" text="测      点:" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
-                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="11" prefHeight="100" prefWidth="70">
-                            <JFXTreeTableView fx:id="downDeviceTreeTableView" prefWidth="100" prefHeight="100">
+                            <TableView fx:id="downDeviceTreeTableView" prefWidth="100" prefHeight="200" GridPane.columnIndex="1" GridPane.rowIndex="11">
                                 <columns>
-                                    <JFXTreeTableColumn fx:id="measureCode" prefWidth="100.0" text="测点编号"/>
-                                    <JFXTreeTableColumn fx:id="measureName" prefWidth="109.0" text="测点名称"/>
+                                    <TableColumn fx:id="measureCode" prefWidth="100.0" text="测点编号"/>
+                                    <TableColumn fx:id="measureName" prefWidth="109.0" text="测点名称"/>
                                 </columns>
-                            </JFXTreeTableView>
-                        </VBox>
+                            </TableView>
                         <HBox GridPane.columnIndex="1" GridPane.rowIndex="12" layoutX="50" layoutY="100">
                             <padding><Insets left="140.0" top="5.0"/></padding>
                             <JFXButton fx:id="distributeMeasure" text="分配测点" style="-fx-font-size: 13;-fx-background-color: blue;"/>
@@ -77,7 +77,7 @@
                 </GridPane>
                 <Label style="-fx-padding: 20 0 0 155">提示：*为必填项</Label>
                 <HBox style="-fx-padding: 20 0 0 230;-fx-font-size: 14">
-                    <JFXButton fx:id="comitAddDownUser" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+                    <JFXButton fx:id="commitAddDownUser" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
                 </HBox>
             </VBox>
         </center>

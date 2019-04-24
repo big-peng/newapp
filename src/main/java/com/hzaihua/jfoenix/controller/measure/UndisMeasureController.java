@@ -23,14 +23,14 @@ import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/views/fxml/measure/undistributeMeasure.fxml")
-public class UndistributeMeasureController {
+@ViewController(value = "/views/fxml/measure/undisMeasure.fxml")
+public class UndisMeasureController {
     @FXML
     //分配测点提交按钮
     private JFXButton commitDistributeMeasure;
     @FXML
     //未分配测点表格
-    private TableView<InfoMeasure> undistributeMeasureTreeView;
+    private TableView<InfoMeasure> undisMeasureTreeView;
     @FXML
     //测点编号
     private TableColumn measureCode;
@@ -50,10 +50,7 @@ public class UndistributeMeasureController {
         undistributeMeasureTreeView();
         commitDistributeMeasure.setOnAction(event -> {
             Stage stage = (Stage)commitDistributeMeasure.getScene().getWindow();
-            EditDownUserController.editUserTreeTableView.setItems(EditDownUserController.undisList);
-            for (InfoMeasure infoMeasure : EditDownUserController.undisList) {
-                System.out.println(infoMeasure);
-            }
+            AddDownUserController.downDeviceTreeTableView.setItems(AddDownUserController.undistriList);
             stage.close();
         });
     }
@@ -77,9 +74,9 @@ public class UndistributeMeasureController {
                         checkBox.selectedProperty().addListener((obVal, oldVal, newVal) -> {
                             if (newVal) {
                                 System.out.println("第" + this.getIndex() + "行被选中！");
-                                EditDownUserController.undisList.add(undistributeMeatrueList.get(this.getIndex()));
+                                AddDownUserController.undistriList.add(undistributeMeatrueList.get(this.getIndex()));
                             }else {
-                                EditDownUserController.undisList.remove(undistributeMeatrueList.get(this.getIndex()));
+                                AddDownUserController.undistriList.remove(undistributeMeatrueList.get(this.getIndex()));
                             }
                         });
                     }
@@ -87,6 +84,6 @@ public class UndistributeMeasureController {
             };
             return cell;
         });
-        undistributeMeasureTreeView.setItems(infoMeasureService.queryUndistributeMeasure());
+        undisMeasureTreeView.setItems(infoMeasureService.queryUndistributeMeasure());
     }
 }

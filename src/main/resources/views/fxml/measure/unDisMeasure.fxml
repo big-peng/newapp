@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
+            prefHeight="500.0" prefWidth="600.0">
+    <VBox >
+        <HBox prefHeight="450">
+            <padding>
+                <Insets bottom="20.0" left="120.0" top="50.0"/>
+            </padding>
+            <ScrollPane prefHeight="200" prefWidth="352">
+                <TableView fx:id="undisMeasureTreeView">
+                    <columns>
+                        <TableColumn fx:id="measureCheck" prefWidth="50" text="请选择"/>
+                        <TableColumn fx:id="measureCode" minWidth="142" text="测点编号"/>
+                        <TableColumn fx:id="measureName" minWidth="142" text="设备名称"/>
+                    </columns>
+                </TableView>
+            </ScrollPane>
+        </HBox>
+        <HBox style="-fx-padding: 0 0 30 270;-fx-font-size: 14">
+            <JFXButton fx:id="commitDistributeMeasure" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
