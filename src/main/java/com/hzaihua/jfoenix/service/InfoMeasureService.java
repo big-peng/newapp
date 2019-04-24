@@ -23,4 +23,18 @@ public class InfoMeasureService {
         result.setAll(infoMeasureDao.queryAllUndisMeasure());
         return result;
     }
+
+    /**
+     * 根据measureCode查询需要修改的测点属性
+     * */
+    public InfoMeasure queryByMeasureCode(String measureCode){
+        return infoMeasureDao.queryByMeasureCode(measureCode);
+    }
+
+    /**
+     * 修改所属用户名称属性
+     * */
+    public void updateMeasureUser(InfoMeasure infoMeasure){
+        infoMeasureDao.updateMeasureUserName(infoMeasure);
+    }
 }

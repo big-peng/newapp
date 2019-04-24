@@ -1,20 +1,26 @@
 package com.hzaihua.jfoenix.controller.user;
 
+import com.hzaihua.jfoenix.controller.measure.UndistributeMeasureController;
 import com.hzaihua.jfoenix.entity.InfoMeasure;
 import com.hzaihua.jfoenix.entity.InfoUser;
 import com.hzaihua.jfoenix.load.User.AddDownUserLoad;
+import com.hzaihua.jfoenix.load.measure.UndisMeasureLoad;
 import com.hzaihua.jfoenix.load.measure.UndistributeMeasureLoad;
+import com.hzaihua.jfoenix.service.InfoMeasureService;
 import com.hzaihua.jfoenix.service.InfoUserService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.hzaihua.jfoenix.util.PswMD5;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import io.datafx.controller.ViewController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -29,7 +35,7 @@ import java.util.List;
 public class AddDownUserController {
     //提交添加按钮
     @FXML
-    private JFXButton comitAddDownUser;
+    private JFXButton commitAddDownUser;
     //分配测点按钮
     @FXML
     private JFXButton distributeMeasure;
@@ -60,12 +66,13 @@ public class AddDownUserController {
     private ComboBox<String> downUserType;
     //分配测点列表
     @FXML
-    private JFXTreeTableView<InfoMeasure> downDeviceTreeTableView;
+    public static TableView<InfoMeasure> downDeviceTreeTableView;
     //列表中的属性
     @FXML
-    private JFXTreeTableColumn measureCode;
+    private TableColumn measureCode;
     @FXML
-    private JFXTreeTableColumn measureName;
+    private TableColumn measureName;
+    public static ObservableList<InfoMeasure> undistriList = FXCollections.observableArrayList();
     //提示框
     @FXML
     private Text actiontarget;
@@ -75,6 +82,7 @@ public class AddDownUserController {
     @PostConstruct
     public void init(){
         InfoUserService infoUserService = BeanFactoryUtil.getApplicationContext().getBean(InfoUserService.class);
+        InfoMeasureService infoMeasureService = BeanFactoryUtil.getApplicationContext().getBean(InfoMeasureService.class);
         fileChoose.setOnAction(event -> {
             FileChooser fileChooser=new FileChooser();
             File file = fileChooser.showOpenDialog(new Stage());
@@ -92,6 +100,7 @@ public class AddDownUserController {
             }
         });
 
+        undisMeatrueList();
 
         //必须输入项判断
         username.focusedProperty().addListener((ob,old,now)->{
@@ -107,10 +116,11 @@ public class AddDownUserController {
             }
         });
         distributeMeasure.setOnAction(event -> {
-            UndistributeMeasureLoad undistributeMeasureLoad = new UndistributeMeasureLoad();
+            undistriList.clear();
+            UndisMeasureLoad undisMeasureLoad = new UndisMeasureLoad();
         });
-        comitAddDownUser.setOnAction(event -> {
-            Stage stage = (Stage)comitAddDownUser.getScene().getWindow();
+        commitAddDownUser.setOnAction(event -> {
+            Stage stage = (Stage)commitAddDownUser.getScene().getWindow();
             String addUserName = username.getText();
             String addPassword = password.getText();
             String addAgainPassword = againPassword.getText();
@@ -141,6 +151,13 @@ public class AddDownUserController {
             }else if(addPhone.matches(reg) && !(addPhone.matches(rege))){
                 actiontarget.setText("电话号码格式不正确");
             }else {
+                //修改测点所属用户
+                for (InfoMeasure measure : undistriList) {
+                    InfoMeasure infoMeasure = infoMeasureService.queryByMeasureCode(measure.getMeasureCode());
+                    infoMeasure.setMeasureUserName(addUserName);
+                    infoMeasureService.updateMeasureUser(infoMeasure);
+                }
+                //添加用户
                 InfoUser infoUser = new InfoUser();
                 infoUser.setUserName(addUserName);
                 infoUser.setPassword(addPassword);
@@ -157,5 +174,9 @@ public class AddDownUserController {
             }
         });
 
+    }
+    private void undisMeatrueList(){
+        measureCode.setCellValueFactory(new PropertyValueFactory<>("measureCode"));
+        measureName.setCellValueFactory(new PropertyValueFactory<>("measureName"));
     }
 }
