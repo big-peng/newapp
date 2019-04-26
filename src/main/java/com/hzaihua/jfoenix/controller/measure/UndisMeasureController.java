@@ -48,11 +48,11 @@ public class UndisMeasureController {
     @PostConstruct
     public void init(){
         undistributeMeasureTreeView();
-        commitDistributeMeasure.setOnAction(event -> {
+        /*commitDistributeMeasure.setOnAction(event -> {
             Stage stage = (Stage)commitDistributeMeasure.getScene().getWindow();
             AddDownUserController.downDeviceTreeTableView.setItems(AddDownUserController.undistriList);
             stage.close();
-        });
+        });*/
     }
 
 
@@ -71,9 +71,12 @@ public class UndisMeasureController {
                     if (!empty) {
                         CheckBox checkBox = new CheckBox();
                         this.setGraphic(checkBox);
+                        checkBox.isSelected();
                         checkBox.selectedProperty().addListener((obVal, oldVal, newVal) -> {
+                            System.out.println(123);
                             if (newVal) {
                                 System.out.println("第" + this.getIndex() + "行被选中！");
+                                System.out.println(undistributeMeatrueList.get(this.getIndex()));
                                 AddDownUserController.undistriList.add(undistributeMeatrueList.get(this.getIndex()));
                             }else {
                                 AddDownUserController.undistriList.remove(undistributeMeatrueList.get(this.getIndex()));

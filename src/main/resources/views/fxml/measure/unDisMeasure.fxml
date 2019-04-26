@@ -14,9 +14,9 @@
             <ScrollPane prefHeight="200" prefWidth="352">
                 <TableView fx:id="undisMeasureTreeView">
                     <columns>
-                        <TableColumn fx:id="measureCheck" prefWidth="50" text="请选择"/>
-                        <TableColumn fx:id="measureCode" minWidth="142" text="测点编号"/>
-                        <TableColumn fx:id="measureName" minWidth="142" text="设备名称"/>
+                        <TableColumn fx:id="measureCheck" resizable="false" sortable="false" prefWidth="50" text="请选择"/>
+                        <TableColumn fx:id="measureCode" resizable="false" sortable="false" minWidth="142" text="测点编号"/>
+                        <TableColumn fx:id="measureName" resizable="false" sortable="false" minWidth="142" text="设备名称"/>
                     </columns>
                 </TableView>
             </ScrollPane>

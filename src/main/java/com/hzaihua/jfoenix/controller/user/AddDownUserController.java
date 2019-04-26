@@ -66,7 +66,7 @@ public class AddDownUserController {
     private ComboBox<String> downUserType;
     //分配测点列表
     @FXML
-    public static TableView<InfoMeasure> downDeviceTreeTableView;
+    private TableView<InfoMeasure> downDeviceTreeTableView;
     //列表中的属性
     @FXML
     private TableColumn measureCode;
@@ -178,5 +178,6 @@ public class AddDownUserController {
     private void undisMeatrueList(){
         measureCode.setCellValueFactory(new PropertyValueFactory<>("measureCode"));
         measureName.setCellValueFactory(new PropertyValueFactory<>("measureName"));
+        downDeviceTreeTableView.setItems(undistriList);
     }
 }
