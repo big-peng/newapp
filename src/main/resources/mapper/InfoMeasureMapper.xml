@@ -28,4 +28,8 @@
         update Info_Measure set measureUserName=#{measureUserName}
         where measureCode=#{measureCode}
     </update>
+    <!--添加测点-->
+    <insert id="insertInfoMeasure" parameterType="com.hzaihua.jfoenix.entity.InfoMeasure">
+        insert into Info_Measure values(#{measureCode},#{userName},#{measureType},#{measureName},#{deviceTypeAndIDs},#{autoConnect},#{measureUserName},#{measureAddress},#{cascadePath},#{latitude},#{longitude},#{measureHead},#{remark})
+    </insert>
 </mapper>

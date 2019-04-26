@@ -74,7 +74,7 @@ public class DeviceManageService{
             }
             InfoNoiseDevice infoNoiseDevice = infoNoiseDeviceDao.queryByDeviceCode(deviceCode,tableName);
             int deviceType = infoNoiseDevice.getDeviceType();
-            int linkPort = infoNoiseDevice.getLinkPort();
+            String linkPort = infoNoiseDevice.getLinkPort();
             MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode,deviceType+"",linkState,"","",linkPort+"","");
             result.add(stateDevice);
         }

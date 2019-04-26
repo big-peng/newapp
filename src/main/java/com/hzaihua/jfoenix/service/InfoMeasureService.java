@@ -25,6 +25,13 @@ public class InfoMeasureService {
     }
 
     /**
+     * 添加测点信息
+     * */
+    public void saveMeasure(InfoMeasure infoMeasure){
+        infoMeasureDao.insertInfoMeasure(infoMeasure);
+    }
+
+    /**
      * 根据measureCode查询需要修改的测点属性
      * */
     public InfoMeasure queryByMeasureCode(String measureCode){

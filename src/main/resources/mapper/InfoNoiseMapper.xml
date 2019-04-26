@@ -4,4 +4,12 @@
     <select id="queryByDeviceCode" resultType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
         select * from info_${deviceTableName} where deviceCode=#{deviceCode}
     </select>
+    <!--添加设备-->
+    <insert id="insertNoiseDevice" parameterType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
+        insert into info_noise values(#{deviceCode},#{deviceType},#{measureCode},#{devicePassword},#{linkType},#{linkPort},#{isAutoLink},#{isAutoAdjust},#{microphoneHeight},#{DTUSIM},#{isReadMin},#{isReadHour},#{isReadDay},#{isReadLp},#{isReadOct},#{isReadWea},#{isReadCar},#{isReadDust},#{isReadLeq1s},#{isReadEvent},#{isOpenVoice},#{funCode})
+    </insert>
+    <!--根据noiseCode查询设备-->
+    <select id="queryByNoiseDeviceCode" resultType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
+        select * from info_noise where deviceCode=#{deviceCode}
+    </select>
 </mapper>
