@@ -377,10 +377,10 @@ public class MainController {
         // close application
         @FXML
         private void submit() {
-            if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 1) {
-                SystemSetupLoad systemSetupLoad = new SystemSetupLoad();
-            }else if(toolbarPopupList.getSelectionModel().getSelectedIndex()==0){
+            if (toolbarPopupList.getSelectionModel().getSelectedIndex() == 0) {
                 UserLoad userLoad = new UserLoad();
+            }else if(toolbarPopupList.getSelectionModel().getSelectedIndex()==1){
+                //退出当前用户
             }
         }
     }

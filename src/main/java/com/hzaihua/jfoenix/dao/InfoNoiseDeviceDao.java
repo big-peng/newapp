@@ -27,11 +27,15 @@ public interface InfoNoiseDeviceDao {
     public InfoNoiseDevice queryByDeviceCode(String deviceCode,String deviceTableName);
 
     /**
+     * 根据noiseCode查询设备信息，主要是判断设备编号是否已存在
+     * */
+    public InfoNoiseDevice queryByNoiseDeviceCode(String deviceCode);
+    /**
      * 插入一个新的设备信息
      * @param infoNoiseDevice 设备信息对象
      * @return 返回是否插入成功
      */
-    public boolean insertNoiseDevice(InfoNoiseDevice infoNoiseDevice);
+    public void insertNoiseDevice(InfoNoiseDevice infoNoiseDevice);
 
     /**
      * 根据设备编号进行修改设备的信息，其中设备编号是固定无法修改的

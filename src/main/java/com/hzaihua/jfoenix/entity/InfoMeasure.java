@@ -9,15 +9,15 @@ import javafx.beans.property.StringProperty;
 public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
     private StringProperty measureCode = new SimpleStringProperty();//测点的编号，固定测点采用HJ-661编号，非固定点位使用设备编号，级联服务器使用级联服务器编号
     private StringProperty userName = new SimpleStringProperty();//管理该测点的用户登录名，需要与用户信息表主键建立约束
-    private SimpleIntegerProperty measureType = new SimpleIntegerProperty();//测点的类型，0为固定点位，1为移动点位，2为级联服务器
+    private StringProperty measureType = new SimpleStringProperty();//测点的类型，0为固定点位，1为移动点位，2为级联服务器
     private StringProperty measureName = new SimpleStringProperty();//测点的名称
     private StringProperty deviceTypeAndIDs = new SimpleStringProperty();//测点下属设备的设备类型和编号，测点下属有多个设备，中间用“；”分隔，每个设备由设备类型Type和设备编号ID组成，Type与ID用“，”分隔
     private SimpleIntegerProperty autoConnect =new SimpleIntegerProperty();//是否允许自动连接，0为不允许，1为允许
     private StringProperty measureUserName = new SimpleStringProperty();//测点所属的监测站的名称
     private StringProperty measureAddress = new SimpleStringProperty();//测点的详细地址
     private StringProperty cascadePath = new SimpleStringProperty();//测点的级联路径，本地测点该项无效，远程测点：1级服务器编号>2级服务器编号>3级服务器编号。。。
-    private SimpleDoubleProperty latitude  = new SimpleDoubleProperty();//测点的GPS维度
-    private SimpleDoubleProperty longitude = new SimpleDoubleProperty();//测点的GPS经度
+    private StringProperty latitude  = new SimpleStringProperty();//测点的GPS维度
+    private StringProperty longitude = new SimpleStringProperty();//测点的GPS经度
     private StringProperty measureHead = new SimpleStringProperty();//测点的照片文件路径
     private StringProperty remark = new SimpleStringProperty();//备注信息
 
@@ -64,16 +64,21 @@ public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
         this.userName = new SimpleStringProperty(userName);
     }
 
-    public int getMeasureType() {
+    public String getMeasureType() {
         return measureType.get();
     }
 
-    public SimpleIntegerProperty measureTypeProperty() {
+    public StringProperty measureTypeProperty() {
         return measureType;
     }
 
-    public void setMeasureType(int measureType) {
-        this.measureType = new SimpleIntegerProperty(measureType);
+    public void setMeasureType(String measureType) {
+        if(measureType.equals("固定测点")){
+            this.measureType = new SimpleStringProperty("0");
+        }
+        if(measureType.equals("移动测点")){
+            this.measureType = new SimpleStringProperty("1");
+        }
     }
 
     public String getMeasureName() {
@@ -148,28 +153,28 @@ public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
         this.cascadePath = new SimpleStringProperty(cascadePath);
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude.get();
     }
 
-    public SimpleDoubleProperty latitudeProperty() {
+    public StringProperty latitudeProperty() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = new SimpleDoubleProperty(latitude);
+    public void setLatitude(String latitude) {
+        this.latitude = new SimpleStringProperty(latitude);
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude.get();
     }
 
-    public SimpleDoubleProperty longitudeProperty() {
+    public StringProperty longitudeProperty() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = new SimpleDoubleProperty(longitude);
+    public void setLongitude(String longitude) {
+        this.longitude = new SimpleStringProperty(longitude);
     }
 
     public String getMeasureHead() {
@@ -196,18 +201,18 @@ public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
         this.remark = new SimpleStringProperty(remark);
     }
 
-    public InfoMeasure(String measureCode, String userName, Integer measureType, String measureName, String deviceTypeAndIDs, Integer autoConnect, String measureUserName, String measureAddress, String cascadePath, Double latitude, Double longitude, String measureHead, String remark) {
+    public InfoMeasure(String measureCode, String userName, String measureType, String measureName, String deviceTypeAndIDs, Integer autoConnect, String measureUserName, String measureAddress, String cascadePath, String latitude, String longitude, String measureHead, String remark) {
         this.measureCode = new SimpleStringProperty(measureCode);
         this.userName = new SimpleStringProperty(userName);
-        this.measureType = new SimpleIntegerProperty(measureType);
+        this.measureType = new SimpleStringProperty(measureType);
         this.measureName = new SimpleStringProperty(measureName);
         this.deviceTypeAndIDs = new SimpleStringProperty(deviceTypeAndIDs);
         this.autoConnect = new SimpleIntegerProperty(autoConnect);
         this.measureUserName = new SimpleStringProperty(measureUserName);
         this.measureAddress = new SimpleStringProperty(measureAddress);
         this.cascadePath = new SimpleStringProperty(cascadePath);
-        this.latitude = new SimpleDoubleProperty(latitude);
-        this.longitude = new SimpleDoubleProperty(longitude);
+        this.latitude = new SimpleStringProperty(latitude);
+        this.longitude = new SimpleStringProperty(longitude);
         this.measureHead = new SimpleStringProperty(measureHead);
         this.remark = new SimpleStringProperty(remark);
     }
