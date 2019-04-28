@@ -13,10 +13,6 @@ public interface InfoMeasureDao {
     public List<InfoMeasure> queryAll();
 
     /**
-     * 查询所有未分配测点信息
-     * */
-    public List<InfoMeasure> queryAllUndisMeasure();
-    /**
      * 根据测点编号来查询该测点下的设备组类型和ID，调用该接口的Service层得到返回值后会将字符串解析并到对应类型的设备表中查询该测点下的设备的详细信息
      * @param measureCode 测点的编号
      * @return 返回值为测点下属的多个设备信息
@@ -58,9 +54,4 @@ public interface InfoMeasureDao {
      * @return 返回是否删除成功
      */
     public boolean deleteInfoMeasure(String measureCode);
-
-    /**
-     * 根据测点ID分配测点，修改测点用户属性
-     * */
-    public void updateMeasureUserName(InfoMeasure infoMeasure);
 }

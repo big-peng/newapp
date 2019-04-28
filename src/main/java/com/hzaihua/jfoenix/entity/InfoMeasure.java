@@ -6,6 +6,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.Objects;
+
 public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
     private StringProperty measureCode = new SimpleStringProperty();//测点的编号，固定测点采用HJ-661编号，非固定点位使用设备编号，级联服务器使用级联服务器编号
     private StringProperty userName = new SimpleStringProperty();//管理该测点的用户登录名，需要与用户信息表主键建立约束
@@ -17,6 +19,32 @@ public class InfoMeasure  extends RecursiveTreeObject<InfoMeasure> {
     private StringProperty measureAddress = new SimpleStringProperty();//测点的详细地址
     private StringProperty cascadePath = new SimpleStringProperty();//测点的级联路径，本地测点该项无效，远程测点：1级服务器编号>2级服务器编号>3级服务器编号。。。
     private StringProperty latitude  = new SimpleStringProperty();//测点的GPS维度
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InfoMeasure that = (InfoMeasure) o;
+        return Objects.equals(measureCode.getValue(), that.measureCode.getValue()) &&
+                Objects.equals(userName.getValue(), that.userName.getValue()) &&
+                Objects.equals(measureType.getValue(), that.measureType.getValue()) &&
+                Objects.equals(measureName.getValue(), that.measureName.getValue()) &&
+                Objects.equals(deviceTypeAndIDs.getValue(), that.deviceTypeAndIDs.getValue()) &&
+                Objects.equals(autoConnect.getValue(), that.autoConnect.getValue()) &&
+                Objects.equals(measureUserName.getValue(), that.measureUserName.getValue()) &&
+                Objects.equals(measureAddress.getValue(), that.measureAddress.getValue()) &&
+                Objects.equals(cascadePath.getValue(), that.cascadePath.getValue()) &&
+                Objects.equals(latitude.getValue(), that.latitude.getValue()) &&
+                Objects.equals(longitude.getValue(), that.longitude.getValue()) &&
+                Objects.equals(measureHead.getValue(), that.measureHead.getValue()) &&
+                Objects.equals(remark.getValue(), that.remark.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(measureCode, userName, measureType, measureName, deviceTypeAndIDs, autoConnect, measureUserName, measureAddress, cascadePath, latitude, longitude, measureHead, remark);
+    }
+
     private StringProperty longitude = new SimpleStringProperty();//测点的GPS经度
     private StringProperty measureHead = new SimpleStringProperty();//测点的照片文件路径
     private StringProperty remark = new SimpleStringProperty();//备注信息

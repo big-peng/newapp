@@ -1,7 +1,10 @@
 package com.hzaihua.jfoenix.service;
 
 import com.hzaihua.jfoenix.dao.InfoUserDao;
+import com.hzaihua.jfoenix.dao.UserToMeasureDao;
+import com.hzaihua.jfoenix.entity.InfoMeasure;
 import com.hzaihua.jfoenix.entity.InfoUser;
+import com.hzaihua.jfoenix.entity.UserToMeasure;
 import com.hzaihua.jfoenix.util.PswMD5;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,6 +21,8 @@ import java.util.List;
 public class InfoUserService{
     @Resource
     private InfoUserDao infoUserDao;
+    @Resource
+    private UserToMeasureDao userToMeasureDao;
     /**
      * 该接口为验证密码是否正确的方法，主要是在用户登录的时候调用的，验证用户输入的密码是否与数据库中该登录名的密码相同
      * @param userName 用户登录的时候输入的用户名
@@ -85,8 +90,20 @@ public class InfoUserService{
      * @param infoUser 新增的用户信息对象
      * @return 新增成功则返回字符串新增成功，某一项不符合要求则返回具体哪一项不符合要求
      */
-    public void addInfoUser(InfoUser infoUser){
+    public void addInfoUser(InfoUser infoUser, ObservableList<InfoMeasure> observableList){
         infoUserDao.insertUser(infoUser);
+        for (InfoMeasure infoMeasure:observableList) {
+            UserToMeasure userToMeasure = new UserToMeasure(infoUser.getUserName(),infoMeasure.getMeasureCode());
+            userToMeasureDao.insert(userToMeasure);
+        }
+    }
+
+    public void updateUserDownMeasure(String userName,ObservableList<InfoMeasure> observableList){
+        userToMeasureDao.deleteByUserName(userName);
+        for (InfoMeasure infoMeasure:observableList) {
+            UserToMeasure userToMeasure = new UserToMeasure(userName,infoMeasure.getMeasureCode());
+            userToMeasureDao.insert(userToMeasure);
+        }
     }
 
     /**

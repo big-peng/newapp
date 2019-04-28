@@ -37,7 +37,7 @@ public class EditDownUserController {
     private Label downName;
     @FXML
     //即将分配测点列表
-    public static TableView<InfoMeasure> editUserTreeTableView;
+    public TableView<InfoMeasure> editUserTreeTableView;
     //列表中的属性
     @FXML
     private TableColumn measureCode;
@@ -53,18 +53,19 @@ public class EditDownUserController {
 
         //调出选择未分配测点界面
         undistributeMeasure.setOnAction(event -> {
-            undisList.clear();
             UndistributeMeasureLoad undistributeMeasureLoad = new UndistributeMeasureLoad();
         });
         InfoUser infoUser = infoUserService.queryByUserName(deleteUserName);
         String downType = infoUser.getUserType();
         downName.setText(infoUser.getNickName());
         downUserType.setValue(downType);
-
+        undisList = infoMeasureService.queryByUserName(infoUser.getUserName());
         undisTable();
-
-        //确认修改操作
         commitEditDownUser.setOnAction(event -> {
+            infoUserService.updateUserDownMeasure(deleteUserName,undisList);
+        });
+        //确认修改操作
+        /*commitEditDownUser.setOnAction(event -> {
             Stage stage = (Stage)commitEditDownUser.getScene().getWindow();
             //修改测点所属用户
             for (InfoMeasure measure : undisList) {
@@ -73,12 +74,13 @@ public class EditDownUserController {
                 infoMeasureService.updateMeasureUser(infoMeasure);
             }
             stage.close();
-        });
+        });*/
     }
 
     //已选择测点显示框
     private void undisTable(){
         measureCode.setCellValueFactory(new PropertyValueFactory<>("measureCode"));
         measureName.setCellValueFactory(new PropertyValueFactory<>("measureName"));
+        editUserTreeTableView.setItems(undisList);
     }
 }

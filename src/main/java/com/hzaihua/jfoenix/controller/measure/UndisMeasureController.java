@@ -41,7 +41,7 @@ public class UndisMeasureController {
     //复选框
     private TableColumn<InfoMeasure,Boolean> measureCheck;
 
-    public static ObservableList<InfoMeasure> undistributeMeatrueList = FXCollections.observableArrayList();
+    public ObservableList<InfoMeasure> allMeasureList = FXCollections.observableArrayList();
 
     InfoMeasureService infoMeasureService = BeanFactoryUtil.getApplicationContext().getBean(InfoMeasureService.class);
 
@@ -57,7 +57,7 @@ public class UndisMeasureController {
 
 
     private void undistributeMeasureTreeView(){
-        undistributeMeatrueList = infoMeasureService.queryUndistributeMeasure();
+        allMeasureList = infoMeasureService.queryAllMeasure();
         measureCode.setCellValueFactory(new PropertyValueFactory<>("measureCode"));
         measureName.setCellValueFactory(new PropertyValueFactory<>("measureName"));
         measureCheck.setCellFactory((col) -> {
@@ -65,21 +65,20 @@ public class UndisMeasureController {
                 @Override
                 public void updateItem(Boolean item, boolean empty) {
                     super.updateItem(item, empty);
+
                     this.setText(null);
                     this.setGraphic(null);
-
                     if (!empty) {
                         CheckBox checkBox = new CheckBox();
+                        if (AddDownUserController.undistriList.contains(allMeasureList.get(this.getIndex()))){
+                            checkBox.setSelected(true);
+                        }
                         this.setGraphic(checkBox);
-                        checkBox.isSelected();
                         checkBox.selectedProperty().addListener((obVal, oldVal, newVal) -> {
-                            System.out.println(123);
                             if (newVal) {
-                                System.out.println("第" + this.getIndex() + "行被选中！");
-                                System.out.println(undistributeMeatrueList.get(this.getIndex()));
-                                AddDownUserController.undistriList.add(undistributeMeatrueList.get(this.getIndex()));
+                                AddDownUserController.undistriList.add(allMeasureList.get(this.getIndex()));
                             }else {
-                                AddDownUserController.undistriList.remove(undistributeMeatrueList.get(this.getIndex()));
+                                AddDownUserController.undistriList.remove(allMeasureList.get(this.getIndex()));
                             }
                         });
                     }
@@ -87,6 +86,6 @@ public class UndisMeasureController {
             };
             return cell;
         });
-        undisMeasureTreeView.setItems(infoMeasureService.queryUndistributeMeasure());
+        undisMeasureTreeView.setItems(allMeasureList);
     }
 }
