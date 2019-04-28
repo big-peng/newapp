@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 <?import com.jfoenix.controls.JFXButton?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx"
-            prefHeight="550.0" prefWidth="300.0">
+            prefHeight="550.0" prefWidth="400.0">
     <VBox style="-fx-padding: 20 0 0 35 ">
         <GridPane>
             <Label prefHeight="25.0" prefWidth="60.0" text="设备编号:" GridPane.columnIndex="0"
@@ -48,7 +48,7 @@
             <Label GridPane.columnIndex="2" GridPane.rowIndex="6">米</Label>
         </GridPane>
         <VBox style="-fx-padding: 0 0 0 50">
-            <Text fx:id="actiontarget" text="123" style="-fx-fill: red"/>
+            <Text fx:id="actiontarget" style="-fx-fill: red"/>
         </VBox>
         <Label style="-fx-padding: 0 0 0 55">提示：*为必填项</Label>
         <HBox style="-fx-padding: 15 0 0 0">
