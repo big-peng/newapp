@@ -2,6 +2,8 @@ package com.hzaihua.jfoenix.controller.Device;
 
 import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
 import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
+import com.hzaihua.jfoenix.entity.StateNoise;
+import com.hzaihua.jfoenix.service.DeviceManageService;
 import com.hzaihua.jfoenix.service.InfoNoiseService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXButton;
@@ -12,6 +14,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
@@ -43,6 +46,7 @@ public class AddFixedDeviceController {
     @FXML private JFXButton commitAddFixedDevice;//确认提交按钮
 
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
+    DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
 
     @PostConstruct
     public void init(){
@@ -62,6 +66,7 @@ public class AddFixedDeviceController {
 
         //确认提交操作
         commitAddFixedDevice.setOnAction(event -> {
+            Stage stage = (Stage)commitAddFixedDevice.getScene().getWindow();
             String noiseDeviceCode = NoiseDeviceCode.getText();
             String devicePassword = DevicePassword.getText();
             String linkPort = LinkPort.getText();
@@ -88,9 +93,8 @@ public class AddFixedDeviceController {
                 actiontarget.setText("SIM卡号输入格式不正确");
             }else {
                 infoNoiseDevice.setDeviceCode(noiseDeviceCode);
-                infoNoiseDevice.setDeviceType(0);
+                infoNoiseDevice.setDeviceType("AWA6218j");
                 infoNoiseDevice.setDevicePassword(devicePassword);
-                infoNoiseDevice.setMeasureCode("");
                 infoNoiseDevice.setLinkType(1);
                 infoNoiseDevice.setLinkPort(linkPort);
                 infoNoiseDevice.setDTUSIM(dtusim);
@@ -157,7 +161,13 @@ public class AddFixedDeviceController {
                 }else {
                     infoNoiseDevice.setIsOpenVoice(0);
                 }
-                infoNoiseService.saveInfoNoiseDevice(infoNoiseDevice);
+                infoNoiseDevice.setStateType(1);
+                AddFixedMeasureController.noiseList.add(infoNoiseDevice);
+                StateNoise stateNoise = new StateNoise();
+                stateNoise.setDeviceCode(noiseDeviceCode);
+                stateNoise.setLinkState(0);
+                deviceManageService.insertState(stateNoise);
+                stage.close();
             }
         });
     }

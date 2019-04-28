@@ -8,4 +8,7 @@
     <delete id="deleteStateNoise">
         delete from state_${deviceTableName} where deviceCode=#{deviceCode}
     </delete>
+    <insert id="insertStateNoise" parameterType="com.hzaihua.jfoenix.entity.StateNoise">
+        insert into state_noise values(#{deviceCode},#{linkState})
+    </insert>
 </mapper>

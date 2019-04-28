@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 
 public class InfoNoiseDevice {
     private StringProperty deviceCode;//设备编号
-    private SimpleIntegerProperty deviceType;//设备类型
+    private StringProperty deviceType;//设备类型
     private StringProperty measureCode;//所属测点编号，为空则表示还没有测点选择该设备，该设备未激活
     private StringProperty devicePassword;//设备连接密码
     private SimpleIntegerProperty linkType;//连接方式
@@ -27,6 +27,19 @@ public class InfoNoiseDevice {
     private SimpleIntegerProperty isReadEvent;//是否读取事件数据
     private SimpleIntegerProperty isOpenVoice;//是否开启实时语音服务
     private StringProperty funCode;//功能区
+    private SimpleIntegerProperty stateType;
+
+    public int getStateType() {
+        return stateType.get();
+    }
+
+    public SimpleIntegerProperty stateTypeProperty() {
+        return stateType;
+    }
+
+    public void setStateType(int stateType) {
+        this.stateType = new SimpleIntegerProperty(stateType);
+    }
 
     public String getDeviceCode() {
         return deviceCode.get();
@@ -40,16 +53,16 @@ public class InfoNoiseDevice {
         this.deviceCode = new SimpleStringProperty(deviceCode);
     }
 
-    public int getDeviceType() {
+    public String getDeviceType() {
         return deviceType.get();
     }
 
-    public SimpleIntegerProperty deviceTypeProperty() {
+    public StringProperty deviceTypeProperty() {
         return deviceType;
     }
 
-    public void setDeviceType(int deviceType) {
-        this.deviceType = new SimpleIntegerProperty(deviceType);
+    public void setDeviceType(String deviceType) {
+        this.deviceType = new SimpleStringProperty(deviceType);
     }
 
     public String getMeasureCode() {
@@ -321,9 +334,9 @@ public class InfoNoiseDevice {
                 '}';
     }
 
-    public InfoNoiseDevice(String deviceCode, Integer deviceType, String measureCode, String devicePassword, Integer linkType, String linkPort, Integer isAutoLink, Integer isAutoAdjust, String microphoneHeight, String DTUSIM, Integer isReadMin, Integer isReadHour, Integer isReadDay, Integer isReadLp, Integer isReadOct, Integer isReadWea, Integer isReadCar, Integer isReadDust, Integer isReadLeq1s, Integer isReadEvent, Integer isOpenVoice,String funCode) {
+    public InfoNoiseDevice(String deviceCode, String deviceType, String measureCode, String devicePassword, Integer linkType, String linkPort, Integer isAutoLink, Integer isAutoAdjust, String microphoneHeight, String DTUSIM, Integer isReadMin, Integer isReadHour, Integer isReadDay, Integer isReadLp, Integer isReadOct, Integer isReadWea, Integer isReadCar, Integer isReadDust, Integer isReadLeq1s, Integer isReadEvent, Integer isOpenVoice,String funCode) {
         this.deviceCode = new SimpleStringProperty(deviceCode);
-        this.deviceType = new SimpleIntegerProperty(deviceType);
+        this.deviceType = new SimpleStringProperty(deviceType);
         this.measureCode = new SimpleStringProperty(measureCode);
         this.devicePassword = new SimpleStringProperty(devicePassword);
         this.linkType = new SimpleIntegerProperty(linkType);

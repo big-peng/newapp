@@ -68,12 +68,12 @@ public class DeviceManageService{
             StateNoise stateNoise = stateNoiseDao.queryByDeviceCode(deviceCode,tableName);
             String linkState = "已连接";
             if (stateNoise.getLinkState()==0){
-                linkState = "连接失败";
+                linkState = "连接断开";
             }else if(stateNoise.getLinkState()==1){
                 linkState = "正在连接";
             }
             InfoNoiseDevice infoNoiseDevice = infoNoiseDeviceDao.queryByDeviceCode(deviceCode,tableName);
-            int deviceType = infoNoiseDevice.getDeviceType();
+            String deviceType = infoNoiseDevice.getDeviceType();
             String linkPort = infoNoiseDevice.getLinkPort();
             MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode,deviceType+"",linkState,"","",linkPort+"","");
             result.add(stateDevice);
@@ -142,5 +142,12 @@ public class DeviceManageService{
         }
         System.out.println(result);
         return result;
+    }
+
+    /**
+     * 添加设备状态
+     * */
+    public void insertState(StateNoise stateNoise){
+        stateNoiseDao.insertStateNoise(stateNoise);
     }
 }

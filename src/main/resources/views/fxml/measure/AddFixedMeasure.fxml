@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Text?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
-    <AnchorPane prefHeight="800.0" prefWidth="600.0">
+    <AnchorPane prefHeight="800.0" prefWidth="600.0" fx:id="root">
         <VBox prefHeight="350">
             <GridPane layoutY="20" layoutX="30">
                 <padding>
@@ -110,11 +110,11 @@
                         </StackPane>
                     </children>
                 </HBox>
-                <TableView fx:id="">
+                <TableView fx:id="infoNoiseTreeView">
                     <columns>
-                        <TableColumn fx:id="" prefWidth="172" resizable="true" text="设备编号"/>
-                        <TableColumn fx:id="" prefWidth="173" resizable="true" text="设备类型"/>
-                        <TableColumn fx:id="" prefWidth="173" resizable="true" text="侦听端口"/>
+                        <TableColumn fx:id="noiseCode" prefWidth="172" resizable="true" text="设备编号"/>
+                        <TableColumn fx:id="noiseType" prefWidth="173" resizable="true" text="设备类型"/>
+                        <TableColumn fx:id="linkPort" prefWidth="173" resizable="true" text="侦听端口"/>
                     </columns>
                 </TableView>
             </children>
