@@ -50,7 +50,7 @@ public class MainController {
     //查询到的全部数据
     ObservableList<StateMeasure> dummyData = null;
     //表格中需要呈现的数据
-    ObservableList<StateMeasure> nowDummyData = FXCollections.observableArrayList();
+    public static ObservableList<StateMeasure> nowDummyData = FXCollections.observableArrayList();
     ObservableList<StateMeasure> searchFieldDummyData = FXCollections.observableArrayList();
     ObservableList<StateMeasure> searchComboBoxDummyData = FXCollections.observableArrayList();
     @FXMLViewFlowContext
@@ -118,6 +118,8 @@ public class MainController {
     private JFXDialog dialog;
     @FXML
     private VBox tableVBox;
+    @FXML
+    public static JFXButton shuaxin;
 
     @PostConstruct
     public void init() throws Exception {
@@ -157,6 +159,14 @@ public class MainController {
         setupReadOnlyTableView();
         //可以编辑的表格
         //setupEditableTableView();
+
+        shuaxin.setOnAction(event -> {
+            //创建表格中的数据
+            dummyData = deviceManageService.getIndexList();
+            nowDummyData.clear();
+            nowDummyData.addAll(dummyData);
+            treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
+        });
 
         //建立删除按钮点击事件
         JFXSnackbar snackbar = new JFXSnackbar(root);
@@ -530,6 +540,9 @@ public class MainController {
                     ", address=" + address +
                     ", other=" + other +
                     '}';
+        }
+
+        public StateMeasure() {
         }
     }
 }

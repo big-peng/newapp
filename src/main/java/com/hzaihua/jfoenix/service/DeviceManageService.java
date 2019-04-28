@@ -107,6 +107,7 @@ public class DeviceManageService{
             //得到要删除的设备的编号
             String deviceCode = deviceStr.split(",")[1];
             stateNoiseDao.deleteStateNoise(deviceCode,tableName);
+            infoNoiseDeviceDao.deleteNoiseDevice(deviceCode,tableName);
         }
         return infoMeasureDao.deleteInfoMeasure(measureCode);
     }

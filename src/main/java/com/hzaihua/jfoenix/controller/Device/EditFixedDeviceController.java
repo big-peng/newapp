@@ -49,12 +49,14 @@ public class EditFixedDeviceController {
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
     int deviceLinkType = 0;
     String deviceType = null;
+    InfoNoiseDevice infoNoiseDevice1 = null;
     @PostConstruct
     public void init() {
         String deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
 
         for (InfoNoiseDevice infoNoiseDevice : AddFixedMeasureController.noiseList) {
             if(infoNoiseDevice.getDeviceCode().equals(deviceCode)){
+                infoNoiseDevice1 = infoNoiseDevice;
                 NoiseDeviceCode.setText(infoNoiseDevice.getDeviceCode());
                 DevicePassword.setText(infoNoiseDevice.getDevicePassword());
                 LinkPort.setText(infoNoiseDevice.getLinkPort());
@@ -72,7 +74,6 @@ public class EditFixedDeviceController {
         //确认提交操作
         editAddFixedDevice.setOnAction(event -> {
             Stage stage = (Stage) editAddFixedDevice.getScene().getWindow();
-            InfoNoiseDevice device = new InfoNoiseDevice();
 
             String noiseCode = NoiseDeviceCode.getText();
             String password = DevicePassword.getText();
@@ -99,77 +100,77 @@ public class EditFixedDeviceController {
             } else if (dtusim.matches(re) && !(dtusim.matches(regex))) {
                 actiontarget.setText("SIM卡号输入格式不正确");
             } else {
-                device.setDeviceCode(noiseCode);
-                device.setDeviceType(deviceType);
-                device.setDevicePassword(password);
-                device.setLinkType(deviceLinkType);
-                device.setLinkPort(linkPort);
-                device.setDTUSIM(dtusim);
-                device.setFunCode(FunCode.getValue());
-                device.setMicrophoneHeight(microphoneHeight);
-                device.setIsAutoLink(1);
+                infoNoiseDevice1.setDeviceCode(noiseCode);
+                infoNoiseDevice1.setDeviceType(deviceType);
+                infoNoiseDevice1.setDevicePassword(password);
+                infoNoiseDevice1.setLinkType(deviceLinkType);
+                infoNoiseDevice1.setLinkPort(linkPort);
+                infoNoiseDevice1.setDTUSIM(dtusim);
+                infoNoiseDevice1.setFunCode(FunCode.getValue());
+                infoNoiseDevice1.setMicrophoneHeight(microphoneHeight);
+                infoNoiseDevice1.setIsAutoLink(1);
                 if (IsAutoAdjust.isSelected()) {
-                    device.setIsAutoAdjust(1);
+                    infoNoiseDevice1.setIsAutoAdjust(1);
                 } else {
-                    device.setIsAutoAdjust(0);
+                    infoNoiseDevice1.setIsAutoAdjust(0);
                 }
                 if (IsReadMin.isSelected()) {
-                    device.setIsReadMin(1);
+                    infoNoiseDevice1.setIsReadMin(1);
                 } else {
-                    device.setIsReadMin(0);
+                    infoNoiseDevice1.setIsReadMin(0);
                 }
                 if (IsReadHour.isSelected()) {
-                    device.setIsReadHour(1);
+                    infoNoiseDevice1.setIsReadHour(1);
                 } else {
-                    device.setIsReadHour(0);
+                    infoNoiseDevice1.setIsReadHour(0);
                 }
                 if (IsReadDay.isSelected()) {
-                    device.setIsReadDay(1);
+                    infoNoiseDevice1.setIsReadDay(1);
                 } else {
-                    device.setIsReadDay(0);
+                    infoNoiseDevice1.setIsReadDay(0);
                 }
                 if (IsReadLp.isSelected()) {
-                    device.setIsReadLp(1);
+                    infoNoiseDevice1.setIsReadLp(1);
                 } else {
-                    device.setIsReadLp(0);
+                    infoNoiseDevice1.setIsReadLp(0);
                 }
                 if (IsReadLeq1s.isSelected()) {
-                    device.setIsReadLeq1s(1);
+                    infoNoiseDevice1.setIsReadLeq1s(1);
                 } else {
-                    device.setIsReadLeq1s(0);
+                    infoNoiseDevice1.setIsReadLeq1s(0);
                 }
                 if (IsReadOct.isSelected()) {
-                    device.setIsReadOct(1);
+                    infoNoiseDevice1.setIsReadOct(1);
                 } else {
-                    device.setIsReadOct(0);
+                    infoNoiseDevice1.setIsReadOct(0);
                 }
                 if (IsReadWea.isSelected()) {
-                    device.setIsReadWea(1);
+                    infoNoiseDevice1.setIsReadWea(1);
                 } else {
-                    device.setIsReadWea(0);
+                    infoNoiseDevice1.setIsReadWea(0);
                 }
                 if (IsReadCar.isSelected()) {
-                    device.setIsReadCar(1);
+                    infoNoiseDevice1.setIsReadCar(1);
                 } else {
-                    device.setIsReadCar(0);
+                    infoNoiseDevice1.setIsReadCar(0);
                 }
                 if (IsReadDust.isSelected()) {
-                    device.setIsReadDust(1);
+                    infoNoiseDevice1.setIsReadDust(1);
                 } else {
-                    device.setIsReadDust(0);
+                    infoNoiseDevice1.setIsReadDust(0);
                 }
                 if (IsReadEvent.isSelected()) {
-                    device.setIsReadEvent(1);
+                    infoNoiseDevice1.setIsReadEvent(1);
                 } else {
-                    device.setIsReadEvent(0);
+                    infoNoiseDevice1.setIsReadEvent(0);
                 }
                 if (IsOpenVoice.isSelected()) {
-                    device.setIsOpenVoice(1);
+                    infoNoiseDevice1.setIsOpenVoice(1);
                 } else {
-                    device.setIsOpenVoice(0);
+                    infoNoiseDevice1.setIsOpenVoice(0);
                 }
-                device.setStateType(1);
-                AddFixedMeasureController.noiseList.add(device);
+                infoNoiseDevice1.setStateType(1);
+                AddFixedMeasureController.noiseList.setAll(infoNoiseDevice1);
                 StateNoise stateNoise = new StateNoise();
                 stateNoise.setDeviceCode(noiseCode);
                 stateNoise.setLinkState(0);
