@@ -5,12 +5,6 @@
     <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
         select * from Info_Measure
     </select>
-    <!--查询所有未分配测点-->
-    <select id="queryAllUndisMeasure" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
-        select measureCode,measureName
-        from Info_Measure
-        where measureUserName is null or measureUserName=''
-    </select>
     <!--根据code查询测点-->
     <select id="queryByMeasureCode" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
         select * from Info_Measure
@@ -23,13 +17,11 @@
     <delete id="deleteInfoMeasure">
         delete from Info_Measure where measureCode=#{measureCode}
     </delete>
-    <!--修改测点所属用户-->
-    <update id="updateMeasureUserName" parameterType="com.hzaihua.jfoenix.entity.InfoMeasure">
-        update Info_Measure set measureUserName=#{measureUserName}
-        where measureCode=#{measureCode}
-    </update>
     <!--添加测点-->
     <insert id="insertInfoMeasure" parameterType="com.hzaihua.jfoenix.entity.InfoMeasure">
         insert into Info_Measure values(#{measureCode},#{userName},#{measureType},#{measureName},#{deviceTypeAndIDs},#{autoConnect},#{measureUserName},#{measureAddress},#{cascadePath},#{latitude},#{longitude},#{measureHead},#{remark})
     </insert>
+    <select id="queryByUserName" resultType="com.hzaihua.jfoenix.entity.InfoMeasure">
+        select b.* from user_measure a,Info_Measure b where a.measureCode = b.measureCode and a.userName = #{userName}
+    </select>
 </mapper>

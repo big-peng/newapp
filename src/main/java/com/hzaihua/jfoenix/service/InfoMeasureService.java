@@ -2,6 +2,7 @@ package com.hzaihua.jfoenix.service;
 
 import com.hzaihua.jfoenix.dao.InfoMeasureDao;
 import com.hzaihua.jfoenix.entity.InfoMeasure;
+import com.hzaihua.jfoenix.entity.UserToMeasure;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,9 @@ public class InfoMeasureService {
     /**
      * 查询所有未分配测点信息
      * */
-    public ObservableList<InfoMeasure> queryUndistributeMeasure(){
+    public ObservableList<InfoMeasure> queryAllMeasure(){
         ObservableList<InfoMeasure> result = FXCollections.observableArrayList();
-        result.setAll(infoMeasureDao.queryAllUndisMeasure());
+        result.setAll(infoMeasureDao.queryAll());
         return result;
     }
 
@@ -39,9 +40,13 @@ public class InfoMeasureService {
     }
 
     /**
-     * 修改所属用户名称属性
+     * 根据measureCode查询需要修改的测点属性
      * */
-    public void updateMeasureUser(InfoMeasure infoMeasure){
-        infoMeasureDao.updateMeasureUserName(infoMeasure);
+    public ObservableList<InfoMeasure> queryByUserName(String userName){
+        ObservableList<InfoMeasure> result = FXCollections.observableArrayList();
+        result.setAll(infoMeasureDao.queryByUserName(userName));
+        return result;
     }
+
+
 }

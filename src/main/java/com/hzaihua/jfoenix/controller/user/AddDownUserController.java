@@ -116,7 +116,6 @@ public class AddDownUserController {
             }
         });
         distributeMeasure.setOnAction(event -> {
-            undistriList.clear();
             UndisMeasureLoad undisMeasureLoad = new UndisMeasureLoad();
         });
         commitAddDownUser.setOnAction(event -> {
@@ -151,12 +150,6 @@ public class AddDownUserController {
             }else if(addPhone.matches(reg) && !(addPhone.matches(rege))){
                 actiontarget.setText("电话号码格式不正确");
             }else {
-                //修改测点所属用户
-                for (InfoMeasure measure : undistriList) {
-                    InfoMeasure infoMeasure = infoMeasureService.queryByMeasureCode(measure.getMeasureCode());
-                    infoMeasure.setMeasureUserName(addUserName);
-                    infoMeasureService.updateMeasureUser(infoMeasure);
-                }
                 //添加用户
                 InfoUser infoUser = new InfoUser();
                 infoUser.setUserName(addUserName);
@@ -169,7 +162,8 @@ public class AddDownUserController {
                 infoUser.setParentUser("3");
                 infoUser.setStatus("离线");
                 infoUser.setHeadFileName("file:"+path);
-                infoUserService.addInfoUser(infoUser);
+                infoUserService.addInfoUser(infoUser,undistriList);
+                undistriList.clear();
                 stage.close();
             }
         });
