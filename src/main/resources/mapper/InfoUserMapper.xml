@@ -37,5 +37,8 @@
         select [userName],[password],[nickName],[userType],[parentUser],[phone],[occupation],[company],[headFileName],[status]
         from Info_User where userName=#{userName} or nickName=#{nickName} or phone=#{phone}
     </select>
+    <update id="updateUserType" parameterType="string">
+        update Info_User set [usertype]=#{userType} where [userName]=#{userName}
+    </update>
 </mapper>
 

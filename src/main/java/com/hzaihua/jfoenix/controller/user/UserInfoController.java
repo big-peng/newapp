@@ -60,11 +60,10 @@ public class UserInfoController {
     private JFXButton comitEditPassword;
     @FXML
     //刷新列表
-    private JFXButton renovate;
+    static JFXButton renovate;
     @FXML
     private JFXButton editDownUser;
 
-    private int id;
     //表格中需要呈现的数据
     ObservableList<InfoUser> nowdownUserList = FXCollections.observableArrayList();
     //当前登录的用户信息
@@ -167,15 +166,17 @@ public class UserInfoController {
                 //先从数据库中删除，返回删除成功之后在删除表格中的
                 //删除不能以行数为标准删除，否则会出Bug
                 if(infoUserService.deleteByUserName(deleteUserName)){
-                    downUserList.remove(id);
+                    downUserList.remove(deleteRow);
                     //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
                     downUserTreeTableView.setRoot(new RecursiveTreeItem<>(downUserList, RecursiveTreeObject::getChildren));
                     downUserTreeTableView.setShowRoot(false);
                     downUserHbox.setDisable(true);
                     downUserTreeTableView.setShowRoot(false);
-                    id = -1;
+                    deleteRow = -1;
+                    JFXSnackbarLayout jfxSnackbarLayout = new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/);
+                    jfxSnackbarLayout.setStyle("-fx-border-color: #949494;-fx-background-color:WHITE;");
                     snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
-                            new JFXSnackbarLayout("删除成功", "",null/*event1 -> snackbar.close()*/),
+                            jfxSnackbarLayout,
                             Duration.millis(2000), null));
                 }
             });

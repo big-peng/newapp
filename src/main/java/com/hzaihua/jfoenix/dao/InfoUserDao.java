@@ -57,4 +57,5 @@ public interface InfoUserDao {
      *修改密码
      * */
     public void updatePassword(String userType,String password);
+    public void updateUserType(String userName,String userType);
 }

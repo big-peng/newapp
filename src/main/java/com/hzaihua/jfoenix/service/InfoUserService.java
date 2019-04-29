@@ -98,12 +98,20 @@ public class InfoUserService{
         }
     }
 
-    public void updateUserDownMeasure(String userName,ObservableList<InfoMeasure> observableList){
+    public void updateMeasureAndType(String userName,ObservableList<InfoMeasure> observableList,String userType){
         userToMeasureDao.deleteByUserName(userName);
         for (InfoMeasure infoMeasure:observableList) {
             UserToMeasure userToMeasure = new UserToMeasure(userName,infoMeasure.getMeasureCode());
             userToMeasureDao.insert(userToMeasure);
         }
+        if("一般标准用户".equals(userType)){
+            userType = "0";
+        }else if("运维".equals(userType)){
+            userType = "1";
+        }else if("管理员".equals(userType)){
+            userType = "2";
+        }
+        infoUserDao.updateUserType(userName,userType);
     }
 
     /**

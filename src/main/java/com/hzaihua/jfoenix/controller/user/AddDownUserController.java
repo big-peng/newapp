@@ -164,6 +164,9 @@ public class AddDownUserController {
                 infoUser.setHeadFileName("file:"+path);
                 infoUserService.addInfoUser(infoUser,undistriList);
                 undistriList.clear();
+                infoUser.setStatus("0");
+                infoUser.setUserType("0");
+                UserInfoController.downUserList.add(infoUser);
                 stage.close();
             }
         });

@@ -48,11 +48,10 @@ public class UndisMeasureController {
     @PostConstruct
     public void init(){
         undistributeMeasureTreeView();
-        /*commitDistributeMeasure.setOnAction(event -> {
+        commitDistributeMeasure.setOnAction(event -> {
             Stage stage = (Stage)commitDistributeMeasure.getScene().getWindow();
-            AddDownUserController.downDeviceTreeTableView.setItems(AddDownUserController.undistriList);
             stage.close();
-        });*/
+        });
     }
 
 

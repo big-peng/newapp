@@ -61,20 +61,13 @@ public class EditDownUserController {
         downUserType.setValue(downType);
         undisList = infoMeasureService.queryByUserName(infoUser.getUserName());
         undisTable();
-        commitEditDownUser.setOnAction(event -> {
-            infoUserService.updateUserDownMeasure(deleteUserName,undisList);
-        });
         //确认修改操作
-        /*commitEditDownUser.setOnAction(event -> {
+        commitEditDownUser.setOnAction(event -> {
+            infoUserService.updateMeasureAndType(deleteUserName,undisList,downUserType.getValue());
             Stage stage = (Stage)commitEditDownUser.getScene().getWindow();
-            //修改测点所属用户
-            for (InfoMeasure measure : undisList) {
-                InfoMeasure infoMeasure = infoMeasureService.queryByMeasureCode(measure.getMeasureCode());
-                infoMeasure.setMeasureUserName(infoUser.getUserName());
-                infoMeasureService.updateMeasureUser(infoMeasure);
-            }
             stage.close();
-        });*/
+            UserInfoController.renovate.fire();
+        });
     }
 
     //已选择测点显示框

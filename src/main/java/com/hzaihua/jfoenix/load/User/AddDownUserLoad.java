@@ -30,7 +30,7 @@ public class AddDownUserLoad extends Application{
         DefaultFlowContainer container = new DefaultFlowContainer();
         flow.createHandler(flowContext).start(container);
         CustomJFXDecorator decorator = new CustomJFXDecorator(primaryStage,container.getView(), false, false, true);
-        Scene scene = new Scene(decorator, 520, 700);
+        Scene scene = new Scene(decorator, 520, 750);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.add(UserInfoController.class.getResource("/views/css/systemSetup.css").toExternalForm());
         primaryStage.setScene(scene);

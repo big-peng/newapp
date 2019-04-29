@@ -23,6 +23,9 @@
                         <ComboBox fx:id="downUserType" GridPane.columnIndex="1" GridPane.rowIndex="2" id="jfxComboBox" prefWidth="200" promptText="选择用户等级">
                             <items>
                                 <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="一般标准用户"/>
+                                    <String fx:value="运维"/>
+                                    <String fx:value="管理员"/>
                                 </FXCollections>
                             </items>
                         </ComboBox>

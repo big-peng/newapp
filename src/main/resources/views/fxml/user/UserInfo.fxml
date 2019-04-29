@@ -5,78 +5,88 @@
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.image.ImageView?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="1000.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
-    <GridPane layoutY="50" layoutX="50">
+<AnchorPane fx:id="root" prefHeight="1000.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <GridPane layoutX="50" layoutY="1.0">
         <padding>
-            <Insets bottom="20.0" left="40.0" top="50.0"/>
+            <Insets bottom="20.0" left="40.0" top="50.0" />
         </padding>
         <children>
-            <Label prefHeight="25.0" prefWidth="60.0" text="用户名称:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-            <Label fx:id="userName" layoutX="5.0" layoutY="5.0" prefHeight="15.0" GridPane.columnIndex="1"
-                       GridPane.rowIndex="1"/>
-            <Label prefHeight="25.0" prefWidth="60.0" text="类       型:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <Label fx:id="userType" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-            <Label prefHeight="25.0" prefWidth="60.0" text="姓       名:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <Label fx:id="nickName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-            <Label prefHeight="25.0" prefWidth="60.0" text="电话号码:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-            <Label fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-            <Label prefHeight="25.0" prefWidth="60.0" text="职       业:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-            <Label fx:id="occupation" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-            <Label prefHeight="25.0" prefWidth="60.0" text="工作单位:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-            <Label fx:id="company" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            <Label prefHeight="25.0" prefWidth="60.0" text="用户名称:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="userName" layoutX="5.0" layoutY="5.0" prefHeight="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label prefHeight="25.0" prefWidth="60.0" text="类       型:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label fx:id="userType" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label prefHeight="25.0" prefWidth="60.0" text="姓       名:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label fx:id="nickName" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label prefHeight="25.0" prefWidth="60.0" text="电话号码:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <Label fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label prefHeight="25.0" prefWidth="60.0" text="职       业:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+            <Label fx:id="occupation" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label prefHeight="25.0" prefWidth="60.0" text="工作单位:" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+            <Label fx:id="company" GridPane.columnIndex="1" GridPane.rowIndex="6" />
         </children>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
-    <VBox layoutX="465" layoutY="110">
+    <VBox layoutX="465" layoutY="80.0">
         <ImageView fx:id="headFileName" fitHeight="100.0" fitWidth="100.0">
         </ImageView>
     </VBox>
-    <VBox layoutX="450" layoutY="230" maxHeight="50" maxWidth="600" spacing="10">
+    <VBox layoutX="450" layoutY="200.0" maxHeight="50" maxWidth="600" spacing="10">
         <children>
             <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
                 <children>
-                    <JFXButton fx:id="editUser" buttonType="RAISED" prefHeight="30"
-                               styleClass="custom-jfx-button-raised" text="编辑"/>
-                    <JFXButton fx:id="editPassword" buttonType="RAISED" prefHeight="30"
-                               styleClass="custom-jfx-button-raised" text="修改密码"/>
+                    <JFXButton fx:id="editUser" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="编辑" />
+                    <JFXButton fx:id="editPassword" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="修改密码" />
                 </children>
             </HBox>
         </children>
     </VBox>
 
-    <VBox layoutY="280" layoutX="20" maxHeight="600" maxWidth="650" spacing="10">
+    <VBox layoutX="40.0" layoutY="250.0" maxHeight="600" maxWidth="650" spacing="10">
         <children>
             <HBox StackPane.alignment="CENTER_RIGHT">
                 <children>
-                    <Label text="下级用户"/>
+                    <Label prefWidth="48.0" text="下级用户">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <padding>
+                     <Insets top="15.0" />
+                  </padding></Label>
                     <StackPane HBox.hgrow="ALWAYS">
                         <StackPane maxWidth="350" StackPane.alignment="CENTER_RIGHT">
                             <HBox alignment="CENTER_RIGHT">
                                 <children>
-                                    <JFXButton fx:id="renovate" prefHeight="30" buttonType="RAISED" text="刷    新"
-                                               styleClass="custom-jfx-button-raised"/>
+                                    <JFXButton fx:id="renovate" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="刷    新" />
                                     <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
-                                    <JFXButton fx:id="findDownUser" prefHeight="30" buttonType="RAISED" text="搜索用户"
-                                               styleClass="custom-jfx-button-raised"/>
+                                    <JFXButton fx:id="findDownUser" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="搜索用户" />
                                     </HBox>
                                     <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
-                                        <JFXButton fx:id="addDownUser" prefHeight="30" buttonType="RAISED" text="添加用户"
-                                               styleClass="custom-jfx-button-raised"/>
+                                        <JFXButton fx:id="addDownUser" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="添加用户" />
                                     </HBox>
-                                    <HBox fx:id="downUserHbox" spacing="10" style="-fx-padding: 0 0 0 10;"
-                                          disable="true">
-                                        <JFXButton fx:id="editDownUser" prefHeight="30" buttonType="RAISED" text="编辑用户"
-                                                   styleClass="custom-jfx-button-raised"/>
-                                        <JFXButton fx:id="deleteDownUser" prefHeight="30" buttonType="RAISED" text="删除用户"
-                                                   styleClass="custom-jfx-button-raised"
-                                                   style="-fx-text-fill: #D34336"/>
+                                    <HBox fx:id="downUserHbox" disable="true" spacing="10" style="-fx-padding: 0 0 0 10;">
+                                        <JFXButton fx:id="editDownUser" buttonType="RAISED" prefHeight="30" styleClass="custom-jfx-button-raised" text="编辑用户" />
+                                        <JFXButton fx:id="deleteDownUser" buttonType="RAISED" prefHeight="30" style="-fx-text-fill: #D34336" styleClass="custom-jfx-button-raised" text="删除用户" />
                                     </HBox>
                                 </children>
                             </HBox>
@@ -84,16 +94,17 @@
                     </StackPane>
                 </children>
             </HBox>
+            <HBox prefHeight="250">
             <JFXTreeTableView fx:id="downUserTreeTableView">
                 <columns>
-                    <JFXTreeTableColumn fx:id="downusername" minWidth="133" prefWidth="133" resizable="true"
-                                        text="用户名称"/>
-                    <JFXTreeTableColumn fx:id="downname" minWidth="133" resizable="true" text="姓名"/>
-                    <JFXTreeTableColumn fx:id="status" minWidth="133" resizable="true" text="状态"/>
-                    <JFXTreeTableColumn fx:id="downtype" minWidth="133" resizable="true" text="类型"/>
-                    <JFXTreeTableColumn fx:id="downphone" minWidth="133" resizable="true" text="电话"/>
+                    <JFXTreeTableColumn fx:id="downusername" minWidth="120" prefWidth="133" resizable="true" text="用户名称" />
+                    <JFXTreeTableColumn fx:id="downname" minWidth="120" resizable="true" text="姓名" />
+                    <JFXTreeTableColumn fx:id="status" minWidth="110" resizable="true" text="状态" />
+                    <JFXTreeTableColumn fx:id="downtype" minWidth="120" resizable="true" text="类型" />
+                    <JFXTreeTableColumn fx:id="downphone" minWidth="120" resizable="true" text="电话" />
                 </columns>
             </JFXTreeTableView>
+            </HBox>
         </children>
     </VBox>
 </AnchorPane>
