@@ -12,4 +12,8 @@
     <select id="queryByNoiseDeviceCode" resultType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
         select * from info_noise where deviceCode=#{deviceCode}
     </select>
+    <!--删除设备信息-->
+    <delete id="deleteNoiseDevice">
+        delete from info_${deviceTableName} where deviceCode=#{deviceCode}
+    </delete>
 </mapper>

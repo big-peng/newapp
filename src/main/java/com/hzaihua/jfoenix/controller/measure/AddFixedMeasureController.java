@@ -1,6 +1,7 @@
 package com.hzaihua.jfoenix.controller.measure;
 
 
+import com.hzaihua.jfoenix.controller.MainController;
 import com.hzaihua.jfoenix.entity.InfoMeasure;
 import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
 import com.hzaihua.jfoenix.entity.InfoUser;
@@ -35,6 +36,7 @@ import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +129,12 @@ public class AddFixedMeasureController {
             EditDeviceAfterLoad editDeviceAfterLoad = new EditDeviceAfterLoad();
         });
 
+        //前端管理按钮操作
+        buforeManager.setOnAction(event -> {
+            EditNoiseDeviceLoad editNoiseDeviceLoad = new EditNoiseDeviceLoad();
+        });
+
+        //如果关闭窗口，清空已添加的设备信息
 
 
         //判断设备编号是否已存在
@@ -134,9 +142,9 @@ public class AddFixedMeasureController {
             if(!now){
                 InfoMeasure infoMeasure = infoMeasureService.queryByMeasureCode(MeasureCode.getText());
                 if(infoMeasure == null){
-                    actiontarget.setText("用户名不存在，可以创建");
+                    actiontarget.setText("测点编号不存在，可以创建");
                 }else{
-                    actiontarget.setText("用户名存在");
+                    actiontarget.setText("测点编号已存在");
                 }
             }
         });
@@ -208,7 +216,18 @@ public class AddFixedMeasureController {
                 }
                 infoMeasure.setDeviceTypeAndIDs(buffer.toString());
                 infoMeasureService.saveMeasure(infoMeasure);
+                //MainController.shuaxin.fire();
+                MainController.StateMeasure stateMeasure = new MainController.StateMeasure();
+                stateMeasure.setMeasureCode(measureCode);
+                stateMeasure.setMeasureName(measureName);
+                stateMeasure.setLinkState("断开连接");
+                stateMeasure.setAddress(measureLatitude+","+measureLongitude);
+                stateMeasure.setData("2019-02-02");
+                stateMeasure.setDataTime("2019-02-02");
+                stateMeasure.setOther("0");
+                MainController.nowDummyData.add(stateMeasure);
             }
+            noiseList.clear();
             stage.close();
         });
     }

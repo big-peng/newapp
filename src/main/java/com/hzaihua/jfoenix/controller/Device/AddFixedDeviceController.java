@@ -47,19 +47,28 @@ public class AddFixedDeviceController {
 
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
+    String deviceCode = null;
 
     @PostConstruct
     public void init(){
         InfoNoiseDevice infoNoiseDevice = new InfoNoiseDevice();
 
+
         //判断设备编号是否已存在
         NoiseDeviceCode.focusedProperty().addListener((ob,old,now)->{
+            boolean a11 = true;
             if(!now){
                 InfoNoiseDevice infoNoise = infoNoiseService.queryByNoiseCode(NoiseDeviceCode.getText());
-                if(infoNoise == null){
-                    actiontarget.setText("用户名不存在，可以创建");
+                for (InfoNoiseDevice device : AddFixedMeasureController.noiseList) {
+                    deviceCode = device.getDeviceCode();
+                    if(deviceCode.equals(NoiseDeviceCode.getText())){
+                        a11 = false;
+                    }
+                }
+                if (infoNoise == null && a11){
+                    actiontarget.setText("设备编号不存在，可以创建");
                 }else{
-                    actiontarget.setText("用户名存在");
+                    actiontarget.setText("设备编号已存在");
                 }
             }
         });

@@ -57,5 +57,5 @@ public interface InfoNoiseDeviceDao {
      * @param deviceCode 要删除的设备编号
      * @return 返回是否删除成功
      */
-    public boolean deleteNoiseDevice(String deviceCode);
+    public boolean deleteNoiseDevice(String deviceCode,String deviceTableName);
 }
