@@ -50,10 +50,7 @@
                 <children>
                     <HBox alignment="CENTER">
                         <children>
-                            <HBox style="-fx-padding: 0 0 0 20;">
-                                <JFXButton fx:id="shuaxin" buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="刷新" />
-                            </HBox>
-                            <HBox style="-fx-padding: 0 0 0 20;">
+                            <HBox>
                                 <JFXButton fx:id="changeMeasure" buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="添加测点" />
                             </HBox>
                             <HBox fx:id="disableHBox" disable="true" spacing="20" style="-fx-padding: 0 0 0 20;">
@@ -63,7 +60,7 @@
                                 <JFXButton buttonType="RAISED" prefHeight="30" prefWidth="80" styleClass="custom-jfx-button-raised" text="断开连接" />
                             </HBox>
                             <StackPane HBox.hgrow="ALWAYS">
-                                <HBox alignment="BASELINE_CENTER" maxHeight="300" maxWidth="500" spacing="100" style="-fx-padding: 5 40 0 0">
+                                <HBox alignment="BASELINE_CENTER" maxHeight="300" maxWidth="500" spacing="100">
                                     <VBox spacing="20">
                                         <JFXComboBox id="jfxComboBox" fx:id="searchComboBox" prefWidth="120" promptText="选择连接状态">
                                             <items>

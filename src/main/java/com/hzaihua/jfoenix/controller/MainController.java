@@ -118,8 +118,6 @@ public class MainController {
     private JFXDialog dialog;
     @FXML
     private VBox tableVBox;
-    @FXML
-    public static JFXButton shuaxin;
 
     @PostConstruct
     public void init() throws Exception {
@@ -152,21 +150,13 @@ public class MainController {
         changeMeasure.setOnMouseClicked(e -> changeMeasureMove.show(changeMeasure,
                 JFXPopup.PopupVPosition.TOP,
                 JFXPopup.PopupHPosition.RIGHT,
-                -12,
-                50));
+                -8,
+                40));
         // 给中间的页面赋上内容
         //只读的表格
         setupReadOnlyTableView();
         //可以编辑的表格
         //setupEditableTableView();
-
-        shuaxin.setOnAction(event -> {
-            //创建表格中的数据
-            dummyData = deviceManageService.getIndexList();
-            nowDummyData.clear();
-            nowDummyData.addAll(dummyData);
-            treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
-        });
 
         //建立删除按钮点击事件
         JFXSnackbar snackbar = new JFXSnackbar(root);
