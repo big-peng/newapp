@@ -2,19 +2,32 @@ package com.hzaihua.jfoenix.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXTimePicker;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.SimpleFormatter;
 
 @ViewController(value = "/views/fxml/system/systemSetup.fxml")
 public class SystemSetupController {
     @FXML
     private JFXButton fileChoose;
+    @FXML
+    private JFXButton closeStage;
+    @FXML
+    private DatePicker date;
+    @FXML
+    private JFXTimePicker dateTime;
+    @FXML
+    private JFXButton save;
     @FXML
     private JFXTextField filePath;
     @FXML
@@ -43,5 +56,14 @@ public class SystemSetupController {
                 filePath.setText(path);
             }
         });
+        closeStage.setOnAction(event -> {
+            Stage stage = (Stage)closeStage.getScene().getWindow();
+            stage.close();
+        });
+        save.setOnAction(event -> {
+            System.out.println(dateTime.getValue().toString());
+
+        });
+        dateTime.set24HourView(true);
     }
 }

@@ -156,7 +156,7 @@ public class AddDownUserController {
                 //添加用户
                 InfoUser infoUser = new InfoUser();
                 infoUser.setUserName(addUserName);
-                infoUser.setPassword(addPassword);
+                infoUser.setPassword(PswMD5.EncoderByMD5(addPassword));
                 infoUser.setNickName(addName);
                 infoUser.setPhone(addPhone);
                 infoUser.setOccupation(addOcc);

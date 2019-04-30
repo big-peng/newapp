@@ -40,7 +40,9 @@ public class FindDownUserController {
             }else{
                 InfoUser user = infoUserService.queryUserByNameOrPhone(username, name, phone);
                 downUserList.clear();
-                downUserList.add(user);
+                if (user != null){
+                    downUserList.add(user);
+                }
                 stage.close();
             }
         });

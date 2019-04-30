@@ -3,6 +3,8 @@ package com.hzaihua.jfoenix.dao;
 import com.hzaihua.jfoenix.entity.StateNoise;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface StateNoiseDao {
     /**
      * 根据设备的编号来查询该设备当前的状态
@@ -33,4 +35,14 @@ public interface StateNoiseDao {
      * @return 返回是否删除成功
      */
     public boolean deleteStateNoise(String deviceCode,String deviceTableName);
+
+    int deleteByPrimaryKey(String deviceCode);
+
+    int insert(StateNoise record);
+
+    StateNoise selectByPrimaryKey(String deviceCode);
+
+    List<StateNoise> selectAll();
+
+    int updateByPrimaryKey(StateNoise record);
 }

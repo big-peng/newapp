@@ -16,16 +16,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121">
+<?import javafx.scene.control.DatePicker?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<AnchorPane prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <JFXTabPane fx:id="editListener" layoutX="20.0" layoutY="20.0" prefHeight="520.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE">
+        <JFXTabPane fx:id="editListener" layoutX="20.0" layoutY="20.0" prefHeight="480.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="基本">
                     <content>
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="658.0" style="-fx-background-color: white">
                                 <children>
-                                    <JFXCheckBox layoutX="90.0" layoutY="60.0" text="开机启动">
+                                    <JFXCheckBox layoutX="80.0" layoutY="60.0" text="开机启动">
                                         <font>
                                             <Font size="13.0" />
                                         </font>
@@ -95,9 +97,6 @@
                                     </Label>
                                     <JFXButton fx:id="fileChoose" layoutX="440.0" layoutY="260.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" style="-fx-font-size: 13;" text="浏览..." />
 
-                                    <JFXButton layoutX="280.0" layoutY="340.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="保存" />
-                                    <JFXButton layoutX="345.0" layoutY="340.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="取消" />
-
                                 </children>
                             </AnchorPane>
                         </ScrollPane>
@@ -106,7 +105,7 @@
                 <Tab text="数据库">
                     <content>
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="658.0" style="-fx-background-color: white">
                                 <children>
                                     <JFXRadioButton fx:id="radio_1" layoutX="80.0" layoutY="60.0" selected="true" styleClass="custom-jfx-radio-button" text="Mysql">
                                         <toggleGroup>
@@ -168,7 +167,7 @@
                 </Tab>
                 <Tab text="加载项">
                     <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
-                        <AnchorPane fx:id="treeview_test" minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                        <AnchorPane fx:id="treeview_test" minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="658.0" style="-fx-background-color: white">
                             <children>
                                 <Label layoutX="20.0" layoutY="22.0" text="已加载">
                                     <font>
@@ -176,7 +175,7 @@
                                     </font>
                                 </Label>
                                 <JFXButton layoutX="565.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="禁止加载" />
-                                <JFXTreeTableView fx:id="tbv_book" layoutX="14.0" layoutY="48.0" prefHeight="410.0" prefWidth="310.0">
+                                <JFXTreeTableView fx:id="tbv_book" layoutX="14.0" layoutY="48.0" prefHeight="380.0" prefWidth="310.0">
                                     <columns>
                                         <JFXTreeTableColumn fx:id="tb_column_book_id" prefWidth="75.0" text="图书ID" />
                                         <JFXTreeTableColumn fx:id="tb_column_book_name" prefWidth="89.0" text="图书名称" />
@@ -192,7 +191,7 @@
                                     </font>
                                 </Label>
                                 <JFXButton layoutX="247.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="禁止加载" />
-                                <JFXTreeTableView layoutX="372.0" layoutY="48.0" prefHeight="410.0" prefWidth="270.0">
+                                <JFXTreeTableView layoutX="372.0" layoutY="48.0" prefHeight="380.0" prefWidth="270.0">
                                     <columns>
                                         <JFXTreeTableColumn prefWidth="75.0" text="图书ID" />
                                         <JFXTreeTableColumn prefWidth="89.0" text="图书名称" />
@@ -207,7 +206,7 @@
                 <Tab text="客户端">
                     <content>
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="658.0" style="-fx-background-color: white">
                                 <children>
                                     <Label layoutX="160.0" layoutY="50.0" text="APP客户端">
                                         <font>
@@ -264,7 +263,7 @@
                 <Tab text="授权">
                     <content>
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="200.0" prefWidth="200.0">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="658.0" style="-fx-background-color: white">
                                 <children>
                                     <Label layoutX="80.0" layoutY="60.0" text="产品授权码：">
                                         <font>
@@ -348,6 +347,8 @@
 
 
                                     <JFXButton layoutX="355.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" style="-fx-font-size: 13;" text="更改授权码" />
+                                    <DatePicker fx:id="date"></DatePicker>
+                                    <JFXTimePicker fx:id="dateTime"></JFXTimePicker>
                                 </children>
                             </AnchorPane>
                         </ScrollPane>
@@ -355,5 +356,7 @@
                 </Tab>
             </tabs>
         </JFXTabPane>
+        <JFXButton fx:id="save" layoutX="280.0" layoutY="515.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="保存" />
+        <JFXButton fx:id="closeStage" layoutX="345.0" layoutY="515.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="45.0" style="-fx-font-size: 13;" text="取消" />
     </children>
 </AnchorPane>

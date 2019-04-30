@@ -1,6 +1,290 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hzaihua.jfoenix.dao.StateNoiseDao">
+    <resultMap id="BaseResultMap" type="com.hzaihua.jfoenix.entity.StateNoise">
+        <id column="deviceCode" jdbcType="VARCHAR" property="deviceCode" />
+        <result column="linkState" jdbcType="INTEGER" property="linkstate" />
+        <result column="networkState" jdbcType="INTEGER" property="networkstate" />
+        <result column="nowDateTime" jdbcType="TIMESTAMP" property="nowdatetime" />
+        <result column="lpTime" jdbcType="TIMESTAMP" property="lptime" />
+        <result column="LEQZ" jdbcType="DOUBLE" property="leqz" />
+        <result column="LEQC" jdbcType="DOUBLE" property="leqc" />
+        <result column="LEQA" jdbcType="DOUBLE" property="leqa" />
+        <result column="LPFZ" jdbcType="DOUBLE" property="lpfz" />
+        <result column="LPSZ" jdbcType="DOUBLE" property="lpsz" />
+        <result column="LPIZ" jdbcType="DOUBLE" property="lpiz" />
+        <result column="LPFC" jdbcType="DOUBLE" property="lpfc" />
+        <result column="LPSC" jdbcType="DOUBLE" property="lpsc" />
+        <result column="LPIC" jdbcType="DOUBLE" property="lpic" />
+        <result column="LPFA" jdbcType="DOUBLE" property="lpfa" />
+        <result column="LPSA" jdbcType="DOUBLE" property="lpsa" />
+        <result column="LPIA" jdbcType="DOUBLE" property="lpia" />
+        <result column="PEAKZ" jdbcType="DOUBLE" property="peakz" />
+        <result column="PEAKC" jdbcType="DOUBLE" property="peakc" />
+        <result column="PEAKA" jdbcType="DOUBLE" property="peaka" />
+        <result column="windSpeed" jdbcType="DOUBLE" property="windspeed" />
+        <result column="outTemperature" jdbcType="DOUBLE" property="outtemperature" />
+        <result column="humi_R" jdbcType="DOUBLE" property="humiR" />
+        <result column="w_Direction" jdbcType="DOUBLE" property="wDirection" />
+        <result column="outHumidity" jdbcType="DOUBLE" property="outhumidity" />
+        <result column="ariPressure" jdbcType="DOUBLE" property="aripressure" />
+        <result column="rainfall" jdbcType="DOUBLE" property="rainfall" />
+        <result column="longCarNums" jdbcType="INTEGER" property="longcarnums" />
+        <result column="longCarSpeed" jdbcType="DOUBLE" property="longcarspeed" />
+        <result column="midCarNums" jdbcType="INTEGER" property="midcarnums" />
+        <result column="midCarSpeed" jdbcType="DOUBLE" property="midcarspeed" />
+        <result column="shortCarNums" jdbcType="INTEGER" property="shortcarnums" />
+        <result column="shortCarSpeed" jdbcType="DOUBLE" property="shortcarspeed" />
+        <result column="PM25" jdbcType="DOUBLE" property="pm25" />
+        <result column="longitude" jdbcType="DOUBLE" property="longitude" />
+        <result column="latitude" jdbcType="DOUBLE" property="latitude" />
+        <result column="speed" jdbcType="DOUBLE" property="speed" />
+        <result column="usedRoom" jdbcType="DOUBLE" property="usedroom" />
+        <result column="freeRoom" jdbcType="DOUBLE" property="freeroom" />
+        <result column="batteryVoltage" jdbcType="DOUBLE" property="batteryvoltage" />
+        <result column="workingVoltage" jdbcType="DOUBLE" property="workingvoltage" />
+        <result column="temperature" jdbcType="DOUBLE" property="temperature" />
+        <result column="humidity" jdbcType="DOUBLE" property="humidity" />
+        <result column="stataInfo" jdbcType="VARCHAR" property="statainfo" />
+        <result column="event_01" jdbcType="INTEGER" property="event01" />
+        <result column="event_02" jdbcType="INTEGER" property="event02" />
+        <result column="event_03" jdbcType="INTEGER" property="event03" />
+        <result column="event_04" jdbcType="INTEGER" property="event04" />
+        <result column="event_05" jdbcType="INTEGER" property="event05" />
+        <result column="event_06" jdbcType="INTEGER" property="event06" />
+        <result column="event_07" jdbcType="INTEGER" property="event07" />
+        <result column="event_08" jdbcType="INTEGER" property="event08" />
+        <result column="event_09" jdbcType="INTEGER" property="event09" />
+        <result column="event_10" jdbcType="INTEGER" property="event10" />
+        <result column="event_11" jdbcType="INTEGER" property="event11" />
+        <result column="event_12" jdbcType="INTEGER" property="event12" />
+        <result column="event_13" jdbcType="INTEGER" property="event13" />
+        <result column="hand_Adjust" jdbcType="INTEGER" property="handAdjust" />
+        <result column="auto_Adjust" jdbcType="INTEGER" property="autoAdjust" />
+        <result column="adjust_Before" jdbcType="INTEGER" property="adjustBefore" />
+        <result column="adjust_After" jdbcType="INTEGER" property="adjustAfter" />
+        <result column="event_0211" jdbcType="INTEGER" property="event0211" />
+        <result column="event_01_stime" jdbcType="TIMESTAMP" property="event01Stime" />
+        <result column="event_02_stime" jdbcType="TIMESTAMP" property="event02Stime" />
+        <result column="event_03_stime" jdbcType="TIMESTAMP" property="event03Stime" />
+        <result column="event_04_stime" jdbcType="TIMESTAMP" property="event04Stime" />
+        <result column="event_05_stime" jdbcType="TIMESTAMP" property="event05Stime" />
+        <result column="event_06_stime" jdbcType="TIMESTAMP" property="event06Stime" />
+        <result column="event_07_stime" jdbcType="TIMESTAMP" property="event07Stime" />
+        <result column="event_08_stime" jdbcType="TIMESTAMP" property="event08Stime" />
+        <result column="event_09_stime" jdbcType="TIMESTAMP" property="event09Stime" />
+        <result column="event_10_stime" jdbcType="TIMESTAMP" property="event10Stime" />
+        <result column="event_11_stime" jdbcType="TIMESTAMP" property="event11Stime" />
+        <result column="event_12_stime" jdbcType="TIMESTAMP" property="event12Stime" />
+        <result column="event_13_stime" jdbcType="TIMESTAMP" property="event13Stime" />
+        <result column="event_0211_stime" jdbcType="TIMESTAMP" property="event0211Stime" />
+        <result column="event_01_etime" jdbcType="TIMESTAMP" property="event01Etime" />
+        <result column="event_02_etime" jdbcType="TIMESTAMP" property="event02Etime" />
+        <result column="event_03_etime" jdbcType="TIMESTAMP" property="event03Etime" />
+        <result column="event_04_etime" jdbcType="TIMESTAMP" property="event04Etime" />
+        <result column="event_05_etime" jdbcType="TIMESTAMP" property="event05Etime" />
+        <result column="event_06_etime" jdbcType="TIMESTAMP" property="event06Etime" />
+        <result column="event_07_etime" jdbcType="TIMESTAMP" property="event07Etime" />
+        <result column="event_08_etime" jdbcType="TIMESTAMP" property="event08Etime" />
+        <result column="event_09_etime" jdbcType="TIMESTAMP" property="event09Etime" />
+        <result column="event_10_etime" jdbcType="TIMESTAMP" property="event10Etime" />
+        <result column="event_11_etime" jdbcType="TIMESTAMP" property="event11Etime" />
+        <result column="event_12_etime" jdbcType="TIMESTAMP" property="event12Etime" />
+        <result column="event_13_etime" jdbcType="TIMESTAMP" property="event13Etime" />
+        <result column="event_0211_etime" jdbcType="TIMESTAMP" property="event0211Etime" />
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from state_noise
+    where deviceCode = #{devicecode,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.hzaihua.jfoenix.entity.StateNoise">
+    insert into state_noise (deviceCode, linkState, networkState,
+      nowDateTime, lpTime, LEQZ,
+      LEQC, LEQA, LPFZ, LPSZ,
+      LPIZ, LPFC, LPSC, LPIC,
+      LPFA, LPSA, LPIA, PEAKZ,
+      PEAKC, PEAKA, windSpeed,
+      outTemperature, humi_R, w_Direction,
+      outHumidity, ariPressure, rainfall,
+      longCarNums, longCarSpeed, midCarNums,
+      midCarSpeed, shortCarNums, shortCarSpeed,
+      PM25, longitude, latitude,
+      speed, usedRoom, freeRoom,
+      batteryVoltage, workingVoltage, temperature,
+      humidity, stataInfo, event_01,
+      event_02, event_03, event_04,
+      event_05, event_06, event_07,
+      event_08, event_09, event_10,
+      event_11, event_12, event_13,
+      hand_Adjust, auto_Adjust, adjust_Before,
+      adjust_After, event_0211, event_01_stime,
+      event_02_stime, event_03_stime, event_04_stime,
+      event_05_stime, event_06_stime, event_07_stime,
+      event_08_stime, event_09_stime, event_10_stime,
+      event_11_stime, event_12_stime, event_13_stime,
+      event_0211_stime, event_01_etime, event_02_etime,
+      event_03_etime, event_04_etime, event_05_etime,
+      event_06_etime, event_07_etime, event_08_etime,
+      event_09_etime, event_10_etime, event_11_etime,
+      event_12_etime, event_13_etime, event_0211_etime
+      )
+    values (#{deviceCode,jdbcType=VARCHAR}, #{linkstate,jdbcType=INTEGER}, #{networkstate,jdbcType=INTEGER},
+      #{nowdatetime,jdbcType=TIMESTAMP}, #{lptime,jdbcType=TIMESTAMP}, #{leqz,jdbcType=DOUBLE},
+      #{leqc,jdbcType=DOUBLE}, #{leqa,jdbcType=DOUBLE}, #{lpfz,jdbcType=DOUBLE}, #{lpsz,jdbcType=DOUBLE},
+      #{lpiz,jdbcType=DOUBLE}, #{lpfc,jdbcType=DOUBLE}, #{lpsc,jdbcType=DOUBLE}, #{lpic,jdbcType=DOUBLE},
+      #{lpfa,jdbcType=DOUBLE}, #{lpsa,jdbcType=DOUBLE}, #{lpia,jdbcType=DOUBLE}, #{peakz,jdbcType=DOUBLE},
+      #{peakc,jdbcType=DOUBLE}, #{peaka,jdbcType=DOUBLE}, #{windspeed,jdbcType=DOUBLE},
+      #{outtemperature,jdbcType=DOUBLE}, #{humiR,jdbcType=DOUBLE}, #{wDirection,jdbcType=DOUBLE},
+      #{outhumidity,jdbcType=DOUBLE}, #{aripressure,jdbcType=DOUBLE}, #{rainfall,jdbcType=DOUBLE},
+      #{longcarnums,jdbcType=INTEGER}, #{longcarspeed,jdbcType=DOUBLE}, #{midcarnums,jdbcType=INTEGER},
+      #{midcarspeed,jdbcType=DOUBLE}, #{shortcarnums,jdbcType=INTEGER}, #{shortcarspeed,jdbcType=DOUBLE},
+      #{pm25,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, #{latitude,jdbcType=DOUBLE},
+      #{speed,jdbcType=DOUBLE}, #{usedroom,jdbcType=DOUBLE}, #{freeroom,jdbcType=DOUBLE},
+      #{batteryvoltage,jdbcType=DOUBLE}, #{workingvoltage,jdbcType=DOUBLE}, #{temperature,jdbcType=DOUBLE},
+      #{humidity,jdbcType=DOUBLE}, #{statainfo,jdbcType=VARCHAR}, #{event01,jdbcType=INTEGER},
+      #{event02,jdbcType=INTEGER}, #{event03,jdbcType=INTEGER}, #{event04,jdbcType=INTEGER},
+      #{event05,jdbcType=INTEGER}, #{event06,jdbcType=INTEGER}, #{event07,jdbcType=INTEGER},
+      #{event08,jdbcType=INTEGER}, #{event09,jdbcType=INTEGER}, #{event10,jdbcType=INTEGER},
+      #{event11,jdbcType=INTEGER}, #{event12,jdbcType=INTEGER}, #{event13,jdbcType=INTEGER},
+      #{handAdjust,jdbcType=INTEGER}, #{autoAdjust,jdbcType=INTEGER}, #{adjustBefore,jdbcType=INTEGER},
+      #{adjustAfter,jdbcType=INTEGER}, #{event0211,jdbcType=INTEGER}, #{event01Stime,jdbcType=TIMESTAMP},
+      #{event02Stime,jdbcType=TIMESTAMP}, #{event03Stime,jdbcType=TIMESTAMP}, #{event04Stime,jdbcType=TIMESTAMP},
+      #{event05Stime,jdbcType=TIMESTAMP}, #{event06Stime,jdbcType=TIMESTAMP}, #{event07Stime,jdbcType=TIMESTAMP},
+      #{event08Stime,jdbcType=TIMESTAMP}, #{event09Stime,jdbcType=TIMESTAMP}, #{event10Stime,jdbcType=TIMESTAMP},
+      #{event11Stime,jdbcType=TIMESTAMP}, #{event12Stime,jdbcType=TIMESTAMP}, #{event13Stime,jdbcType=TIMESTAMP},
+      #{event0211Stime,jdbcType=TIMESTAMP}, #{event01Etime,jdbcType=TIMESTAMP}, #{event02Etime,jdbcType=TIMESTAMP},
+      #{event03Etime,jdbcType=TIMESTAMP}, #{event04Etime,jdbcType=TIMESTAMP}, #{event05Etime,jdbcType=TIMESTAMP},
+      #{event06Etime,jdbcType=TIMESTAMP}, #{event07Etime,jdbcType=TIMESTAMP}, #{event08Etime,jdbcType=TIMESTAMP},
+      #{event09Etime,jdbcType=TIMESTAMP}, #{event10Etime,jdbcType=TIMESTAMP}, #{event11Etime,jdbcType=TIMESTAMP},
+      #{event12Etime,jdbcType=TIMESTAMP}, #{event13Etime,jdbcType=TIMESTAMP}, #{event0211Etime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.hzaihua.jfoenix.entity.StateNoise">
+    update state_noise
+    set linkState = #{linkstate,jdbcType=INTEGER},
+      networkState = #{networkstate,jdbcType=INTEGER},
+      nowDateTime = #{nowdatetime,jdbcType=TIMESTAMP},
+      lpTime = #{lptime,jdbcType=TIMESTAMP},
+      LEQZ = #{leqz,jdbcType=DOUBLE},
+      LEQC = #{leqc,jdbcType=DOUBLE},
+      LEQA = #{leqa,jdbcType=DOUBLE},
+      LPFZ = #{lpfz,jdbcType=DOUBLE},
+      LPSZ = #{lpsz,jdbcType=DOUBLE},
+      LPIZ = #{lpiz,jdbcType=DOUBLE},
+      LPFC = #{lpfc,jdbcType=DOUBLE},
+      LPSC = #{lpsc,jdbcType=DOUBLE},
+      LPIC = #{lpic,jdbcType=DOUBLE},
+      LPFA = #{lpfa,jdbcType=DOUBLE},
+      LPSA = #{lpsa,jdbcType=DOUBLE},
+      LPIA = #{lpia,jdbcType=DOUBLE},
+      PEAKZ = #{peakz,jdbcType=DOUBLE},
+      PEAKC = #{peakc,jdbcType=DOUBLE},
+      PEAKA = #{peaka,jdbcType=DOUBLE},
+      windSpeed = #{windspeed,jdbcType=DOUBLE},
+      outTemperature = #{outtemperature,jdbcType=DOUBLE},
+      humi_R = #{humiR,jdbcType=DOUBLE},
+      w_Direction = #{wDirection,jdbcType=DOUBLE},
+      outHumidity = #{outhumidity,jdbcType=DOUBLE},
+      ariPressure = #{aripressure,jdbcType=DOUBLE},
+      rainfall = #{rainfall,jdbcType=DOUBLE},
+      longCarNums = #{longcarnums,jdbcType=INTEGER},
+      longCarSpeed = #{longcarspeed,jdbcType=DOUBLE},
+      midCarNums = #{midcarnums,jdbcType=INTEGER},
+      midCarSpeed = #{midcarspeed,jdbcType=DOUBLE},
+      shortCarNums = #{shortcarnums,jdbcType=INTEGER},
+      shortCarSpeed = #{shortcarspeed,jdbcType=DOUBLE},
+      PM25 = #{pm25,jdbcType=DOUBLE},
+      longitude = #{longitude,jdbcType=DOUBLE},
+      latitude = #{latitude,jdbcType=DOUBLE},
+      speed = #{speed,jdbcType=DOUBLE},
+      usedRoom = #{usedroom,jdbcType=DOUBLE},
+      freeRoom = #{freeroom,jdbcType=DOUBLE},
+      batteryVoltage = #{batteryvoltage,jdbcType=DOUBLE},
+      workingVoltage = #{workingvoltage,jdbcType=DOUBLE},
+      temperature = #{temperature,jdbcType=DOUBLE},
+      humidity = #{humidity,jdbcType=DOUBLE},
+      stataInfo = #{statainfo,jdbcType=VARCHAR},
+      event_01 = #{event01,jdbcType=INTEGER},
+      event_02 = #{event02,jdbcType=INTEGER},
+      event_03 = #{event03,jdbcType=INTEGER},
+      event_04 = #{event04,jdbcType=INTEGER},
+      event_05 = #{event05,jdbcType=INTEGER},
+      event_06 = #{event06,jdbcType=INTEGER},
+      event_07 = #{event07,jdbcType=INTEGER},
+      event_08 = #{event08,jdbcType=INTEGER},
+      event_09 = #{event09,jdbcType=INTEGER},
+      event_10 = #{event10,jdbcType=INTEGER},
+      event_11 = #{event11,jdbcType=INTEGER},
+      event_12 = #{event12,jdbcType=INTEGER},
+      event_13 = #{event13,jdbcType=INTEGER},
+      hand_Adjust = #{handAdjust,jdbcType=INTEGER},
+      auto_Adjust = #{autoAdjust,jdbcType=INTEGER},
+      adjust_Before = #{adjustBefore,jdbcType=INTEGER},
+      adjust_After = #{adjustAfter,jdbcType=INTEGER},
+      event_0211 = #{event0211,jdbcType=INTEGER},
+      event_01_stime = #{event01Stime,jdbcType=TIMESTAMP},
+      event_02_stime = #{event02Stime,jdbcType=TIMESTAMP},
+      event_03_stime = #{event03Stime,jdbcType=TIMESTAMP},
+      event_04_stime = #{event04Stime,jdbcType=TIMESTAMP},
+      event_05_stime = #{event05Stime,jdbcType=TIMESTAMP},
+      event_06_stime = #{event06Stime,jdbcType=TIMESTAMP},
+      event_07_stime = #{event07Stime,jdbcType=TIMESTAMP},
+      event_08_stime = #{event08Stime,jdbcType=TIMESTAMP},
+      event_09_stime = #{event09Stime,jdbcType=TIMESTAMP},
+      event_10_stime = #{event10Stime,jdbcType=TIMESTAMP},
+      event_11_stime = #{event11Stime,jdbcType=TIMESTAMP},
+      event_12_stime = #{event12Stime,jdbcType=TIMESTAMP},
+      event_13_stime = #{event13Stime,jdbcType=TIMESTAMP},
+      event_0211_stime = #{event0211Stime,jdbcType=TIMESTAMP},
+      event_01_etime = #{event01Etime,jdbcType=TIMESTAMP},
+      event_02_etime = #{event02Etime,jdbcType=TIMESTAMP},
+      event_03_etime = #{event03Etime,jdbcType=TIMESTAMP},
+      event_04_etime = #{event04Etime,jdbcType=TIMESTAMP},
+      event_05_etime = #{event05Etime,jdbcType=TIMESTAMP},
+      event_06_etime = #{event06Etime,jdbcType=TIMESTAMP},
+      event_07_etime = #{event07Etime,jdbcType=TIMESTAMP},
+      event_08_etime = #{event08Etime,jdbcType=TIMESTAMP},
+      event_09_etime = #{event09Etime,jdbcType=TIMESTAMP},
+      event_10_etime = #{event10Etime,jdbcType=TIMESTAMP},
+      event_11_etime = #{event11Etime,jdbcType=TIMESTAMP},
+      event_12_etime = #{event12Etime,jdbcType=TIMESTAMP},
+      event_13_etime = #{event13Etime,jdbcType=TIMESTAMP},
+      event_0211_etime = #{event0211Etime,jdbcType=TIMESTAMP}
+    where deviceCode = #{deviceCode,jdbcType=VARCHAR}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select deviceCode, linkState, networkState, nowDateTime, lpTime, LEQZ, LEQC, LEQA,
+    LPFZ, LPSZ, LPIZ, LPFC, LPSC, LPIC, LPFA, LPSA, LPIA, PEAKZ, PEAKC, PEAKA, windSpeed,
+    outTemperature, humi_R, w_Direction, outHumidity, ariPressure, rainfall, longCarNums,
+    longCarSpeed, midCarNums, midCarSpeed, shortCarNums, shortCarSpeed, PM25, longitude,
+    latitude, speed, usedRoom, freeRoom, batteryVoltage, workingVoltage, temperature,
+    humidity, stataInfo, event_01, event_02, event_03, event_04, event_05, event_06,
+    event_07, event_08, event_09, event_10, event_11, event_12, event_13, hand_Adjust,
+    auto_Adjust, adjust_Before, adjust_After, event_0211, event_01_stime, event_02_stime,
+    event_03_stime, event_04_stime, event_05_stime, event_06_stime, event_07_stime, event_08_stime,
+    event_09_stime, event_10_stime, event_11_stime, event_12_stime, event_13_stime, event_0211_stime,
+    event_01_etime, event_02_etime, event_03_etime, event_04_etime, event_05_etime, event_06_etime,
+    event_07_etime, event_08_etime, event_09_etime, event_10_etime, event_11_etime, event_12_etime,
+    event_13_etime, event_0211_etime
+    from state_noise
+    where deviceCode = #{deviceCode,jdbcType=VARCHAR}
+  </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+    select deviceCode, linkState, networkState, nowDateTime, lpTime, LEQZ, LEQC, LEQA,
+    LPFZ, LPSZ, LPIZ, LPFC, LPSC, LPIC, LPFA, LPSA, LPIA, PEAKZ, PEAKC, PEAKA, windSpeed,
+    outTemperature, humi_R, w_Direction, outHumidity, ariPressure, rainfall, longCarNums,
+    longCarSpeed, midCarNums, midCarSpeed, shortCarNums, shortCarSpeed, PM25, longitude,
+    latitude, speed, usedRoom, freeRoom, batteryVoltage, workingVoltage, temperature,
+    humidity, stataInfo, event_01, event_02, event_03, event_04, event_05, event_06,
+    event_07, event_08, event_09, event_10, event_11, event_12, event_13, hand_Adjust,
+    auto_Adjust, adjust_Before, adjust_After, event_0211, event_01_stime, event_02_stime,
+    event_03_stime, event_04_stime, event_05_stime, event_06_stime, event_07_stime, event_08_stime,
+    event_09_stime, event_10_stime, event_11_stime, event_12_stime, event_13_stime, event_0211_stime,
+    event_01_etime, event_02_etime, event_03_etime, event_04_etime, event_05_etime, event_06_etime,
+    event_07_etime, event_08_etime, event_09_etime, event_10_etime, event_11_etime, event_12_etime,
+    event_13_etime, event_0211_etime
+    from state_noise
+  </select>
     <select id="queryByDeviceCode" resultType="com.hzaihua.jfoenix.entity.StateNoise">
         select * from state_${deviceTableName} where deviceCode=#{deviceCode}
     </select>
