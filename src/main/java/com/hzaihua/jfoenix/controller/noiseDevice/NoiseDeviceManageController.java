@@ -1,5 +1,6 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
+import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
@@ -20,22 +21,74 @@ import java.util.Map;
 
 @ViewController(value = "/views/fxml/noiseDevice/noiseDeviceAfter.fxml")
 public class NoiseDeviceManageController {
-    @FXML
-    private AnchorPane editPara;
-    @FXML
-    private JFXListView<Label> sideList;
-    @FXML
-    private JFXButton textButton;
-    @FXML
-    private JFXButton subTitleButton;
-    @FXML
-    private JFXButton timeButton;
-    @FXML
-    private JFXButton noiseButton;
-    @FXML
-    private JFXButton deleteButton;
-    @FXML
-    private AnchorPane previewWindow;
+    //设置页面设置
+    @FXML private TextField Sample; //瞬时采样间隔
+    @FXML private TextField UpSpace; //瞬时上传间隔
+    @FXML private ComboBox TimeWight; //时间计权
+    @FXML private ComboBox FreWight; //频率计权
+    @FXML private TextField Initime; //积分统计时间
+    @FXML private CheckBox ON_OFF_MIN; //分钟统计数据自动上传
+    @FXML private CheckBox ON_OFF_HOUR; //小时统计数据自动上传
+    @FXML private CheckBox ON_OFF_DAY; //天统计数据自动上传
+    @FXML private TextField DayOverValue; //噪声报警昼间超标限值
+    @FXML private TextField NightOverValue; //噪声报警夜间超标限值
+    @FXML private TextField OverDlay; //噪声报警延迟启动时间
+    @FXML private CheckBox ON_OFF_11OCT; // 1/1OCT频谱分析数据自动上传
+    @FXML private CheckBox ON_OFF_13OCT; // 1/3OCT频谱分析数据自动上传
+    @FXML private CheckBox IsRecord; //噪声超标录音
+    @FXML private TextField DayRecordValue; //噪声超标录音昼间超标限值
+    @FXML private TextField NightRecordValue; //噪声超标录音夜间超标限值
+    @FXML private TextField RecordDlay; //噪声超标录音延迟启动时间
+    @FXML private TextField RecordModel; //噪声超标录音上传模式
+    @FXML private DatePicker RecordStartTime; //噪声超标录音优先上传始时
+    @FXML private DatePicker RecordEndTime; //噪声超标录音优先上传终时
+    @FXML private CheckBox isAutoAdjust; //自动校准
+    @FXML private DatePicker AdjustTime; //校准起始时间
+    @FXML private TextField  AdjustSpace; //每日校准频次
+    @FXML private CheckBox WeaAutoSave; //气象数据自动保存
+    @FXML private CheckBox WeaAutoUp; //气象数据自动上传
+    @FXML private TextField WeaUpSpace; //气象数据采样间隔
+    @FXML private CheckBox CarAutoSave; //交通数据自动保存
+    @FXML private CheckBox CarAutoUp; //交通数据自动上传
+    @FXML private TextField CarUpSpace; //交通采样间隔
+    @FXML private CheckBox DustAutoSave; //空气数据自动保存
+    @FXML private CheckBox DustAutoUp; //空气数据自动上传
+    @FXML private TextField DustUpSpace; //空气采样间隔
+    @FXML private CheckBox ON_OFF_LEQA; //LeqA1s
+    @FXML private CheckBox ON_OFF_LPFA; //LPFA
+    @FXML private CheckBox ON_OFF_LPSA; //LPSA
+    @FXML private CheckBox ON_OFF_LPIA; //LPIA
+    @FXML private CheckBox ON_OFF_LEQC; //LeqC1s
+    @FXML private CheckBox ON_OFF_LPFC; //LPFC
+    @FXML private CheckBox ON_OFF_LPSC; //LPSC
+    @FXML private CheckBox ON_OFF_LPIC; //LPIC
+    @FXML private CheckBox ON_OFF_LEQZ; //LeqZ1s
+    @FXML private CheckBox ON_OFF_LPFZ; //LPFZ
+    @FXML private CheckBox ON_OFF_LPSZ; //LPSZ
+    @FXML private CheckBox ON_OFF_LPIZ; //LPIZ
+    @FXML private CheckBox Event_13; //声校准
+    @FXML private CheckBox Event_01; //手动控制电校准
+    @FXML private CheckBox Event_02; //自动电校准
+    @FXML private CheckBox Event_03; //加热
+    @FXML private CheckBox Event_04; //噪声超标
+    @FXML private CheckBox Event_07; //停电
+    @FXML private CheckBox Event_08; //机箱门被打开
+    @FXML private CheckBox Event_09; //噪声数据出错
+    @FXML private CheckBox Event_10; //存储器出错
+    @FXML private CheckBox Event_12; //电池电压不足
+    @FXML private CheckBox ON_OFF_RADF; //设备出错时复位
+    @FXML private CheckBox ON_OFF_FAMF; //存储器出错自动修复失败时格式化
+    @FXML private CheckBox ON_OFF_PDWIV; //低电压时数据存储保护
+
+    //节目界面设置
+    @FXML private AnchorPane editPara;
+    @FXML private JFXListView<Label> sideList;
+    @FXML private JFXButton textButton;
+    @FXML private JFXButton subTitleButton;
+    @FXML private JFXButton timeButton;
+    @FXML private JFXButton noiseButton;
+    @FXML private JFXButton deleteButton;
+    @FXML private AnchorPane previewWindow;
     //被选中的节目名
     private String selectedProgramName;
     private int y = 0;
@@ -44,6 +97,14 @@ public class NoiseDeviceManageController {
 
     @PostConstruct
     public void init() {
+        //设置操作 Start
+
+        //判断输入的是不是数字的正则表达式
+        String reg = "/^[0-9]+.?[0-9]*$/";
+
+
+        //设置操作 End
+        //节目操作 Start
         textButton.setOnAction(event -> {
             String programName = "文本" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
@@ -106,6 +167,7 @@ public class NoiseDeviceManageController {
             selectedProgramName = null;
         });
         subTitleButton.fire();
+        //节目操作 End
     }
 
     @FXML

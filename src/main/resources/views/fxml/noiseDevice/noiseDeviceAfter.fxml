@@ -19,18 +19,17 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ProgressBar?>
 <?import com.jfoenix.controls.JFXListView?>
-<?import javafx.scene.layout.BorderPane?>
 <?import java.lang.String?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="700.0"
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="700.0"
             xmlns="http://javafx.com/javafx/8.0.121">
-    <children>
-        <JFXTabPane fx:id="editNoiseDevice" layoutX="20.0" layoutY="70.0" prefHeight="520.0" prefWidth="660.0"
-                    tabClosingPolicy="UNAVAILABLE" >
+    <VBox layoutX="10.0" layoutY="20.0" prefHeight="500.0" prefWidth="680.0">
+        <JFXTabPane fx:id="editNoiseDevice" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="设置">
                     <content>
                         <ScrollPane layoutX="120.0" layoutY="128.0" prefHeight="450.0" prefWidth="200.0">
-                            <AnchorPane prefHeight="484.0" prefWidth="658.0" style="-fx-background-color: white">
+                            <AnchorPane prefHeight="464.0" prefWidth="658.0" style="-fx-background-color: white">
                                 <VBox layoutY="20" layoutX="170">
                                     <GridPane>
                                         <children>
@@ -46,13 +45,13 @@
                                             <Label prefHeight="30.0" prefWidth="80.0" text="时  间   计  权:"
                                                    GridPane.columnIndex="0"
                                                    GridPane.rowIndex="3"/>
-                                            <ComboBox fx:id="TimeWight" id="jfxComboBox" prefWidth="160"
-                                                      promptText="F" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                            <ComboBox fx:id="TimeWight" prefWidth="160"
+                                                      promptText="选择时间计权" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                 <items>
                                                     <FXCollections fx:factory="observableArrayList">
-                                                        <String fx:value="12"></String>
-                                                        <String fx:value="123"></String>
-                                                        <String fx:value="1234"></String>
+                                                        <String fx:value="12"/>
+                                                        <String fx:value="123"/>
+                                                        <String fx:value="1234"/>
                                                     </FXCollections>
                                                 </items>
                                             </ComboBox>
@@ -60,7 +59,7 @@
                                                    GridPane.columnIndex="0"
                                                    GridPane.rowIndex="4"/>
                                             <ComboBox fx:id="FreWight" id="jfxComboBox" prefWidth="160"
-                                                      promptText="A" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                      promptText="选择频率计权" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                 <items>
                                                     <FXCollections fx:factory="observableArrayList">
                                                     </FXCollections>
@@ -266,7 +265,7 @@
                                         </VBox>
                                     </ScrollPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="1450" prefHeight="200">
+                                <VBox layoutX="170" layoutY="1450">
                                     <Label text="其他开关" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane prefWidth="260">
                                         <VBox>
@@ -446,7 +445,7 @@
                                                      style="-fx-padding: 0 0 5 0"/>
                                     </HBox>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="1130" prefHeight="200">
+                                <VBox layoutX="170" layoutY="1130">
                                     <GridPane>
                                         <Label text="硬 件 版 本:" prefHeight="20.0" prefWidth="80.0"
                                                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
@@ -597,5 +596,11 @@
                 </Tab>
             </tabs>
         </JFXTabPane>
-    </children>
+    </VBox>
+    <VBox layoutY="525" layoutX="320">
+        <Text fx:id="actiontarget" style="-fx-fill: red"/>
+    </VBox>
+    <VBox layoutY="540" layoutX="320"  style="-fx-font-size: 14">
+        <JFXButton fx:id="commitManager" buttonType="RAISED" style="-fx-background-color: green;" styleClass="custom-jfx-button-raised" prefHeight="30"  text="确定"/>
+    </VBox>
 </AnchorPane>

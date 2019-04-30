@@ -46,7 +46,6 @@ public class AddFixedDeviceController {
     @FXML private JFXButton commitAddFixedDevice;//确认提交按钮
 
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
-    DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
     String deviceCode = null;
 
     @PostConstruct
@@ -172,10 +171,6 @@ public class AddFixedDeviceController {
                 }
                 infoNoiseDevice.setStateType(1);
                 AddFixedMeasureController.noiseList.add(infoNoiseDevice);
-                StateNoise stateNoise = new StateNoise();
-                stateNoise.setDeviceCode(noiseDeviceCode);
-                stateNoise.setLinkState(0);
-                deviceManageService.insertState(stateNoise);
                 stage.close();
             }
         });

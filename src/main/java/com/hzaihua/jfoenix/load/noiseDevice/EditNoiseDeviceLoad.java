@@ -30,7 +30,7 @@ public class EditNoiseDeviceLoad extends Application{
         DefaultFlowContainer container = new DefaultFlowContainer();
         flow.createHandler(flowContext).start(container);
         CustomJFXDecorator decorator = new CustomJFXDecorator(primaryStage,container.getView(), false, false, true);
-        Scene scene = new Scene(decorator, 700, 500);
+        Scene scene = new Scene(decorator, 700, 600);
         final ObservableList<String> stylesheets = scene.getStylesheets();
         stylesheets.add(UserInfoController.class.getResource("/views/css/systemSetup.css").toExternalForm());
         primaryStage.setScene(scene);

@@ -1,13 +1,16 @@
 package com.hzaihua.jfoenix.controller.measure;
 
 
+import com.hzaihua.jfoenix.controller.Device.AddFixedDeviceController;
 import com.hzaihua.jfoenix.controller.MainController;
 import com.hzaihua.jfoenix.entity.InfoMeasure;
 import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
 import com.hzaihua.jfoenix.entity.InfoUser;
+import com.hzaihua.jfoenix.entity.StateNoise;
 import com.hzaihua.jfoenix.load.device.AddDeviceBeforeLoad;
 import com.hzaihua.jfoenix.load.device.EditDeviceAfterLoad;
 import com.hzaihua.jfoenix.load.noiseDevice.EditNoiseDeviceLoad;
+import com.hzaihua.jfoenix.service.DeviceManageService;
 import com.hzaihua.jfoenix.service.InfoMeasureService;
 import com.hzaihua.jfoenix.service.InfoNoiseService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
@@ -73,10 +76,12 @@ public class AddFixedMeasureController {
     @FXML private AnchorPane root;//删除成功后的提示出现地
     @FXML private JFXDialog dialog;
     public static InfoNoiseDevice infoNoiseDevice;//需药删除时传入的对象
+    public static String row;
 
     String path = null;
     InfoMeasureService infoMeasureService = BeanFactoryUtil.getApplicationContext().getBean(InfoMeasureService.class);
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
+    DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
 
     @PostConstruct
     public void init(){
@@ -226,6 +231,10 @@ public class AddFixedMeasureController {
                 stateMeasure.setDataTime("2019-02-02");
                 stateMeasure.setOther("0");
                 MainController.nowDummyData.add(stateMeasure);
+                StateNoise stateNoise = new StateNoise();
+                stateNoise.setDeviceCode("0");
+                stateNoise.setLinkState(0);
+                deviceManageService.insertState(stateNoise);
             }
             noiseList.clear();
             stage.close();
@@ -243,6 +252,7 @@ public class AddFixedMeasureController {
                     @Override
                     public void changed(ObservableValue<? extends InfoNoiseDevice> observable, InfoNoiseDevice oldValue, InfoNoiseDevice newValue) {
                         infoNoiseDevice = newValue;
+                        row = newValue.getDeviceCode();
                         editMeasure.setDisable(false);
                     }
                 }
