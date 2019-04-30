@@ -86,18 +86,21 @@ public class AddDownUserController {
         fileChoose.setOnAction(event -> {
             FileChooser fileChooser=new FileChooser();
             File file = fileChooser.showOpenDialog(new Stage());
-            path = file.getPath();
-            String suxx = path.substring(path.lastIndexOf(".")+1,path.length());
-            if(file.length()>2*1024*1024){
-                actiontarget.setText("文件过大,请重新选择");
-            }else if(!("jpg".equals(suxx)) && !("png".equals(suxx)) && !("JPG".equals(suxx)) && !("PNG".equals(suxx))){
-                actiontarget.setText("图片格式不正确，请重新选择");
-                headFileName.setImage(null);
-            }else if(path == null || path == ""){
-                actiontarget.setText("请重新选择");
-            }else {
-                headFileName.setImage(new Image("file:" + path));
+            if (file!=null){
+                path = file.getPath();
+                String suxx = path.substring(path.lastIndexOf(".")+1,path.length());
+                if(file.length()>2*1024*1024){
+                    actiontarget.setText("文件过大,请重新选择");
+                }else if(!("jpg".equals(suxx)) && !("png".equals(suxx)) && !("JPG".equals(suxx)) && !("PNG".equals(suxx))){
+                    actiontarget.setText("图片格式不正确，请重新选择");
+                    headFileName.setImage(null);
+                }else if(path == null || path == ""){
+                    actiontarget.setText("请重新选择");
+                }else {
+                    headFileName.setImage(new Image("file:" + path));
+                }
             }
+
         });
 
         undisMeatrueList();
