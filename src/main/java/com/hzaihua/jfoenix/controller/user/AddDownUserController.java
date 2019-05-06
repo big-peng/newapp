@@ -80,23 +80,23 @@ public class AddDownUserController {
     String path = null;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         InfoUserService infoUserService = BeanFactoryUtil.getApplicationContext().getBean(InfoUserService.class);
         InfoMeasureService infoMeasureService = BeanFactoryUtil.getApplicationContext().getBean(InfoMeasureService.class);
         fileChoose.setOnAction(event -> {
-            FileChooser fileChooser=new FileChooser();
+            FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(new Stage());
-            if (file!=null){
+            if (file != null) {
                 path = file.getPath();
-                String suxx = path.substring(path.lastIndexOf(".")+1,path.length());
-                if(file.length()>2*1024*1024){
+                String suxx = path.substring(path.lastIndexOf(".") + 1, path.length());
+                if (file.length() > 2 * 1024 * 1024) {
                     actiontarget.setText("文件过大,请重新选择");
-                }else if(!("jpg".equals(suxx)) && !("png".equals(suxx)) && !("JPG".equals(suxx)) && !("PNG".equals(suxx))){
+                } else if (!("jpg".equals(suxx)) && !("png".equals(suxx)) && !("JPG".equals(suxx)) && !("PNG".equals(suxx))) {
                     actiontarget.setText("图片格式不正确，请重新选择");
                     headFileName.setImage(null);
-                }else if(path == null || path == ""){
+                } else if (path == null || path == "") {
                     actiontarget.setText("请重新选择");
-                }else {
+                } else {
                     headFileName.setImage(new Image("file:" + path));
                 }
             }
@@ -106,14 +106,14 @@ public class AddDownUserController {
         undisMeatrueList();
 
         //必须输入项判断
-        username.focusedProperty().addListener((ob,old,now)->{
-            if(!now){
+        username.focusedProperty().addListener((ob, old, now) -> {
+            if (!now) {
                 InfoUser user = infoUserService.queryByUserName(username.getText());
                 System.out.println(username.getText());
                 System.out.println(user);
-                if(user == null){
+                if (user == null) {
                     actiontarget.setText("用户名不存在，可以创建");
-                }else{
+                } else {
                     actiontarget.setText("用户名存在");
                 }
             }
@@ -122,7 +122,7 @@ public class AddDownUserController {
             UndisMeasureLoad undisMeasureLoad = new UndisMeasureLoad();
         });
         commitAddDownUser.setOnAction(event -> {
-            Stage stage = (Stage)commitAddDownUser.getScene().getWindow();
+            Stage stage = (Stage) commitAddDownUser.getScene().getWindow();
             String addUserName = username.getText();
             String addPassword = password.getText();
             String addAgainPassword = againPassword.getText();
@@ -133,26 +133,26 @@ public class AddDownUserController {
             //密码、名称和电话验证正则表达式
             String check = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_]{6,20}$";
             String re = "^[\u4e00-\u9fa5]{2,4}$";
-            String reg="^(-?)[1-9]+\\d*|0";
-            String rege="^[1][\\d]{10}";
+            String reg = "^(-?)[1-9]+\\d*|0";
+            String rege = "^[1][\\d]{10}";
 
-            if("".equals(addUserName)){
+            if ("".equals(addUserName)) {
                 actiontarget.setText("用户名不能为空");
-            }else if("".equals(addPassword)){
+            } else if ("".equals(addPassword)) {
                 actiontarget.setText("密码不能为空");
-            }else if(!(addPassword.matches(check))){
+            } else if (!(addPassword.matches(check))) {
                 actiontarget.setText("密码格式不正确");
-            }else if(!(PswMD5.EncoderByMD5(addAgainPassword).equals(PswMD5.EncoderByMD5(addPassword)))){
+            } else if (!(PswMD5.EncoderByMD5(addAgainPassword).equals(PswMD5.EncoderByMD5(addPassword)))) {
                 actiontarget.setText("两次输入的密码不相同，请确认");
-            }else if ("".equals(addName)){
+            } else if ("".equals(addName)) {
                 actiontarget.setText("名字不能为空");
-            }else if(!addName.matches(re)){
+            } else if (!addName.matches(re)) {
                 actiontarget.setText("名称格式不正确");
-            }else if("".equals(addPhone)){
+            } else if ("".equals(addPhone)) {
                 actiontarget.setText("电话号码不能为空");
-            }else if(addPhone.matches(reg) && !(addPhone.matches(rege))){
+            } else if (addPhone.matches(reg) && !(addPhone.matches(rege))) {
                 actiontarget.setText("电话号码格式不正确");
-            }else {
+            } else {
                 //添加用户
                 InfoUser infoUser = new InfoUser();
                 infoUser.setUserName(addUserName);
@@ -164,8 +164,8 @@ public class AddDownUserController {
                 infoUser.setUserType(downUserType.getValue());
                 infoUser.setParentUser("3");
                 infoUser.setStatus("离线");
-                infoUser.setHeadFileName("file:"+path);
-                infoUserService.addInfoUser(infoUser,undistriList);
+                infoUser.setHeadFileName("file:" + path);
+                infoUserService.addInfoUser(infoUser, undistriList);
                 undistriList.clear();
                 infoUser.setStatus("0");
                 infoUser.setUserType("0");
@@ -175,7 +175,8 @@ public class AddDownUserController {
         });
 
     }
-    private void undisMeatrueList(){
+
+    private void undisMeatrueList() {
         measureCode.setCellValueFactory(new PropertyValueFactory<>("measureCode"));
         measureName.setCellValueFactory(new PropertyValueFactory<>("measureName"));
         downDeviceTreeTableView.setItems(undistriList);

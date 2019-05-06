@@ -13,6 +13,7 @@ public class InfoNoiseManager {
     private SimpleDoubleProperty DayOverValue; //噪声白天超标值
     private SimpleDoubleProperty NightOverValue; //噪声晚上超标值
     private SimpleIntegerProperty OverDlay; //噪声超标延时
+    private SimpleIntegerProperty IsExceed; //是否超标报警
     private SimpleDoubleProperty DayOctValue; //频谱白天超标限值
     private SimpleDoubleProperty NightOctValue; //频谱晚上超标限值
     private SimpleIntegerProperty OctDlay; //频谱超标延时
@@ -23,9 +24,10 @@ public class InfoNoiseManager {
     private SimpleIntegerProperty IsRecord; //是否录音
     private DatePicker RecordStartTime; //上传开始时间
     private DatePicker RecordEndTime; //上传结束时间
-    private SimpleIntegerProperty RecordModel; //上传模式
-    private SimpleIntegerProperty FreWight; //频率计权
-    private SimpleIntegerProperty TimeWight; //时间计权
+    private SimpleDoubleProperty RecordModel; //上传模式
+    private StringProperty FreWight; //频率计权
+    private StringProperty TimeWight; //时间计权
+    private SimpleIntegerProperty Initime;// 积分统计时间
     private DatePicker AdjustTime; //校准时间
     private SimpleIntegerProperty AdjustSpace; //校准间隔
     private SimpleIntegerProperty isAutoAdjust; //是否自动电校准
@@ -38,19 +40,19 @@ public class InfoNoiseManager {
     private SimpleIntegerProperty DustAutoUp; //粉尘自动上传
     private SimpleIntegerProperty DustAutoSave; //粉尘自动保存
     private SimpleIntegerProperty DustUpSpace; //粉尘采集间隔
-    private SimpleIntegerProperty Event01; //手动控制电校准
-    private SimpleIntegerProperty Event02; //自动电校准
-    private SimpleIntegerProperty Event03; //加热
-    private SimpleIntegerProperty Event04; //噪声超标
-    private SimpleIntegerProperty Event05; //仪器启动
-    private SimpleIntegerProperty Event06; //仪器正常关机
-    private SimpleIntegerProperty Event07; //停电
-    private SimpleIntegerProperty Event08; //机箱门被打开
-    private SimpleIntegerProperty Event09; //读声级计出错
-    private SimpleIntegerProperty Event10; //存储器出错
-    private SimpleIntegerProperty Event11; //USB口出错
-    private SimpleIntegerProperty Event12; //电池电压不足
-    private SimpleIntegerProperty Event13; //声校准
+    private SimpleIntegerProperty Event_01; //手动控制电校准
+    private SimpleIntegerProperty Event_02; //自动电校准
+    private SimpleIntegerProperty Event_03; //加热
+    private SimpleIntegerProperty Event_04; //噪声超标
+    private SimpleIntegerProperty Event_05; //仪器启动
+    private SimpleIntegerProperty Event_06; //仪器正常关机
+    private SimpleIntegerProperty Event_07; //停电
+    private SimpleIntegerProperty Event_08; //机箱门被打开
+    private SimpleIntegerProperty Event_09; //读声级计出错
+    private SimpleIntegerProperty Event_10; //存储器出错
+    private SimpleIntegerProperty Event_11; //USB口出错
+    private SimpleIntegerProperty Event_12; //电池电压不足
+    private SimpleIntegerProperty Event_13; //声校准
     private SimpleIntegerProperty ON_OFF_LEQZ; //每秒的Z计权等效上传0：关； 1：开
     private SimpleIntegerProperty ON_OFF_LEQC; //每秒的C计权等效上传
     private SimpleIntegerProperty ON_OFF_LEQA; //每秒的A计权等效上传
@@ -96,6 +98,7 @@ public class InfoNoiseManager {
                 ", DayOverValue=" + DayOverValue +
                 ", NightOverValue=" + NightOverValue +
                 ", OverDlay=" + OverDlay +
+                ", IsExceed=" + IsExceed +
                 ", DayOctValue=" + DayOctValue +
                 ", NightOctValue=" + NightOctValue +
                 ", OctDlay=" + OctDlay +
@@ -109,6 +112,7 @@ public class InfoNoiseManager {
                 ", RecordModel=" + RecordModel +
                 ", FreWight=" + FreWight +
                 ", TimeWight=" + TimeWight +
+                ", Initime=" + Initime +
                 ", AdjustTime=" + AdjustTime +
                 ", AdjustSpace=" + AdjustSpace +
                 ", isAutoAdjust=" + isAutoAdjust +
@@ -121,19 +125,19 @@ public class InfoNoiseManager {
                 ", DustAutoUp=" + DustAutoUp +
                 ", DustAutoSave=" + DustAutoSave +
                 ", DustUpSpace=" + DustUpSpace +
-                ", Event01=" + Event01 +
-                ", Event02=" + Event02 +
-                ", Event03=" + Event03 +
-                ", Event04=" + Event04 +
-                ", Event05=" + Event05 +
-                ", Event06=" + Event06 +
-                ", Event07=" + Event07 +
-                ", Event08=" + Event08 +
-                ", Event09=" + Event09 +
-                ", Event10=" + Event10 +
-                ", Event11=" + Event11 +
-                ", Event12=" + Event12 +
-                ", Event13=" + Event13 +
+                ", Event_01=" + Event_01 +
+                ", Event_02=" + Event_02 +
+                ", Event_03=" + Event_03 +
+                ", Event_04=" + Event_04 +
+                ", Event_05=" + Event_05 +
+                ", Event_06=" + Event_06 +
+                ", Event_07=" + Event_07 +
+                ", Event_08=" + Event_08 +
+                ", Event_09=" + Event_09 +
+                ", Event_10=" + Event_10 +
+                ", Event_11=" + Event_11 +
+                ", Event_12=" + Event_12 +
+                ", Event_13=" + Event_13 +
                 ", ON_OFF_LEQZ=" + ON_OFF_LEQZ +
                 ", ON_OFF_LEQC=" + ON_OFF_LEQC +
                 ", ON_OFF_LEQA=" + ON_OFF_LEQA +
@@ -170,6 +174,30 @@ public class InfoNoiseManager {
                 ", version_NoiseMonitor=" + version_NoiseMonitor +
                 ", version_normal=" + version_normal +
                 '}';
+    }
+
+    public int getInitime() {
+        return Initime.get();
+    }
+
+    public SimpleIntegerProperty initimeProperty() {
+        return Initime;
+    }
+
+    public void setInitime(int initime) {
+        this.Initime = new SimpleIntegerProperty(initime);
+    }
+
+    public int getIsExceed() {
+        return IsExceed.get();
+    }
+
+    public SimpleIntegerProperty isExceedProperty() {
+        return IsExceed;
+    }
+
+    public void setIsExceed(int isExceed) {
+        this.IsExceed = new SimpleIntegerProperty(isExceed);
     }
 
     public String getNoiseMeasureID() {
@@ -356,40 +384,40 @@ public class InfoNoiseManager {
         RecordEndTime = recordEndTime;
     }
 
-    public int getRecordModel() {
+    public double getRecordModel() {
         return RecordModel.get();
     }
 
-    public SimpleIntegerProperty recordModelProperty() {
+    public SimpleDoubleProperty recordModelProperty() {
         return RecordModel;
     }
 
-    public void setRecordModel(int recordModel) {
-        this.RecordModel = new SimpleIntegerProperty(recordModel);
+    public void setRecordModel(double recordModel) {
+        this.RecordModel = new SimpleDoubleProperty(recordModel);
     }
 
-    public int getFreWight() {
+    public String getFreWight() {
         return FreWight.get();
     }
 
-    public SimpleIntegerProperty freWightProperty() {
+    public StringProperty freWightProperty() {
         return FreWight;
     }
 
-    public void setFreWight(int freWight) {
-        this.FreWight = new SimpleIntegerProperty(freWight);
+    public void setFreWight(String freWight) {
+        this.FreWight = new SimpleStringProperty(freWight);
     }
 
-    public int getTimeWight() {
+    public String getTimeWight() {
         return TimeWight.get();
     }
 
-    public SimpleIntegerProperty timeWightProperty() {
+    public StringProperty timeWightProperty() {
         return TimeWight;
     }
 
-    public void setTimeWight(int timeWight) {
-        this.TimeWight = new SimpleIntegerProperty(timeWight);
+    public void setTimeWight(String timeWight) {
+        this.TimeWight = new SimpleStringProperty(timeWight);
     }
 
     public DatePicker getAdjustTime() {
@@ -532,160 +560,160 @@ public class InfoNoiseManager {
         this.DustUpSpace = new SimpleIntegerProperty(dustUpSpace);
     }
 
-    public int getEvent01() {
-        return Event01.get();
+    public int getEvent_01() {
+        return Event_01.get();
     }
 
-    public SimpleIntegerProperty event01Property() {
-        return Event01;
+    public SimpleIntegerProperty Event_01Property() {
+        return Event_01;
     }
 
-    public void setEvent01(int event01) {
-        this.Event01 = new SimpleIntegerProperty(event01);
+    public void setEvent_01(int Event_01) {
+        this.Event_01 = new SimpleIntegerProperty(Event_01);
     }
 
-    public int getEvent02() {
-        return Event02.get();
+    public int getEvent_02() {
+        return Event_02.get();
     }
 
-    public SimpleIntegerProperty event02Property() {
-        return Event02;
+    public SimpleIntegerProperty Event_02Property() {
+        return Event_02;
     }
 
-    public void setEvent02(int event02) {
-        this.Event02 = new SimpleIntegerProperty(event02);
+    public void setEvent_02(int Event_02) {
+        this.Event_02 = new SimpleIntegerProperty(Event_02);
     }
 
-    public int getEvent03() {
-        return Event03.get();
+    public int getEvent_03() {
+        return Event_03.get();
     }
 
-    public SimpleIntegerProperty event03Property() {
-        return Event03;
+    public SimpleIntegerProperty Event_03Property() {
+        return Event_03;
     }
 
-    public void setEvent03(int event03) {
-        this.Event03 = new SimpleIntegerProperty(event03);
+    public void setEvent_03(int Event_03) {
+        this.Event_03 = new SimpleIntegerProperty(Event_03);
     }
 
-    public int getEvent04() {
-        return Event04.get();
+    public int getEvent_04() {
+        return Event_04.get();
     }
 
-    public SimpleIntegerProperty event04Property() {
-        return Event04;
+    public SimpleIntegerProperty Event_04Property() {
+        return Event_04;
     }
 
-    public void setEvent04(int event04) {
-        this.Event04 = new SimpleIntegerProperty(event04);
+    public void setEvent_04(int Event_04) {
+        this.Event_04 = new SimpleIntegerProperty(Event_04);
     }
 
-    public int getEvent05() {
-        return Event05.get();
+    public int getEvent_05() {
+        return Event_05.get();
     }
 
-    public SimpleIntegerProperty event05Property() {
-        return Event05;
+    public SimpleIntegerProperty Event_05Property() {
+        return Event_05;
     }
 
-    public void setEvent05(int event05) {
-        this.Event05 = new SimpleIntegerProperty(event05);
+    public void setEvent_05(int Event_05) {
+        this.Event_05 = new SimpleIntegerProperty(Event_05);
     }
 
-    public int getEvent06() {
-        return Event06.get();
+    public int getEvent_06() {
+        return Event_06.get();
     }
 
-    public SimpleIntegerProperty event06Property() {
-        return Event06;
+    public SimpleIntegerProperty Event_06Property() {
+        return Event_06;
     }
 
-    public void setEvent06(int event06) {
-        this.Event06 = new SimpleIntegerProperty(event06);
+    public void setEvent_06(int Event_06) {
+        this.Event_06 = new SimpleIntegerProperty(Event_06);
     }
 
-    public int getEvent07() {
-        return Event07.get();
+    public int getEvent_07() {
+        return Event_07.get();
     }
 
-    public SimpleIntegerProperty event07Property() {
-        return Event07;
+    public SimpleIntegerProperty Event_07Property() {
+        return Event_07;
     }
 
-    public void setEvent07(int event07) {
-        this.Event07 = new SimpleIntegerProperty(event07);
+    public void setEvent_07(int Event_07) {
+        this.Event_07 = new SimpleIntegerProperty(Event_07);
     }
 
-    public int getEvent08() {
-        return Event08.get();
+    public int getEvent_08() {
+        return Event_08.get();
     }
 
-    public SimpleIntegerProperty event08Property() {
-        return Event08;
+    public SimpleIntegerProperty Event_08Property() {
+        return Event_08;
     }
 
-    public void setEvent08(int event08) {
-        this.Event08 = new SimpleIntegerProperty(event08);
+    public void setEvent_08(int Event_08) {
+        this.Event_08 = new SimpleIntegerProperty(Event_08);
     }
 
-    public int getEvent09() {
-        return Event09.get();
+    public int getEvent_09() {
+        return Event_09.get();
     }
 
-    public SimpleIntegerProperty event09Property() {
-        return Event09;
+    public SimpleIntegerProperty Event_09Property() {
+        return Event_09;
     }
 
-    public void setEvent09(int event09) {
-        this.Event09 = new SimpleIntegerProperty(event09);
+    public void setEvent_09(int Event_09) {
+        this.Event_09 = new SimpleIntegerProperty(Event_09);
     }
 
-    public int getEvent10() {
-        return Event10.get();
+    public int getEvent_10() {
+        return Event_10.get();
     }
 
-    public SimpleIntegerProperty event10Property() {
-        return Event10;
+    public SimpleIntegerProperty Event_10Property() {
+        return Event_10;
     }
 
-    public void setEvent10(int event10) {
-        this.Event10 = new SimpleIntegerProperty(event10);
+    public void setEvent_10(int Event_10) {
+        this.Event_10 = new SimpleIntegerProperty(Event_10);
     }
 
-    public int getEvent11() {
-        return Event11.get();
+    public int getEvent_11() {
+        return Event_11.get();
     }
 
-    public SimpleIntegerProperty event11Property() {
-        return Event11;
+    public SimpleIntegerProperty Event_11Property() {
+        return Event_11;
     }
 
-    public void setEvent11(int event11) {
-        this.Event11 = new SimpleIntegerProperty(event11);
+    public void setEvent_11(int Event_11) {
+        this.Event_11 = new SimpleIntegerProperty(Event_11);
     }
 
-    public int getEvent12() {
-        return Event12.get();
+    public int getEvent_12() {
+        return Event_12.get();
     }
 
-    public SimpleIntegerProperty event12Property() {
-        return Event12;
+    public SimpleIntegerProperty Event_12Property() {
+        return Event_12;
     }
 
-    public void setEvent12(int event12) {
-        this.Event12 = new SimpleIntegerProperty(event12);
+    public void setEvent_12(int Event_12) {
+        this.Event_12 = new SimpleIntegerProperty(Event_12);
     }
 
-    public int getEvent13() {
-        return Event13.get();
+    public int getEvent_13() {
+        return Event_13.get();
     }
 
-    public SimpleIntegerProperty event13Property() {
-        return Event13;
+    public SimpleIntegerProperty Event_13Property() {
+        return Event_13;
     }
 
-    public void setEvent13(int event13) {
-        this.Event13 = new SimpleIntegerProperty(event13);
+    public void setEvent_13(int Event_13) {
+        this.Event_13 = new SimpleIntegerProperty(Event_13);
     }
 
     public int getON_OFF_LEQZ() {
@@ -1108,7 +1136,7 @@ public class InfoNoiseManager {
         this.version_normal = new SimpleStringProperty(version_normal);
     }
 
-    public InfoNoiseManager(String noiseMeasureID, int sample, int upSpace, double dayOverValue, double nightOverValue, int overDlay, double dayOctValue, double nightOctValue, int octDlay, int isOct, double dayRecordValue, double nightRecordValue, int recordDlay, int isRecord, DatePicker recordStartTime, DatePicker recordEndTime, int recordModel, int freWight, int timeWight, DatePicker adjustTime, int adjustSpace, int isAutoAdjust, int weaAutoUp, int weaAutoSave, int weaUpSpace, int carAutoUp, int carAutoSave, int carUpSpace, int dustAutoUp, int dustAutoSave, int dustUpSpace, int event01, int event02, int event03, int event04, int event05, int event06, int event07, int event08, int event09, int event10, int event11, int event12, int event13, int ON_OFF_LEQZ, int ON_OFF_LEQC, int ON_OFF_LEQA, int ON_OFF_LPFZ, int ON_OFF_LPSZ, int ON_OFF_LPIZ, int ON_OFF_LPFC, int ON_OFF_LPSC, int ON_OFF_LPIC, int ON_OFF_LPFA, int ON_OFF_LPSA, int ON_OFF_LPIA, int ON_OFF_PEAKZ, int ON_OFF_PEAKC, int ON_OFF_PEAKA, int ON_OFF_MIN, int ON_OFF_HOUR, int ON_OFF_DAY, int ON_OFF_UDT, int ON_OFF_13OCT, int ON_OFF_11OCT, int ON_OFF_RADF, int ON_OFF_FAMF, int ON_OFF_PDWIV, int ON_OFF_LEQ1S, int hasOct, int hasAll, int hasRecord, int hasSoundtrans, int record_On_Off, String version_Hardware, String version_Linux, String version_N_VIEW, String version_NoiseMonitor, String version_normal) {
+    public InfoNoiseManager(String noiseMeasureID, int sample, int upSpace, double dayOverValue, double nightOverValue, int overDlay,int isExceed, double dayOctValue, double nightOctValue, int octDlay, int isOct, double dayRecordValue, double nightRecordValue, int recordDlay, int isRecord, DatePicker recordStartTime, DatePicker recordEndTime, double recordModel, String freWight, String timeWight,int initTime, DatePicker adjustTime, int adjustSpace, int isAutoAdjust, int weaAutoUp, int weaAutoSave, int weaUpSpace, int carAutoUp, int carAutoSave, int carUpSpace, int dustAutoUp, int dustAutoSave, int dustUpSpace, int Event_01, int Event_02, int Event_03, int Event_04, int Event_05, int Event_06, int Event_07, int Event_08, int Event_09, int Event_10, int Event_11, int Event_12, int Event_13, int ON_OFF_LEQZ, int ON_OFF_LEQC, int ON_OFF_LEQA, int ON_OFF_LPFZ, int ON_OFF_LPSZ, int ON_OFF_LPIZ, int ON_OFF_LPFC, int ON_OFF_LPSC, int ON_OFF_LPIC, int ON_OFF_LPFA, int ON_OFF_LPSA, int ON_OFF_LPIA, int ON_OFF_PEAKZ, int ON_OFF_PEAKC, int ON_OFF_PEAKA, int ON_OFF_MIN, int ON_OFF_HOUR, int ON_OFF_DAY, int ON_OFF_UDT, int ON_OFF_13OCT, int ON_OFF_11OCT, int ON_OFF_RADF, int ON_OFF_FAMF, int ON_OFF_PDWIV, int ON_OFF_LEQ1S, int hasOct, int hasAll, int hasRecord, int hasSoundtrans, int record_On_Off, String version_Hardware, String version_Linux, String version_N_VIEW, String version_NoiseMonitor, String version_normal) {
         NoiseMeasureID = new SimpleStringProperty(noiseMeasureID);
         Sample = new SimpleIntegerProperty(sample);
         UpSpace = new SimpleIntegerProperty(upSpace);
@@ -1118,6 +1146,7 @@ public class InfoNoiseManager {
         DayOctValue = new SimpleDoubleProperty(dayOctValue);
         NightOctValue = new SimpleDoubleProperty(nightOctValue);
         OctDlay = new SimpleIntegerProperty(octDlay);
+        IsExceed = new SimpleIntegerProperty(isExceed);
         IsOct = new SimpleIntegerProperty(isOct);
         DayRecordValue = new SimpleDoubleProperty(dayRecordValue);
         NightRecordValue = new SimpleDoubleProperty(nightRecordValue);
@@ -1125,9 +1154,10 @@ public class InfoNoiseManager {
         IsRecord = new SimpleIntegerProperty(isRecord);
         RecordStartTime =recordStartTime;
         RecordEndTime = recordEndTime;
-        RecordModel = new SimpleIntegerProperty(recordModel);
-        FreWight = new SimpleIntegerProperty(freWight);
-        TimeWight = new SimpleIntegerProperty(timeWight);
+        RecordModel = new SimpleDoubleProperty(recordModel);
+        FreWight = new SimpleStringProperty(freWight);
+        TimeWight = new SimpleStringProperty(timeWight);
+        Initime = new SimpleIntegerProperty(initTime);
         AdjustTime = adjustTime;
         AdjustSpace = new SimpleIntegerProperty(adjustSpace);
         this.isAutoAdjust = new SimpleIntegerProperty(isAutoAdjust);
@@ -1140,19 +1170,19 @@ public class InfoNoiseManager {
         DustAutoUp = new SimpleIntegerProperty(dustAutoUp);
         DustAutoSave = new SimpleIntegerProperty(dustAutoSave);
         DustUpSpace = new SimpleIntegerProperty(dustUpSpace);
-        Event01 = new SimpleIntegerProperty(event01);
-        Event02 = new SimpleIntegerProperty(event02);
-        Event03 = new SimpleIntegerProperty(event03);
-        Event04 = new SimpleIntegerProperty(event04);
-        Event05 = new SimpleIntegerProperty(event05);
-        Event06 = new SimpleIntegerProperty(event06);
-        Event07 = new SimpleIntegerProperty(event07);
-        Event08 = new SimpleIntegerProperty(event08);
-        Event09 = new SimpleIntegerProperty(event09);
-        Event10 = new SimpleIntegerProperty(event10);
-        Event11 = new SimpleIntegerProperty(event11);
-        Event12 = new SimpleIntegerProperty(event12);
-        Event13 = new SimpleIntegerProperty(event13);
+        this.Event_01 = new SimpleIntegerProperty(Event_01);
+        this.Event_02 = new SimpleIntegerProperty(Event_02);
+        this.Event_03 = new SimpleIntegerProperty(Event_03);
+        this.Event_04 = new SimpleIntegerProperty(Event_04);
+        this.Event_05 = new SimpleIntegerProperty(Event_05);
+        this.Event_06 = new SimpleIntegerProperty(Event_06);
+        this.Event_07 = new SimpleIntegerProperty(Event_07);
+        this.Event_08 = new SimpleIntegerProperty(Event_08);
+        this.Event_09 = new SimpleIntegerProperty(Event_09);
+        this.Event_10 = new SimpleIntegerProperty(Event_10);
+        this.Event_11 = new SimpleIntegerProperty(Event_11);
+        this.Event_12 = new SimpleIntegerProperty(Event_12);
+        this.Event_13 = new SimpleIntegerProperty(Event_13);
         this.ON_OFF_LEQZ = new SimpleIntegerProperty(ON_OFF_LEQZ);
         this.ON_OFF_LEQC = new SimpleIntegerProperty(ON_OFF_LEQC);
         this.ON_OFF_LEQA = new SimpleIntegerProperty(ON_OFF_LEQA);

@@ -20,7 +20,11 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import com.jfoenix.controls.JFXListView?>
 <?import java.lang.String?>
+<?import java.util.Date?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import com.jfoenix.controls.JFXTimePicker?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="700.0"
             xmlns="http://javafx.com/javafx/8.0.121">
     <VBox layoutX="10.0" layoutY="20.0" prefHeight="500.0" prefWidth="680.0">
@@ -49,9 +53,10 @@
                                                       promptText="选择时间计权" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                 <items>
                                                     <FXCollections fx:factory="observableArrayList">
-                                                        <String fx:value="12"/>
-                                                        <String fx:value="123"/>
-                                                        <String fx:value="1234"/>
+                                                        <String fx:value="F"/>
+                                                        <String fx:value="A"/>
+                                                        <String fx:value="I"/>
+                                                        <String fx:value="Z"/>
                                                     </FXCollections>
                                                 </items>
                                             </ComboBox>
@@ -62,6 +67,10 @@
                                                       promptText="选择频率计权" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                                 <items>
                                                     <FXCollections fx:factory="observableArrayList">
+                                                        <String fx:value="F"/>
+                                                        <String fx:value="A"/>
+                                                        <String fx:value="I"/>
+                                                        <String fx:value="Z"/>
                                                     </FXCollections>
                                                 </items>
                                             </ComboBox>
@@ -84,7 +93,7 @@
                                 </VBox>
                                 <VBox layoutY="250" layoutX="170">
                                     <HBox style="-fx-padding: 5 0 0 0">
-                                        <Label text="噪声超标报警"/>
+                                        <JFXCheckBox fx:id="IsExceed" text="噪声超标报警"/>
                                     </HBox>
                                     <GridPane>
                                         <Label prefHeight="25.0" prefWidth="80.0" text="昼间超标限值:"
@@ -101,6 +110,27 @@
                                         <TextField fx:id="OverDlay" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                                         <Label GridPane.columnIndex="2" GridPane.rowIndex="3">秒（1秒~10秒）</Label>
                                     </GridPane>
+
+                                </VBox>
+                                <VBox layoutY="360" layoutX="170">
+                                    <HBox style="-fx-padding: 5 0 0 0">
+                                        <JFXCheckBox fx:id="IsOct" text="噪声超标频谱分析"/>
+                                    </HBox>
+                                    <GridPane>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="昼间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="DayOctValue" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="1">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="夜间超标限值:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="NightOctValue" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="2"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="2">dB</Label>
+                                        <Label prefHeight="25.0" prefWidth="80.0" text="延迟启动时间:"
+                                               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="OctDlay" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                                        <Label GridPane.columnIndex="2" GridPane.rowIndex="3">秒（1秒~10秒）</Label>
+                                    </GridPane>
                                     <HBox style="-fx-padding: 10 0 0 0">
                                         <JFXCheckBox fx:id="ON_OFF_11OCT" text="1/1OCT频谱分析 数据自动上传"/>
                                     </HBox>
@@ -108,7 +138,7 @@
                                         <JFXCheckBox fx:id="ON_OFF_13OCT" text="1/3OCT频谱分析 数据自动上传"/>
                                     </HBox>
                                 </VBox>
-                                <VBox layoutY="420" layoutX="170">
+                                <VBox layoutY="530" layoutX="170">
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="IsRecord" text="噪声超标录音"/>
                                     </HBox>
@@ -135,27 +165,33 @@
                                                GridPane.columnIndex="0" GridPane.rowIndex="5"/>
                                         <DatePicker fx:id="RecordStartTime" GridPane.columnIndex="1"
                                                     GridPane.rowIndex="5"/>
+                                        <JFXTimePicker fx:id="StartTime" GridPane.columnIndex="2"
+                                                       GridPane.rowIndex="5"/>
                                         <Label prefHeight="25.0" prefWidth="80.0" text="优先上传终时:"
                                                GridPane.columnIndex="0" GridPane.rowIndex="6"/>
                                         <DatePicker fx:id="RecordEndTime" GridPane.columnIndex="1"
                                                     GridPane.rowIndex="6"/>
+                                        <JFXTimePicker fx:id="EndTime" GridPane.columnIndex="2"
+                                                       GridPane.rowIndex="6"/>
                                     </GridPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="610">
+                                <VBox layoutX="170" layoutY="720">
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="isAutoAdjust" selected="true" text="自动校准"/>
                                     </HBox>
                                     <GridPane>
                                         <Label prefHeight="25.0" prefWidth="80.0" text="校准起始时间:"
                                                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                                        <DatePicker fx:id="AdjustTime" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <DatePicker fx:id="AdjustTime" GridPane.columnIndex="1"
+                                                       GridPane.rowIndex="1"/>
+                                        <JFXTimePicker fx:id="ajTime" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                                         <Label prefHeight="25.0" prefWidth="80.0" text="每日校准频次:"
                                                GridPane.columnIndex="0" GridPane.rowIndex="2"/>
                                         <TextField fx:id="AdjustSpace" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                                         <Label GridPane.columnIndex="2" GridPane.rowIndex="2">次</Label>
                                     </GridPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="700">
+                                <VBox layoutX="170" layoutY="810">
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="WeaAutoSave" selected="true" text="气象数据自动保存"/>
                                     </HBox>
@@ -169,7 +205,7 @@
                                         <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （1秒~60秒）</Label>
                                     </GridPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="790">
+                                <VBox layoutX="170" layoutY="900">
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="CarAutoSave" selected="true" text="交通数据自动保存"/>
                                     </HBox>
@@ -183,7 +219,7 @@
                                         <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （60秒~3600秒）</Label>
                                     </GridPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="880">
+                                <VBox layoutX="170" layoutY="990">
                                     <HBox style="-fx-padding: 5 0 0 0">
                                         <JFXCheckBox fx:id="DustAutoSave" selected="true" text="空气数据自动保存"/>
                                     </HBox>
@@ -197,7 +233,7 @@
                                         <Label GridPane.columnIndex="2" GridPane.rowIndex="1">秒 （300~3600秒）</Label>
                                     </GridPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="970">
+                                <VBox layoutX="170" layoutY="1080">
                                     <Label text="噪声瞬时值上传种类" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane prefHeight="120" prefWidth="260">
                                         <GridPane style="-fx-padding: 5 0 0 10">
@@ -228,7 +264,7 @@
                                         </GridPane>
                                     </ScrollPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="1140">
+                                <VBox layoutX="170" layoutY="1250">
                                     <Label text="事件主动提示" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane prefHeight="260" prefWidth="260">
                                         <VBox>
@@ -265,7 +301,7 @@
                                         </VBox>
                                     </ScrollPane>
                                 </VBox>
-                                <VBox layoutX="170" layoutY="1450">
+                                <VBox layoutX="170" layoutY="1560">
                                     <Label text="其他开关" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane prefWidth="260">
                                         <VBox>
@@ -393,14 +429,14 @@
                                     <Label text="当时实时事件" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane>
                                         <HBox>
-                                            <JFXTreeTableView fx:id="newTimeEvent" prefHeight="150">
+                                            <TableView fx:id="newTimeEvent" prefHeight="150">
                                                 <columns>
-                                                    <JFXTreeTableColumn fx:id="nowEvent" text="时间" prefWidth="200"
+                                                    <TableColumn fx:id="nowEvent" text="开始时间" prefWidth="200"
                                                                         resizable="true"/>
-                                                    <JFXTreeTableColumn fx:id="NowEventDescribe" text="事件描述"
+                                                    <TableColumn fx:id="NowEventDescribe" text="事件描述"
                                                                         prefWidth="200" resizable="true"/>
                                                 </columns>
-                                            </JFXTreeTableView>
+                                            </TableView>
                                         </HBox>
                                     </ScrollPane>
                                 </VBox>
@@ -408,16 +444,16 @@
                                     <Label text="事件记录" style="-fx-padding: 5 0 5 5"/>
                                     <ScrollPane>
                                         <VBox>
-                                            <JFXTreeTableView fx:id="eventList" prefHeight="150">
+                                            <TableView fx:id="eventListTableView" prefHeight="150">
                                                 <columns>
-                                                    <JFXTreeTableColumn fx:id="EventBeginTime" text="开始时间"
-                                                                        prefWidth="130" resizable="true"/>
-                                                    <JFXTreeTableColumn fx:id="EventEndTime" text="结束时间" prefWidth="130"
+                                                    <TableColumn fx:id="EventBeginTime" text="开始时间"
+                                                                 prefWidth="130" resizable="true"/>
+                                                    <TableColumn fx:id="EventEndTime" text="结束时间" prefWidth="130"
                                                                         resizable="true"/>
-                                                    <JFXTreeTableColumn fx:id="EventDescribe" text="时间描述"
+                                                    <TableColumn fx:id="EventDescribe" text="时间描述"
                                                                         prefWidth="140" resizable="true"/>
                                                 </columns>
-                                            </JFXTreeTableView>
+                                            </TableView>
                                         </VBox>
                                     </ScrollPane>
                                 </VBox>

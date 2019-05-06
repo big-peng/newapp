@@ -3,6 +3,7 @@ package com.hzaihua.jfoenix.controller.measure;
 
 import com.hzaihua.jfoenix.controller.Device.AddFixedDeviceController;
 import com.hzaihua.jfoenix.controller.MainController;
+import com.hzaihua.jfoenix.controller.noiseDevice.NoiseDeviceManageController;
 import com.hzaihua.jfoenix.entity.InfoMeasure;
 import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
 import com.hzaihua.jfoenix.entity.InfoUser;
@@ -12,6 +13,7 @@ import com.hzaihua.jfoenix.load.device.EditDeviceAfterLoad;
 import com.hzaihua.jfoenix.load.noiseDevice.EditNoiseDeviceLoad;
 import com.hzaihua.jfoenix.service.DeviceManageService;
 import com.hzaihua.jfoenix.service.InfoMeasureService;
+import com.hzaihua.jfoenix.service.InfoNoiseManagerService;
 import com.hzaihua.jfoenix.service.InfoNoiseService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.*;
@@ -82,6 +84,7 @@ public class AddFixedMeasureController {
     InfoMeasureService infoMeasureService = BeanFactoryUtil.getApplicationContext().getBean(InfoMeasureService.class);
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
+    InfoNoiseManagerService infoNoiseManagerService  = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseManagerService.class);
 
     @PostConstruct
     public void init(){
@@ -139,8 +142,6 @@ public class AddFixedMeasureController {
             EditNoiseDeviceLoad editNoiseDeviceLoad = new EditNoiseDeviceLoad();
         });
 
-        //如果关闭窗口，清空已添加的设备信息
-
 
         //判断设备编号是否已存在
         MeasureCode.focusedProperty().addListener((ob,old,now)->{
@@ -152,6 +153,7 @@ public class AddFixedMeasureController {
                     actiontarget.setText("测点编号已存在");
                 }
             }
+            System.out.println(NoiseDeviceManageController.infoNoiseManager);
         });
 
         //图片选择按钮
@@ -235,6 +237,8 @@ public class AddFixedMeasureController {
                 stateNoise.setDeviceCode("0");
                 stateNoise.setLinkState(0);
                 deviceManageService.insertState(stateNoise);
+                NoiseDeviceManageController.infoNoiseManager.setNoiseMeasureID(measureCode);
+                infoNoiseManagerService.saveInfoNoiseManager(NoiseDeviceManageController.infoNoiseManager);
             }
             noiseList.clear();
             stage.close();

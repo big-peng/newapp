@@ -1,6 +1,11 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
 import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
+import com.hzaihua.jfoenix.entity.EventCode;
+import com.hzaihua.jfoenix.entity.InfoNoiseManager;
+import com.hzaihua.jfoenix.service.EventCodeService;
+import com.hzaihua.jfoenix.service.InfoNoiseManagerService;
+import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
@@ -10,7 +15,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
@@ -24,15 +32,20 @@ public class NoiseDeviceManageController {
     //设置页面设置
     @FXML private TextField Sample; //瞬时采样间隔
     @FXML private TextField UpSpace; //瞬时上传间隔
-    @FXML private ComboBox TimeWight; //时间计权
-    @FXML private ComboBox FreWight; //频率计权
+    @FXML private ComboBox<String> TimeWight; //时间计权
+    @FXML private ComboBox<String> FreWight; //频率计权
     @FXML private TextField Initime; //积分统计时间
     @FXML private CheckBox ON_OFF_MIN; //分钟统计数据自动上传
     @FXML private CheckBox ON_OFF_HOUR; //小时统计数据自动上传
     @FXML private CheckBox ON_OFF_DAY; //天统计数据自动上传
+    @FXML private CheckBox IsExceed; //是否噪声超标报警
     @FXML private TextField DayOverValue; //噪声报警昼间超标限值
     @FXML private TextField NightOverValue; //噪声报警夜间超标限值
     @FXML private TextField OverDlay; //噪声报警延迟启动时间
+    @FXML private CheckBox IsOct; //噪声超标频谱分析
+    @FXML private TextField DayOctValue; //噪声超标频谱分析昼间超标限值
+    @FXML private TextField NightOctValue; //噪声超标频谱分析夜间超标限值
+    @FXML private TextField OctDlay; //噪声超标频谱分析延迟启动时间
     @FXML private CheckBox ON_OFF_11OCT; // 1/1OCT频谱分析数据自动上传
     @FXML private CheckBox ON_OFF_13OCT; // 1/3OCT频谱分析数据自动上传
     @FXML private CheckBox IsRecord; //噪声超标录音
@@ -80,7 +93,44 @@ public class NoiseDeviceManageController {
     @FXML private CheckBox ON_OFF_FAMF; //存储器出错自动修复失败时格式化
     @FXML private CheckBox ON_OFF_PDWIV; //低电压时数据存储保护
 
-    //节目界面设置
+    /**
+     * 状态界面设置
+     * */
+    @FXML private Label LinkState; //连接状态
+    @FXML private Label NowDateTime; //噪声瞬时时间
+    @FXML private Label LpTime; //噪声瞬时声级
+    @FXML private Label UsedRoom; //存储器总容量
+    @FXML private Label FreeRoom; //存储可用容量
+    @FXML private Label BatteryVoltage; //后备电池电压
+    @FXML private Label WorkingVoltage; //工作电压
+    @FXML private Label NetworkState; //蜂窝信号强度
+    @FXML private Label SIMICCID; //SIM卡ICCID
+    @FXML private Label SIMIMSI; //SIM卡IMSI
+    @FXML private Label OutTemperature; //空气温度
+    @FXML private Label Humi_R; //空气湿度
+    @FXML private Label AriPressure; //大气压强
+    @FXML private Label WindSpeed; //风速
+    @FXML private Label W_Direction; //风向
+    @FXML private Label Rainfall; //雨量强度
+    @FXML private Label PerFlux; //平均车流量
+    @FXML private Label AvgSpeed; //平均车速
+    @FXML private Label PM25; //空气PM2.5
+    @FXML private Label PM10; //空气PM10
+
+    //当时事件
+    @FXML private TableView newTimeEvent; //当时事件记录
+    @FXML private TableColumn nowEvent; //当时事件发生时间
+    @FXML private TableColumn NowEventDescribe; //当时事件描述
+    //历史事件
+    @FXML private TableView eventListTableView; //历史事件记录
+    @FXML private TableColumn EventBeginTime; //历史事件开始时间
+    @FXML private TableColumn EventEndTime; //历史事件结束时间
+    @FXML private TableColumn EventDescribe; //历史事件描述
+    public static ObservableList<EventCode> eventList = FXCollections.observableArrayList();
+
+    /**
+     * 节目界面设置
+     * */
     @FXML private AnchorPane editPara;
     @FXML private JFXListView<Label> sideList;
     @FXML private JFXButton textButton;
@@ -89,22 +139,224 @@ public class NoiseDeviceManageController {
     @FXML private JFXButton noiseButton;
     @FXML private JFXButton deleteButton;
     @FXML private AnchorPane previewWindow;
+
+    @FXML private Text actiontarget;//输入错误提示框
+    @FXML private JFXButton commitManager; //前端管理确定按钮
     //被选中的节目名
     private String selectedProgramName;
     private int y = 0;
     private ObservableList<Label> programList = FXCollections.observableArrayList();
     private Map<String, BasicPara> programParaMap = new HashMap<String, BasicPara>();
 
+    InfoNoiseManagerService infoNoiseManagerService  = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseManagerService.class);
+    public static InfoNoiseManager infoNoiseManager = new InfoNoiseManager();
+    EventCodeService eventCodeService = BeanFactoryUtil.getApplicationContext().getBean(EventCodeService.class);
+
     @PostConstruct
     public void init() {
-        //设置操作 Start
 
+        commitManager.setOnAction(event -> {
+            Stage stage = (Stage)commitManager.getScene().getWindow();
+            //parameters();
+            status();
+            program();
+            stage.close();
+        });
+
+
+
+    }
+
+    /**
+     * 设置操作 Start
+     * */
+    private void parameters(){
         //判断输入的是不是数字的正则表达式
-        String reg = "/^[0-9]+.?[0-9]*$/";
+        String reg = "^[0-9]*[1-9][0-9]*$";
+        String rege = "^(-?\\d+)(\\.\\d+)?$";
+        //基础部分
+        String sample = Sample.getText();
+        String upSpace = UpSpace.getText();
+        String iniTime = Initime.getText();
+        //噪声超标报警
+        String dayOverValue = DayOverValue.getText();
+        String nightOverValue = NightOverValue.getText();
+        String overDlay = OverDlay.getText();
+        //噪声超标频谱分析
+        String dayOctValue = DayOctValue.getText();
+        String nightOctValue = NightOctValue.getText();
+        String octDlay = OctDlay.getText();
+        //噪声超标录音
+        String dayRecordValue = DayRecordValue.getText();
+        String nightRecordValue = NightRecordValue.getText();
+        String recordDlay = RecordDlay.getText();
+        String recordModel = RecordModel.getText();
+        //自动校准
+        String adjustSpace = AdjustSpace.getText();
+        //气象数据采样间隔
+        String weaUpSpace = WeaUpSpace.getText();
+        //交通数据采样间隔
+        String carUpSpace = CarUpSpace.getText();
+        //空气数据采样间隔
+        String dustUpSpace = DustUpSpace.getText();
 
+        //判断输入的是不是数字
+        if(!(sample.matches(reg)) || !(sample.matches(rege))){
+            Sample.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数或小数");
+        }
+        if(!(upSpace.matches(reg)) || !(upSpace.matches(rege))){
+            UpSpace.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数或小数");
+        }
+        if(!(iniTime.matches(reg))){
+            Initime.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(overDlay.matches(reg))){
+            OverDlay.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(octDlay.matches(reg))){
+            OctDlay.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(recordDlay.matches(reg))){
+            RecordDlay.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(adjustSpace.matches(reg))){
+            AdjustSpace.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(weaUpSpace.matches(reg))){
+            WeaUpSpace.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(carUpSpace.matches(reg))){
+            CarUpSpace.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(dustUpSpace.matches(reg))){
+            DustUpSpace.setStyle("-fx-background-color: red");
+            actiontarget.setText("只能输入正整数");
+        }
+        if(!(dayOverValue.matches(rege))){
+            DayOverValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(nightOverValue.matches(rege))){
+            NightOverValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(dayOctValue.matches(rege))){
+            DayOctValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(nightOctValue.matches(rege))){
+            NightOctValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(dayRecordValue.matches(rege))){
+            DayRecordValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(nightRecordValue.matches(rege))){
+            NightRecordValue.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        if(!(recordModel.matches(rege))){
+            RecordModel.setStyle("-fx-background-color: red");
+            actiontarget.setText("输入格式不正确，最多保留两位小数");
+        }
+        infoNoiseManager.setSample(Integer.valueOf(sample));
+        infoNoiseManager.setUpSpace(Integer.valueOf(upSpace));
+        infoNoiseManager.setTimeWight(TimeWight.getValue());
+        infoNoiseManager.setFreWight(FreWight.getValue());
+        infoNoiseManager.setInitime(Integer.valueOf(iniTime));
+        infoNoiseManager.setON_OFF_MIN(ON_OFF_MIN.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_HOUR(ON_OFF_HOUR.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_DAY(ON_OFF_DAY.isSelected()?0:1);
+        infoNoiseManager.setIsExceed(IsExceed.isSelected()?0:1);
+        infoNoiseManager.setDayOverValue(Double.valueOf(dayOverValue));
+        infoNoiseManager.setNightOverValue(Double.valueOf(nightOverValue));
+        infoNoiseManager.setOverDlay(Integer.valueOf(overDlay));
+        infoNoiseManager.setIsOct(IsOct.isSelected()?0:1);
+        infoNoiseManager.setDayOctValue(Double.valueOf(dayOctValue));
+        infoNoiseManager.setNightOctValue(Double.valueOf(nightOctValue));
+        infoNoiseManager.setOctDlay(Integer.valueOf(octDlay));
+        infoNoiseManager.setON_OFF_11OCT(ON_OFF_11OCT.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_13OCT(ON_OFF_13OCT.isSelected()?0:1);
+        infoNoiseManager.setIsRecord(IsRecord.isSelected()?0:1);
+        infoNoiseManager.setDayRecordValue(Double.valueOf(dayRecordValue));
+        infoNoiseManager.setNightRecordValue(Double.valueOf(nightRecordValue));
+        infoNoiseManager.setRecordDlay(Integer.valueOf(recordDlay));
+        infoNoiseManager.setRecordModel(Double.valueOf(recordModel));
+        infoNoiseManager.setRecordStartTime(RecordStartTime);
+        infoNoiseManager.setRecordEndTime(RecordEndTime);
+        infoNoiseManager.setIsAutoAdjust(isAutoAdjust.isSelected()?0:1);
+        infoNoiseManager.setAdjustTime(AdjustTime);
+        infoNoiseManager.setAdjustSpace(Integer.valueOf(adjustSpace));
+        infoNoiseManager.setWeaAutoSave(WeaAutoSave.isSelected()?0:1);
+        infoNoiseManager.setWeaAutoUp(WeaAutoUp.isSelected()?0:1);
+        infoNoiseManager.setWeaUpSpace(Integer.valueOf(weaUpSpace));
+        infoNoiseManager.setCarAutoSave(CarAutoSave.isSelected()?0:1);
+        infoNoiseManager.setCarAutoUp(CarAutoUp.isSelected()?0:1);
+        infoNoiseManager.setCarUpSpace(Integer.valueOf(carUpSpace));
+        infoNoiseManager.setON_OFF_LEQA(ON_OFF_LEQA.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPFA(ON_OFF_LPFA.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPSA(ON_OFF_LPSA.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPIA(ON_OFF_LPIA.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LEQC(ON_OFF_LEQC.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPFC(ON_OFF_LPFC.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPSC(ON_OFF_LPSC.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPIC(ON_OFF_LPIC.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LEQZ(ON_OFF_LEQZ.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPFZ(ON_OFF_LPFZ.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPSZ(ON_OFF_LPSZ.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_LPIZ(ON_OFF_LPIZ.isSelected()?0:1);
+        infoNoiseManager.setEvent_13(Event_13.isSelected()?0:1);
+        infoNoiseManager.setEvent_01(Event_01.isSelected()?0:1);
+        infoNoiseManager.setEvent_02(Event_02.isSelected()?0:1);
+        infoNoiseManager.setEvent_03(Event_03.isSelected()?0:1);
+        infoNoiseManager.setEvent_04(Event_04.isSelected()?0:1);
+        infoNoiseManager.setEvent_07(Event_07.isSelected()?0:1);
+        infoNoiseManager.setEvent_08(Event_08.isSelected()?0:1);
+        infoNoiseManager.setEvent_09(Event_09.isSelected()?0:1);
+        infoNoiseManager.setEvent_10(Event_10.isSelected()?0:1);
+        infoNoiseManager.setEvent_12(Event_12.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_RADF(ON_OFF_RADF.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_FAMF(ON_OFF_FAMF.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_PDWIV(ON_OFF_PDWIV.isSelected()?0:1);
+    }
 
-        //设置操作 End
-        //节目操作 Start
+    /**
+     * 设置操作 End
+     *
+     */
+
+    /**
+     * 状态操作 Start
+     * */
+    private void status(){
+        System.out.println(RecordStartTime.toString());
+        System.out.println(EventBeginTime.getColumns().toString());
+        System.out.println(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
+        eventList = eventCodeService.queryByEventSource(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
+        EventBeginTime.setCellValueFactory(new PropertyValueFactory<>("EventBeginTime"));
+        EventEndTime.setCellValueFactory(new PropertyValueFactory<>("EventEndTime"));
+        EventDescribe.setCellValueFactory(new PropertyValueFactory<>("EventDescribe"));
+        System.out.println("sasadak"+eventList);
+        eventListTableView.setItems(eventList);
+    }
+    /**
+     * 状态操作 End
+     * */
+
+    /**
+     * 节目操作 Start
+     * */
+    private void program(){
         textButton.setOnAction(event -> {
             String programName = "文本" + ((programList.size() == 0) ? "" : programList.size());
             Label label = new Label(programName);
@@ -167,8 +419,10 @@ public class NoiseDeviceManageController {
             selectedProgramName = null;
         });
         subTitleButton.fire();
-        //节目操作 End
     }
+    /**
+     * 节目操作 End
+     * */
 
     @FXML
     private void changePage() {

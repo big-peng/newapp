@@ -45,7 +45,7 @@
         </javaTypeResolver>
 
         <!-- 生成实体类地址 -->
-        <javaModelGenerator targetPackage="com.hzaihua.jfoenix.entity" targetProject="${models}" >
+        <javaModelGenerator targetPackage="entity" targetProject="${models}" >
             <property name="enableSubPackages" value="false"/>
             <property name="trimStrings" value="true"/>
         </javaModelGenerator>

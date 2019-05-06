@@ -9,6 +9,7 @@
     <result column="dayOverValue" jdbcType="DOUBLE" property="dayovervalue" />
     <result column="nightOverValue" jdbcType="DOUBLE" property="nightovervalue" />
     <result column="overDlay" jdbcType="INTEGER" property="overdlay" />
+    <result column="IsExceed" javaType="INTEGER" property="isexceed"/>
     <result column="dayOctValue" jdbcType="DOUBLE" property="dayoctvalue" />
     <result column="nightOctValue" jdbcType="DOUBLE" property="nightoctvalue" />
     <result column="octDlay" jdbcType="INTEGER" property="octdlay" />
@@ -87,7 +88,7 @@
   <insert id="insertNoiseManager" parameterType="com.hzaihua.jfoenix.entity.InfoNoiseManager">
     insert into info_noise_manager (deviceCode, sample, initime, 
       upSpace, dayOverValue, nightOverValue, 
-      overDlay, dayOctValue, nightOctValue, 
+      overDlay, isExceed, dayOctValue, nightOctValue,
       octDlay, isOct, dayRecordValue, 
       nightRecordValue, recordDlay, isRecord, 
       recordStartTime, recordEndTime, recordModel, 
@@ -114,7 +115,7 @@
       version_NoiseMonitor, version_normal)
     values (#{devicecode,jdbcType=VARCHAR}, #{sample,jdbcType=INTEGER}, #{initime,jdbcType=INTEGER}, 
       #{upspace,jdbcType=INTEGER}, #{dayovervalue,jdbcType=DOUBLE}, #{nightovervalue,jdbcType=DOUBLE}, 
-      #{overdlay,jdbcType=INTEGER}, #{dayoctvalue,jdbcType=DOUBLE}, #{nightoctvalue,jdbcType=DOUBLE}, 
+      #{overdlay,jdbcType=INTEGER}, #{isexceed,jdbcType=INTEGER} #{dayoctvalue,jdbcType=DOUBLE}, #{nightoctvalue,jdbcType=DOUBLE},
       #{octdlay,jdbcType=INTEGER}, #{isoct,jdbcType=INTEGER}, #{dayrecordvalue,jdbcType=DOUBLE}, 
       #{nightrecordvalue,jdbcType=DOUBLE}, #{recorddlay,jdbcType=INTEGER}, #{isrecord,jdbcType=INTEGER}, 
       #{recordstarttime,jdbcType=TIMESTAMP}, #{recordendtime,jdbcType=TIMESTAMP}, #{recordmodel,jdbcType=INTEGER}, 
@@ -148,6 +149,7 @@
       dayOverValue = #{dayovervalue,jdbcType=DOUBLE},
       nightOverValue = #{nightovervalue,jdbcType=DOUBLE},
       overDlay = #{overdlay,jdbcType=INTEGER},
+      isExceed = #{isexceed,jdbcType=INTEGER},
       dayOctValue = #{dayoctvalue,jdbcType=DOUBLE},
       nightOctValue = #{nightoctvalue,jdbcType=DOUBLE},
       octDlay = #{octdlay,jdbcType=INTEGER},
@@ -224,7 +226,7 @@
     where deviceCode = #{devicecode,jdbcType=VARCHAR}
   </update>
   <select id="queryNoiseManagerByNoiseCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select deviceCode, sample, initime, upSpace, dayOverValue, nightOverValue, overDlay,
+    select deviceCode, sample, initime, upSpace, dayOverValue, nightOverValue, overDlay, isExceed,
     dayOctValue, nightOctValue, octDlay, isOct, dayRecordValue, nightRecordValue, recordDlay, 
     isRecord, recordStartTime, recordEndTime, recordModel, freWight, timeWight, adjustTime, 
     adjustSpace, isAutoAdjust, weaAutoUp, weaAutoSave, weaUpSpace, carAutoUp, carAutoSave, 

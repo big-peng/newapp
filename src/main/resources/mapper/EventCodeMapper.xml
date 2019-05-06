@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.EventCodeDao">
+    <!--查询所有  -->
+    <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.EventCode">
+        select * from event_code
+    </select>
+    <!-- 添加 -->
+    <insert id="insertEventCode" parameterType="com.hzaihua.jfoenix.entity.EventCode">
+      insert into event_code
+      values(#{EventCode},#{EventSourceType},#{EventSource},#{EventType},#{EventBeginTime,jdbcType=TIMESTAMP},#{EventEndTime,jdbcType=TIMESTAMP},#{EventLevel},#{EventDescribe})
+    </insert>
+
+    <!-- 根据事件来源查询 -->
+    <select id="queryByEventSource" resultType="com.hzaihua.jfoenix.entity.EventCode">
+      select * from event_code
+      where EventSource=#{EventSource}
+    </select>
+</mapper>
