@@ -1,5 +1,6 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
+import com.hzaihua.jfoenix.controller.TCPLink.SocketThread;
 import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
 import com.hzaihua.jfoenix.entity.EventCode;
 import com.hzaihua.jfoenix.entity.InfoNoiseManager;
@@ -8,6 +9,7 @@ import com.hzaihua.jfoenix.service.InfoNoiseManagerService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTimePicker;
 import io.datafx.controller.ViewController;
 import javafx.animation.*;
 import javafx.collections.FXCollections;
@@ -22,6 +24,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
+import java.net.Socket;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,10 +57,13 @@ public class NoiseDeviceManageController {
     @FXML private TextField NightRecordValue; //噪声超标录音夜间超标限值
     @FXML private TextField RecordDlay; //噪声超标录音延迟启动时间
     @FXML private TextField RecordModel; //噪声超标录音上传模式
-    @FXML private DatePicker RecordStartTime; //噪声超标录音优先上传始时
-    @FXML private DatePicker RecordEndTime; //噪声超标录音优先上传终时
+    @FXML private DatePicker RecordStartTime; //噪声超标录音优先上传始时 日期
+    @FXML private JFXTimePicker StartTime; //噪声超标录音优先上传始时 时间
+    @FXML private DatePicker RecordEndTime; //噪声超标录音优先上传终时 日期
+    @FXML private JFXTimePicker EndTime; //噪声超标录音优先上传终时 时间
     @FXML private CheckBox isAutoAdjust; //自动校准
-    @FXML private DatePicker AdjustTime; //校准起始时间
+    @FXML private DatePicker AdjustTime; //校准起始日期
+    @FXML private JFXTimePicker ajTime; //校准起始时间
     @FXML private TextField  AdjustSpace; //每日校准频次
     @FXML private CheckBox WeaAutoSave; //气象数据自动保存
     @FXML private CheckBox WeaAutoUp; //气象数据自动上传
@@ -118,15 +125,28 @@ public class NoiseDeviceManageController {
     @FXML private Label PM10; //空气PM10
 
     //当时事件
-    @FXML private TableView newTimeEvent; //当时事件记录
+    @FXML private TableView<EventCode> newTimeEvent; //当时事件记录
     @FXML private TableColumn nowEvent; //当时事件发生时间
     @FXML private TableColumn NowEventDescribe; //当时事件描述
     //历史事件
-    @FXML private TableView eventListTableView; //历史事件记录
-    @FXML private TableColumn EventBeginTime; //历史事件开始时间
+    @FXML private TableView<EventCode> eventListTableView; //历史事件记录
+    @FXML private TableColumn EventStartTime; //历史事件开始时间
     @FXML private TableColumn EventEndTime; //历史事件结束时间
     @FXML private TableColumn EventDescribe; //历史事件描述
+    public ObservableList<EventCode> events = FXCollections.observableArrayList();
     public static ObservableList<EventCode> eventList = FXCollections.observableArrayList();
+
+    //授权信息
+    @FXML private JFXButton changeAuthorize; //更改授权
+    @FXML private CheckBox HasAll; //总值分析授权
+    @FXML private CheckBox HasOct; //频谱分析授权
+    @FXML private CheckBox HasRecord; //超标录音授权
+    @FXML private CheckBox HasSoundtrans; //实时语音授权
+    //内核、引擎
+    @FXML private Label version_Hardware; //硬件版本
+    @FXML private Label version_Linux; //内核版本
+    @FXML private Label version_N_VIEW; //界面版本
+    @FXML private Label version_NoiseMonitor; //采集版本
 
     /**
      * 节目界面设置
@@ -151,13 +171,27 @@ public class NoiseDeviceManageController {
     InfoNoiseManagerService infoNoiseManagerService  = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseManagerService.class);
     public static InfoNoiseManager infoNoiseManager = new InfoNoiseManager();
     EventCodeService eventCodeService = BeanFactoryUtil.getApplicationContext().getBean(EventCodeService.class);
+    Date startDate = null; //噪声优先上传始时
+    Date endDate = null; //噪声优先上传终时
+    Date adjust = null; //校准时间
+    InfoNoiseManager infoNoiseManager1 = infoNoiseManagerService.queryByNoiseCode("100000");
+    private Socket socket;
 
     @PostConstruct
     public void init() {
 
+        //历史事件列表
+        oldEventList();
+        //授权信息
+        authorize();
+        //内核、引擎显示
+        hardWareGrid();
+        //监听端口
+        new Thread(new SocketThread()).start();
+
         commitManager.setOnAction(event -> {
             Stage stage = (Stage)commitManager.getScene().getWindow();
-            //parameters();
+            parameters();
             status();
             program();
             stage.close();
@@ -269,6 +303,26 @@ public class NoiseDeviceManageController {
             RecordModel.setStyle("-fx-background-color: red");
             actiontarget.setText("输入格式不正确，最多保留两位小数");
         }
+        StartTime.set24HourView(true);
+        EndTime.set24HourView(true);
+        ajTime.set24HourView(true);
+        StringBuffer recordStartTime = new StringBuffer();
+        recordStartTime.append(RecordStartTime.getValue()).append(" ").append(StartTime.getValue()).append(":00");
+        StringBuffer recordEndTime = new StringBuffer();
+        recordEndTime.append(RecordEndTime.getValue()).append(" ").append(EndTime.getValue()).append(":00");
+        StringBuffer adjTime = new StringBuffer();
+        adjTime.append(AdjustTime.getValue()).append(" ").append(ajTime.getValue()).append(":00");
+        String recStartTime = recordStartTime.toString();
+        String recEndTime = recordEndTime.toString();
+        String adjSpace = adjTime.toString();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            startDate= sdf.parse(recStartTime);
+            endDate = sdf.parse(recEndTime);
+            adjust = sdf.parse(adjSpace);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         infoNoiseManager.setSample(Integer.valueOf(sample));
         infoNoiseManager.setUpSpace(Integer.valueOf(upSpace));
         infoNoiseManager.setTimeWight(TimeWight.getValue());
@@ -292,10 +346,10 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setNightRecordValue(Double.valueOf(nightRecordValue));
         infoNoiseManager.setRecordDlay(Integer.valueOf(recordDlay));
         infoNoiseManager.setRecordModel(Double.valueOf(recordModel));
-        infoNoiseManager.setRecordStartTime(RecordStartTime);
-        infoNoiseManager.setRecordEndTime(RecordEndTime);
+        infoNoiseManager.setRecordStartTime(startDate);
+        infoNoiseManager.setRecordEndTime(endDate);
         infoNoiseManager.setIsAutoAdjust(isAutoAdjust.isSelected()?0:1);
-        infoNoiseManager.setAdjustTime(AdjustTime);
+        infoNoiseManager.setAdjustTime(adjust);
         infoNoiseManager.setAdjustSpace(Integer.valueOf(adjustSpace));
         infoNoiseManager.setWeaAutoSave(WeaAutoSave.isSelected()?0:1);
         infoNoiseManager.setWeaAutoUp(WeaAutoUp.isSelected()?0:1);
@@ -303,6 +357,9 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setCarAutoSave(CarAutoSave.isSelected()?0:1);
         infoNoiseManager.setCarAutoUp(CarAutoUp.isSelected()?0:1);
         infoNoiseManager.setCarUpSpace(Integer.valueOf(carUpSpace));
+        infoNoiseManager.setDustAutoSave(DustAutoSave.isSelected()?0:1);
+        infoNoiseManager.setDustAutoUp(DustAutoUp.isSelected()?0:1);
+        infoNoiseManager.setDustUpSpace(Integer.valueOf(dustUpSpace));
         infoNoiseManager.setON_OFF_LEQA(ON_OFF_LEQA.isSelected()?0:1);
         infoNoiseManager.setON_OFF_LPFA(ON_OFF_LPFA.isSelected()?0:1);
         infoNoiseManager.setON_OFF_LPSA(ON_OFF_LPSA.isSelected()?0:1);
@@ -328,6 +385,26 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setON_OFF_RADF(ON_OFF_RADF.isSelected()?0:1);
         infoNoiseManager.setON_OFF_FAMF(ON_OFF_FAMF.isSelected()?0:1);
         infoNoiseManager.setON_OFF_PDWIV(ON_OFF_PDWIV.isSelected()?0:1);
+        infoNoiseManager.setNoiseManagerId("100000");
+        infoNoiseManager.setEvent_05(0);
+        infoNoiseManager.setEvent_06(0);
+        infoNoiseManager.setEvent_11(0);
+        infoNoiseManager.setON_OFF_PEAKA(0);
+        infoNoiseManager.setON_OFF_PEAKC(0);
+        infoNoiseManager.setON_OFF_PEAKZ(0);
+        infoNoiseManager.setON_OFF_UDT(0);
+        infoNoiseManager.setVersion_Hardware("1");
+        infoNoiseManager.setVersion_Linux("1");
+        infoNoiseManager.setVersion_N_VIEW("1");
+        infoNoiseManager.setVersion_NoiseMonitor("1");
+        infoNoiseManager.setVersion_normal("1");
+        infoNoiseManager.setHasAll(0);
+        infoNoiseManager.setHasOct(0);
+        infoNoiseManager.setHasSoundtrans(0);
+        infoNoiseManager.setHasRecord(0);
+        infoNoiseManager.setRecord_On_Off(0);
+        infoNoiseManager.setON_OFF_LEQ1S(0);
+
     }
 
     /**
@@ -339,16 +416,56 @@ public class NoiseDeviceManageController {
      * 状态操作 Start
      * */
     private void status(){
-        System.out.println(RecordStartTime.toString());
-        System.out.println(EventBeginTime.getColumns().toString());
-        System.out.println(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
-        eventList = eventCodeService.queryByEventSource(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
-        EventBeginTime.setCellValueFactory(new PropertyValueFactory<>("EventBeginTime"));
-        EventEndTime.setCellValueFactory(new PropertyValueFactory<>("EventEndTime"));
-        EventDescribe.setCellValueFactory(new PropertyValueFactory<>("EventDescribe"));
-        System.out.println("sasadak"+eventList);
-        eventListTableView.setItems(eventList);
+
     }
+
+    //历史事件列表
+    private void oldEventList(){
+        eventList = eventCodeService.queryByEventSource(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
+        for (EventCode eventCode : eventList) {
+            Date startDate = eventCode.getEventStartTime();
+            Date endDate = eventCode.getEventEndTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            eventCode.setStartTime(formatter.format(startDate));
+            eventCode.setEndTime(formatter.format(endDate));
+            EventStartTime.setCellValueFactory(new PropertyValueFactory<EventCode,String>("startTime"));
+            EventEndTime.setCellValueFactory(new PropertyValueFactory<EventCode,String>("endTime"));
+            EventDescribe.setCellValueFactory(new PropertyValueFactory<>("eventDescribe"));
+            eventListTableView.setItems(eventList);
+        }
+
+    }
+    //内核、引擎
+    private void hardWareGrid(){
+        version_Hardware.setText(infoNoiseManager1.getVersion_Hardware());
+        version_Linux.setText(infoNoiseManager1.getVersion_Linux());
+        version_N_VIEW.setText(infoNoiseManager1.getVersion_N_VIEW());
+        version_NoiseMonitor.setText(infoNoiseManager1.getVersion_NoiseMonitor());
+    }
+    //授权信息
+    private void authorize(){
+        if(infoNoiseManager1.getHasAll() == 0){
+            HasAll.setSelected(false);
+        }else{
+            HasAll.setSelected(true);
+        }
+        if(infoNoiseManager1.getHasOct() == 0){
+            HasOct.setSelected(false);
+        }else {
+            HasOct.setSelected(true);
+        }
+        if(infoNoiseManager1.getHasRecord() == 0){
+            HasRecord.setSelected(false);
+        }else {
+            HasRecord.setSelected(true);
+        }
+        if(infoNoiseManager1.getHasSoundtrans() == 0){
+            HasSoundtrans.setSelected(false);
+        }else {
+            HasSoundtrans.setSelected(true);
+        }
+    }
+
     /**
      * 状态操作 End
      * */
