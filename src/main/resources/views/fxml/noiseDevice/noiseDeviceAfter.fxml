@@ -301,7 +301,7 @@
                                             <Label fx:id="NowDateTime" GridPane.columnIndex="1" GridPane.rowIndex="2"
                                                    prefHeight="25" prefWidth="100"/>
                                             <Label fx:id="LpTime" GridPane.columnIndex="2" GridPane.rowIndex="2"
-                                                   prefHeight="25" prefWidth="100"/>
+                                                   prefHeight="25" prefWidth="100" text="1111"/>
                                             <Label text="存储器总容量:" GridPane.columnIndex="0" GridPane.rowIndex="3"
                                                    prefHeight="25" prefWidth="100"/>
                                             <Label fx:id="UsedRoom" GridPane.columnIndex="1" GridPane.rowIndex="3"
@@ -525,16 +525,18 @@
                                             <JFXButton text="加热"/>
                                         </HBox>
                                     </HBox>
-                                    <HBox style="-fx-padding: 20 0 0 0">
+                                    <HBox style="-fx-padding: 20 0 0 0" prefWidth="400" prefHeight="25">
                                         <ProgressBar prefWidth="200" prefHeight="20" progress="0.5"/>
                                         <HBox style="-fx-padding: 0 0 0 20">
                                             <JFXButton text="拍照"/>
+                                            <JFXButton text="结束"/>
                                         </HBox>
                                     </HBox>
-                                    <HBox style="-fx-padding: 20 0 0 0" prefWidth="300" prefHeight="25">
+                                    <HBox style="-fx-padding: 20 0 0 0" prefWidth="400" prefHeight="25">
                                         <ProgressBar prefWidth="200" prefHeight="20" progress="0.5"/>
-                                        <HBox style="-fx-padding: 0 0 0 20">
+                                        <HBox style="-fx-padding: 0 0 0 20" spacing="10">
                                             <JFXButton text="录音"/>
+                                            <JFXButton text="结束"/>
                                         </HBox>
                                     </HBox>
                                 </VBox>

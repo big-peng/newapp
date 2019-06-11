@@ -10,7 +10,7 @@ public class StateNoise {
     private int linkState;//设备的连接状态
     private int networkState;
     private Date nowDateTime;
-    private Date lpTime;
+    private float lpTime;
     private float LEQZ;
     private float LEQC;
     private float LEQA;
@@ -129,11 +129,11 @@ public class StateNoise {
         this.nowDateTime = nowDateTime;
     }
 
-    public Date getLpTime() {
+    public float getLpTime() {
         return lpTime;
     }
 
-    public void setLpTime(Date lpTime) {
+    public void setLpTime(float lpTime) {
         this.lpTime = lpTime;
     }
 
@@ -921,7 +921,7 @@ public class StateNoise {
                 '}';
     }
 
-    public StateNoise(String deviceCode, int linkState, int networkState, Date nowDateTime, Date lpTime, float LEQZ, float LEQC, float LEQA, float LPFZ, float LPSZ, float LPIZ, float LPFC, float LPSC, float LPIC, float LPFA, float LPSA, float LPIA, float PEAKZ, float PEAKC, float PEAKA, float windSpeed, float outTemperature, float humi_R, float w_Direction, float outHumidity, float ariPressure, float rainfall, int longCarNums, float longCarSpeed, int midCarNums, float midCarSpeed, int shortCarNums, float shortCarSpeed, float PM25, float longitude, float latitude, float speed, float usedRoom, float freeRoom, float batteryVoltage, float workingVoltage, float temperature, float humidity, String stataInfo, int event_01, int event_02, int event_03, int event_04, int event_05, int event_06, int event_07, int event_08, int event_09, int event_10, int event_11, int event_12, int event_13, int hand_Adjust, int auto_Adjust, int adjust_Before, int adjust_After, int event_0211, Date event_01_stime, Date event_02_stime, Date event_03_stime, Date event_04_stime, Date event_05_stime, Date event_06_stime, Date event_07_stime, Date event_08_stime, Date event_09_stime, Date event_10_stime, Date event_11_stime, Date event_12_stime, Date event_13_stime, Date event_0211_stime, Date event_01_etime, Date event_02_etime, Date event_03_etime, Date event_04_etime, Date event_05_etime, Date event_06_etime, Date event_07_etime, Date event_08_etime, Date event_09_etime, Date event_10_etime, Date event_11_etime, Date event_12_etime, Date event_13_etime, Date event_0211_etime) {
+    public StateNoise(String deviceCode, int linkState, int networkState, Date nowDateTime, float lpTime, float LEQZ, float LEQC, float LEQA, float LPFZ, float LPSZ, float LPIZ, float LPFC, float LPSC, float LPIC, float LPFA, float LPSA, float LPIA, float PEAKZ, float PEAKC, float PEAKA, float windSpeed, float outTemperature, float humi_R, float w_Direction, float outHumidity, float ariPressure, float rainfall, int longCarNums, float longCarSpeed, int midCarNums, float midCarSpeed, int shortCarNums, float shortCarSpeed, float PM25, float longitude, float latitude, float speed, float usedRoom, float freeRoom, float batteryVoltage, float workingVoltage, float temperature, float humidity, String stataInfo, int event_01, int event_02, int event_03, int event_04, int event_05, int event_06, int event_07, int event_08, int event_09, int event_10, int event_11, int event_12, int event_13, int hand_Adjust, int auto_Adjust, int adjust_Before, int adjust_After, int event_0211, Date event_01_stime, Date event_02_stime, Date event_03_stime, Date event_04_stime, Date event_05_stime, Date event_06_stime, Date event_07_stime, Date event_08_stime, Date event_09_stime, Date event_10_stime, Date event_11_stime, Date event_12_stime, Date event_13_stime, Date event_0211_stime, Date event_01_etime, Date event_02_etime, Date event_03_etime, Date event_04_etime, Date event_05_etime, Date event_06_etime, Date event_07_etime, Date event_08_etime, Date event_09_etime, Date event_10_etime, Date event_11_etime, Date event_12_etime, Date event_13_etime, Date event_0211_etime) {
         this.deviceCode = deviceCode;
         this.linkState = linkState;
         this.networkState = networkState;
