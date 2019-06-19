@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.InstructionsDao">
+    <!-- 添加 -->
+    <insert id="insertInstructions" parameterType="com.hzaihua.jfoenix.entity.Instructions">
+      insert into T_Instructions(instructFlag,instructType,instructClass,userName,
+                                  noiseCode,instructInput,instructRet,
+                                  instructResult,createTime,outDieTime)
+                            values(#{instructFlag},#{instructType},#{instructClass},#{userName},
+                                  #{noiseCode},#{instructInput},#{instructRet},
+                                  #{instructResult},#{createTime},#{outDieTime})
+    </insert>
+    <!-- 删除 -->
+    <delete id="deleteInstruction">
+      delete from T_Instructions
+      where instructFlag=#{instructFlag}
+    </delete>
+    <!--根据设备编号查询该设备相关的指令-->
+    <select id="queryInstructionsByNoiseCode" resultType="com.hzaihua.jfoenix.entity.Instructions">
+        select instructFlag,instructType,instructClass,userName,noiseCode,instructInput,instructRet,instructResult,createTime,outDieTime
+        from T_Instructions
+        where noiseCode=#{noiseCode}
+    </select>
+</mapper>

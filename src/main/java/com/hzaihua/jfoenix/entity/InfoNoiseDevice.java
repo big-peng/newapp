@@ -10,7 +10,7 @@ public class InfoNoiseDevice {
     private StringProperty measureCode;//所属测点编号，为空则表示还没有测点选择该设备，该设备未激活
     private StringProperty devicePassword;//设备连接密码
     private SimpleIntegerProperty linkType;//连接方式
-    private StringProperty linkPort;//连接端口号
+    private SimpleIntegerProperty linkPort;//连接端口号
     private SimpleIntegerProperty isAutoLink;//是否自动连接
     private SimpleIntegerProperty isAutoAdjust;//是否自动校时
     private StringProperty microphoneHeight;//传声器高度
@@ -101,16 +101,16 @@ public class InfoNoiseDevice {
         this.linkType = new SimpleIntegerProperty(linkType);
     }
 
-    public String getLinkPort() {
+    public int getLinkPort() {
         return linkPort.get();
     }
 
-    public StringProperty linkPortProperty() {
+    public SimpleIntegerProperty linkPortProperty() {
         return linkPort;
     }
 
-    public void setLinkPort(String linkPort) {
-        this.linkPort = new SimpleStringProperty(linkPort);
+    public void setLinkPort(int linkPort) {
+        this.linkPort = new SimpleIntegerProperty(linkPort);
     }
 
     public int getIsAutoLink() {
@@ -334,13 +334,13 @@ public class InfoNoiseDevice {
                 '}';
     }
 
-    public InfoNoiseDevice(String deviceCode, String deviceType, String measureCode, String devicePassword, Integer linkType, String linkPort, Integer isAutoLink, Integer isAutoAdjust, String microphoneHeight, String DTUSIM, Integer isReadMin, Integer isReadHour, Integer isReadDay, Integer isReadLp, Integer isReadOct, Integer isReadWea, Integer isReadCar, Integer isReadDust, Integer isReadLeq1s, Integer isReadEvent, Integer isOpenVoice,String funCode) {
+    public InfoNoiseDevice(String deviceCode, String deviceType, String measureCode, String devicePassword, Integer linkType, Integer linkPort, Integer isAutoLink, Integer isAutoAdjust, String microphoneHeight, String DTUSIM, Integer isReadMin, Integer isReadHour, Integer isReadDay, Integer isReadLp, Integer isReadOct, Integer isReadWea, Integer isReadCar, Integer isReadDust, Integer isReadLeq1s, Integer isReadEvent, Integer isOpenVoice,String funCode) {
         this.deviceCode = new SimpleStringProperty(deviceCode);
         this.deviceType = new SimpleStringProperty(deviceType);
         this.measureCode = new SimpleStringProperty(measureCode);
         this.devicePassword = new SimpleStringProperty(devicePassword);
         this.linkType = new SimpleIntegerProperty(linkType);
-        this.linkPort = new SimpleStringProperty(linkPort);
+        this.linkPort = new SimpleIntegerProperty(linkPort);
         this.isAutoLink = new SimpleIntegerProperty(isAutoLink);
         this.isAutoAdjust = new SimpleIntegerProperty(isAutoAdjust);
         this.microphoneHeight = new SimpleStringProperty(microphoneHeight);

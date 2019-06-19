@@ -1,35 +1,47 @@
 package com.hzaihua.jfoenix.controller.noiseDevice;
 
-import com.hzaihua.jfoenix.controller.TCPLink.SocketThread;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingInstruct;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingThread;
 import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
 import com.hzaihua.jfoenix.entity.EventCode;
 import com.hzaihua.jfoenix.entity.InfoNoiseManager;
+import com.hzaihua.jfoenix.entity.Instructions;
+import com.hzaihua.jfoenix.entity.StateNoise;
 import com.hzaihua.jfoenix.service.EventCodeService;
 import com.hzaihua.jfoenix.service.InfoNoiseManagerService;
+import com.hzaihua.jfoenix.service.InstructionsService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTimePicker;
 import io.datafx.controller.ViewController;
 import javafx.animation.*;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.annotation.PostConstruct;
-import java.net.Socket;
+import java.io.*;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @ViewController(value = "/views/fxml/noiseDevice/noiseDeviceAfter.fxml")
 public class NoiseDeviceManageController {
@@ -39,7 +51,7 @@ public class NoiseDeviceManageController {
     @FXML private ComboBox<String> TimeWight; //时间计权
     @FXML private ComboBox<String> FreWight; //频率计权
     @FXML private TextField Initime; //积分统计时间
-    @FXML private CheckBox ON_OFF_MIN; //分钟统计数据自动上传
+    @FXML private CheckBox ON_OFF_UDT; //分钟统计数据自动上传
     @FXML private CheckBox ON_OFF_HOUR; //小时统计数据自动上传
     @FXML private CheckBox ON_OFF_DAY; //天统计数据自动上传
     @FXML private CheckBox IsExceed; //是否噪声超标报警
@@ -56,7 +68,7 @@ public class NoiseDeviceManageController {
     @FXML private TextField DayRecordValue; //噪声超标录音昼间超标限值
     @FXML private TextField NightRecordValue; //噪声超标录音夜间超标限值
     @FXML private TextField RecordDlay; //噪声超标录音延迟启动时间
-    @FXML private TextField RecordModel; //噪声超标录音上传模式
+    @FXML private ComboBox<String> RecordModel; //噪声超标录音上传模式
     @FXML private DatePicker RecordStartTime; //噪声超标录音优先上传始时 日期
     @FXML private JFXTimePicker StartTime; //噪声超标录音优先上传始时 时间
     @FXML private DatePicker RecordEndTime; //噪声超标录音优先上传终时 日期
@@ -64,7 +76,7 @@ public class NoiseDeviceManageController {
     @FXML private CheckBox isAutoAdjust; //自动校准
     @FXML private DatePicker AdjustTime; //校准起始日期
     @FXML private JFXTimePicker ajTime; //校准起始时间
-    @FXML private TextField  AdjustSpace; //每日校准频次
+    @FXML private ComboBox<String>  AdjustSpace; //每日校准间隔
     @FXML private CheckBox WeaAutoSave; //气象数据自动保存
     @FXML private CheckBox WeaAutoUp; //气象数据自动上传
     @FXML private TextField WeaUpSpace; //气象数据采样间隔
@@ -147,7 +159,40 @@ public class NoiseDeviceManageController {
     @FXML private Label version_Linux; //内核版本
     @FXML private Label version_N_VIEW; //界面版本
     @FXML private Label version_NoiseMonitor; //采集版本
+    //远程升级按钮
+    @FXML private JFXButton sendFile; //文件传输
+    @FXML private JFXButton otherSendFile; //分块文件传输
+    @FXML private JFXButton checkUp; //检查传输
+    @FXML private JFXButton cancelSend; //取消传输
+    @FXML private JFXButton commitUpgrade; //远程升级
 
+    /**
+     * 文件操作界面
+     * */
+    @FXML private TableView<NoiseFile> noiseFileTableView; //文件列表
+    @FXML private TableColumn noiseFileName; //文件名称
+    @FXML private TableColumn noiseFileSize; //文件大小
+    @FXML private TableColumn noiseFileCreateTime; //文件创建时间
+    @FXML private JFXButton readFile; //读取文件按钮
+    @FXML private TextField fileText; //文件目录
+    @FXML private JFXButton returnBefore; //返回按钮操作
+    @FXML private JFXButton readOneFile; //查看某个文件
+    public static ObservableList<NoiseFile> fileList = FXCollections.observableArrayList();
+
+    /**
+     * 操作界面
+     * */
+    @FXML private JFXButton restoration; //复位按钮
+    @FXML private JFXButton align; //校准按钮
+    @FXML private JFXButton heating; //加热按钮
+    @FXML private JFXButton sound; //录音开始按钮
+    @FXML private JFXButton video; //录像开始按钮
+    @FXML private JFXButton endSound; //录音结束按钮
+    @FXML private JFXButton endVideo; //录像结束按钮
+    @FXML private ProgressBar soundBar; //录音进度条
+    @FXML private ProgressBar videoBar; //录像进度条
+    @FXML private JFXButton photo; //拍照按钮
+    @FXML public static ImageView makePhoto; //仪器传回来的照片
     /**
      * 节目界面设置
      * */
@@ -162,6 +207,22 @@ public class NoiseDeviceManageController {
 
     @FXML private Text actiontarget;//输入错误提示框
     @FXML private JFXButton commitManager; //前端管理确定按钮
+    @FXML private JFXButton commitSample; //修改瞬时采样间隔
+    @FXML private JFXButton commitUpSpace; //修改瞬时长传间隔
+    @FXML private JFXButton commitTF; // 修改时间、频率计权
+    @FXML private JFXButton commitInitTime; //修改积分统计时间
+    @FXML private JFXButton commitExceed; //修改噪声超标报警设置
+    @FXML private JFXButton commitIsOct; //噪声超标频谱分析
+    @FXML private JFXButton commitRecord; //修改超标录音
+    @FXML private JFXButton commitStartTimeAndEndTime; //优先上传始时和终时设置
+    @FXML private JFXButton commitAdjust; //自动校准
+    @FXML private JFXButton commitWea; //气象设置
+    @FXML private JFXButton commitCar; //车流量设置
+    @FXML private JFXButton commitDust; //空气设置
+    @FXML private JFXButton commitOpen; //各种开关量设置
+    @FXML private JFXButton commitEvent; //事件上传开关设置
+
+
     //被选中的节目名
     private String selectedProgramName;
     private int y = 0;
@@ -171,34 +232,651 @@ public class NoiseDeviceManageController {
     InfoNoiseManagerService infoNoiseManagerService  = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseManagerService.class);
     public static InfoNoiseManager infoNoiseManager = new InfoNoiseManager();
     EventCodeService eventCodeService = BeanFactoryUtil.getApplicationContext().getBean(EventCodeService.class);
+    InstructionsService instructionsService = BeanFactoryUtil.getApplicationContext().getBean(InstructionsService.class);
     Date startDate = null; //噪声优先上传始时
     Date endDate = null; //噪声优先上传终时
     Date adjust = null; //校准时间
     InfoNoiseManager infoNoiseManager1 = infoNoiseManagerService.queryByNoiseCode("100000");
-    private Socket socket;
+    Instructions instructions = new Instructions();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    Runnable runnable;
+    Date date;
+    public static StateNoise stateNoise = new StateNoise();
+    public static String fileName; //升级文件名
+    public static Long FileSize; //升级文件大小
+    public static byte[] fileData; //升级文件内容
+    public static NoiseFile noiseFile = new NoiseFile(); //全部文件
+    public static StringBuffer filePath = new StringBuffer();
+    public static OneNoiseFile oneNoiseFile = new OneNoiseFile(); //查看单个文件信息
 
     @PostConstruct
     public void init() {
-
         //历史事件列表
         oldEventList();
         //授权信息
         authorize();
         //内核、引擎显示
         hardWareGrid();
-        //监听端口
-        new Thread(new SocketThread()).start();
+        //节目设置
+        program();
+        //状态设置
+        status();
+        //读取仪器发送的参数
+        accept();
+        //录音和录像
+        soundAndVideo();
+        //读取文件
+        allFile();
 
+        //拍照按钮操作
+        photo.setOnAction(event -> {
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct145();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+
+        //发送设置瞬时采样间隔指令
+        commitSample.setOnAction(event -> {
+            infoNoiseManager.setSample(Double.valueOf(Sample.getText()));
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingThread.instruct = sendingInstruct.instruct124();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+            instructions.setInstructFlag(UUID.randomUUID().toString().replace("-",""));
+            instructions.setInstructType("6218j");
+            instructions.setInstructClass("N124");
+            instructions.setUserName("admin");
+            instructions.setNoiseCode(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
+            instructions.setInstructInput(SendingThread.instruct);
+            instructions.setInstructRet(SendingThread.rtn);
+            instructions.setInstructResult("");
+            instructions.setCreateTime(new Date());
+            instructions.setOutDieTime(40);
+            instructionsService.saveInstructions(instructions);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct124();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //发送设置瞬时上传间隔指令
+        commitUpSpace.setOnAction(event -> {
+            infoNoiseManager.setUpSpace(Integer.valueOf(UpSpace.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct107();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1){
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct107();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //发送设置时间、频率计权指令
+        commitTF.setOnAction(event -> {
+            infoNoiseManager.setFreWight(FreWight.getValue());
+            infoNoiseManager.setTimeWight(TimeWight.getValue());
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct122();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct122();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+
+        //修改积分统计时间时发送指令
+        commitInitTime.setOnAction(event -> {
+            infoNoiseManager.setInitime(Integer.valueOf(Initime.getText()));
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingThread.instruct = sendingInstruct.instruct114();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct114();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //修改噪声超标报警时发送指令
+        commitExceed.setOnAction(event -> {
+            infoNoiseManager.setDayOverValue(Double.valueOf(DayOverValue.getText()));
+            infoNoiseManager.setNightRecordValue(Double.valueOf(NightOverValue.getText()));
+            infoNoiseManager.setOverDlay(Integer.valueOf(OverDlay.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct105();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct105();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //噪声超标频谱分析
+        commitIsOct.setOnAction(event -> {
+            infoNoiseManager.setDayOctValue(Double.valueOf(DayOctValue.getText()));
+            infoNoiseManager.setNightOctValue(Double.valueOf(NightOctValue.getText()));
+            infoNoiseManager.setOctDlay(Integer.valueOf(OctDlay.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct202();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct202();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //噪声超标录音
+        commitRecord.setOnAction(event -> {
+            infoNoiseManager.setDayRecordValue(Double.valueOf(DayRecordValue.getText()));
+            infoNoiseManager.setNightRecordValue(Double.valueOf(NightRecordValue.getText()));
+            infoNoiseManager.setRecordDlay(Integer.valueOf(RecordDlay.getText()));
+            infoNoiseManager.setIsRecord(IsRecord.isSelected()?0:1);
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct126();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct126();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //噪声超标录音始时终时录音
+        commitStartTimeAndEndTime.setOnAction(event -> {
+            infoNoiseManager.setRecordStartTime(startDate);
+            infoNoiseManager.setRecordEndTime(endDate);
+            infoNoiseManager.setIsRecord(IsRecord.isSelected()?0:1);
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct129();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct129();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //自动校准
+        commitAdjust.setOnAction(event -> {
+            infoNoiseManager.setAdjustTime(adjust);
+            infoNoiseManager.setAdjustSpace(Integer.valueOf(AdjustSpace.getValue()));
+            infoNoiseManager.setIsAutoAdjust(isAutoAdjust.isSelected()?0:1);
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct116();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct116();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //设置气象属性之后发送指令
+        commitWea.setOnAction(event -> {
+            infoNoiseManager.setWeaAutoSave(WeaAutoSave.isSelected()?0:1);
+            infoNoiseManager.setWeaAutoUp(WeaAutoUp.isSelected()?0:1);
+            infoNoiseManager.setWeaUpSpace(Integer.valueOf(WeaUpSpace.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct206();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct206();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //车流量设置之后发送指令
+        commitCar.setOnAction(event -> {
+            infoNoiseManager.setCarAutoSave(CarAutoSave.isSelected()?0:1);
+            infoNoiseManager.setCarAutoUp(CarAutoUp.isSelected()?0:1);
+            infoNoiseManager.setCarUpSpace(Integer.valueOf(CarUpSpace.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct208();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct208();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //空气设置之后发送指令
+        commitDust.setOnAction(event -> {
+            infoNoiseManager.setDustAutoSave(DustAutoSave.isSelected()?0:1);
+            infoNoiseManager.setDustAutoUp(DustAutoUp.isSelected()?0:1);
+            infoNoiseManager.setDustUpSpace(Integer.valueOf(DustUpSpace.getText()));
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct210();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct210();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //设置开关量之后发送的指令
+        commitOpen.setOnAction(event -> {
+            infoNoiseManager.setON_OFF_LEQZ(ON_OFF_LEQZ.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LEQC(ON_OFF_LEQC.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LEQA(ON_OFF_LEQA.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPFZ(ON_OFF_LPFZ.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPSZ(ON_OFF_LPSZ.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPIZ(ON_OFF_LPIZ.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPFC(ON_OFF_LPFC.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPSC(ON_OFF_LPSC.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPIC(ON_OFF_LPIC.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPFA(ON_OFF_LPFA.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPSA(ON_OFF_LPSA.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LPIA(ON_OFF_LPIA.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_PEAKZ(0);
+            infoNoiseManager.setON_OFF_PEAKC(0);
+            infoNoiseManager.setON_OFF_PEAKA(0);
+            infoNoiseManager.setON_OFF_HOUR(ON_OFF_HOUR.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_DAY(ON_OFF_DAY.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_UDT(ON_OFF_UDT.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_RADF(ON_OFF_RADF.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_FAMF(ON_OFF_FAMF.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_PDWIV(ON_OFF_PDWIV.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_LEQ1S(1);
+            infoNoiseManager.setON_OFF_13OCT(ON_OFF_13OCT.isSelected()?0:1);
+            infoNoiseManager.setON_OFF_11OCT(ON_OFF_11OCT.isSelected()?0:1);
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct204();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct204();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+        //事件上传设置发送指令
+        commitEvent.setOnAction(event -> {
+            infoNoiseManager.setEvent_01(Event_01.isSelected()?0:1);
+            infoNoiseManager.setEvent_02(Event_02.isSelected()?0:1);
+            infoNoiseManager.setEvent_03(Event_03.isSelected()?0:1);
+            infoNoiseManager.setEvent_04(Event_04.isSelected()?0:1);
+            infoNoiseManager.setEvent_05(1);
+            infoNoiseManager.setEvent_06(1);
+            infoNoiseManager.setEvent_07(Event_07.isSelected()?0:1);
+            infoNoiseManager.setEvent_08(Event_08.isSelected()?0:1);
+            infoNoiseManager.setEvent_09(Event_09.isSelected()?0:1);
+            infoNoiseManager.setEvent_10(Event_10.isSelected()?0:1);
+            infoNoiseManager.setEvent_11(1);
+            infoNoiseManager.setEvent_12(Event_12.isSelected()?0:1);
+            infoNoiseManager.setEvent_13(Event_13.isSelected()?0:1);
+            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct120();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                date = changeDate(instructions.getCreateTime());
+                if(SendingThread.rtn == -1) {
+                    for (int i = 0; i < 3; i++) {
+                        if (SendingThread.rtn == -1) {
+                            try {
+                                SendingInstruct sendingInstruct1 = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct1.instruct120();
+                                SendingThread sendingThread1 = new SendingThread(SendingThread.socket);
+                                sendingThread1.SendingSock(SendingThread.instruct);
+                                sendingThread1.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }else if((new Date()).getTime() > date.getTime()){
+                    instructionsService.deleteInstructions(instructions.getInstructFlag());
+                }
+            }
+        };
+
+
+        //所有设置完之后，点击此按钮存入数据库，关闭窗口
         commitManager.setOnAction(event -> {
             Stage stage = (Stage)commitManager.getScene().getWindow();
             parameters();
-            status();
-            program();
             stage.close();
         });
 
+        //监听发出的指令
+        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.scheduleAtFixedRate(runnable, 0, 10, TimeUnit.SECONDS);
+
+    }
 
 
+    //计算时间
+    private Date changeDate(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND,40);
+        return calendar.getTime();
+    }
+
+    //计算文件大小
+    private long getFileSize(String filePath){
+        long size = 0;
+        FileInputStream fileInputStream = null;
+        FileChannel fc = null;
+        try {
+            File file = new File(filePath);
+            if(file.exists() && file.isFile()) {
+                fileInputStream = new FileInputStream(file);
+                fc = fileInputStream.getChannel();
+                size = fc.size();
+            }
+        } catch (FileNotFoundException e) {
+                e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return size;
+    }
+
+    //获取问件内容
+    private byte[] getFileData(String fileName){
+        File file = new File(fileName);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) file.length());
+        BufferedInputStream bis = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[1024000000];
+            int len = 0;
+            while (-1 != (len = bis.read(buffer,0,1024000000))){
+                bos.write(buffer,0,len);
+            }
+            fileData = bos.toByteArray();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return fileData;
     }
 
     /**
@@ -224,9 +902,9 @@ public class NoiseDeviceManageController {
         String dayRecordValue = DayRecordValue.getText();
         String nightRecordValue = NightRecordValue.getText();
         String recordDlay = RecordDlay.getText();
-        String recordModel = RecordModel.getText();
+        String recordModel = RecordModel.getValue();
         //自动校准
-        String adjustSpace = AdjustSpace.getText();
+        String adjustSpace = AdjustSpace.getValue();
         //气象数据采样间隔
         String weaUpSpace = WeaUpSpace.getText();
         //交通数据采样间隔
@@ -328,7 +1006,7 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setTimeWight(TimeWight.getValue());
         infoNoiseManager.setFreWight(FreWight.getValue());
         infoNoiseManager.setInitime(Integer.valueOf(iniTime));
-        infoNoiseManager.setON_OFF_MIN(ON_OFF_MIN.isSelected()?0:1);
+        infoNoiseManager.setON_OFF_UDT(ON_OFF_UDT.isSelected()?0:1);
         infoNoiseManager.setON_OFF_HOUR(ON_OFF_HOUR.isSelected()?0:1);
         infoNoiseManager.setON_OFF_DAY(ON_OFF_DAY.isSelected()?0:1);
         infoNoiseManager.setIsExceed(IsExceed.isSelected()?0:1);
@@ -345,7 +1023,7 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setDayRecordValue(Double.valueOf(dayRecordValue));
         infoNoiseManager.setNightRecordValue(Double.valueOf(nightRecordValue));
         infoNoiseManager.setRecordDlay(Integer.valueOf(recordDlay));
-        infoNoiseManager.setRecordModel(Double.valueOf(recordModel));
+        infoNoiseManager.setRecordModel(Integer.valueOf(recordModel));
         infoNoiseManager.setRecordStartTime(startDate);
         infoNoiseManager.setRecordEndTime(endDate);
         infoNoiseManager.setIsAutoAdjust(isAutoAdjust.isSelected()?0:1);
@@ -385,14 +1063,13 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setON_OFF_RADF(ON_OFF_RADF.isSelected()?0:1);
         infoNoiseManager.setON_OFF_FAMF(ON_OFF_FAMF.isSelected()?0:1);
         infoNoiseManager.setON_OFF_PDWIV(ON_OFF_PDWIV.isSelected()?0:1);
-        infoNoiseManager.setNoiseManagerId("100000");
-        infoNoiseManager.setEvent_05(0);
-        infoNoiseManager.setEvent_06(0);
-        infoNoiseManager.setEvent_11(0);
+        infoNoiseManager.setNoiseManagerId(AddFixedMeasureController.infoNoiseDevice.getDeviceCode());
+        infoNoiseManager.setEvent_05(1);
+        infoNoiseManager.setEvent_06(1);
+        infoNoiseManager.setEvent_11(1);
         infoNoiseManager.setON_OFF_PEAKA(0);
         infoNoiseManager.setON_OFF_PEAKC(0);
         infoNoiseManager.setON_OFF_PEAKZ(0);
-        infoNoiseManager.setON_OFF_UDT(0);
         infoNoiseManager.setVersion_Hardware("1");
         infoNoiseManager.setVersion_Linux("1");
         infoNoiseManager.setVersion_N_VIEW("1");
@@ -403,8 +1080,82 @@ public class NoiseDeviceManageController {
         infoNoiseManager.setHasSoundtrans(0);
         infoNoiseManager.setHasRecord(0);
         infoNoiseManager.setRecord_On_Off(0);
-        infoNoiseManager.setON_OFF_LEQ1S(0);
+        infoNoiseManager.setON_OFF_LEQ1S(1);
+        infoNoiseManagerService.saveInfoNoiseManager(infoNoiseManager);
+    }
 
+    //接收前端传过来的参数，为对应属性赋值
+    private void accept(){
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //SimpleDateFormat sdff = new SimpleDateFormat("HH:mm");
+        //String rstartTime = infoNoiseManager.getRecordStartTime().toString();
+        //String rendTime = infoNoiseManager.getRecordEndTime().toString();
+        //String adjTime = infoNoiseManager.getAdjustTime().toString();
+        //String[] rstime = rstartTime.split(" ");
+        //String[] retime = rendTime.split(" ");
+        //String[] adTime = adjTime.split(" ");
+        Sample.setText(String.valueOf(infoNoiseManager.getSample()));
+        UpSpace.setText(String.valueOf(infoNoiseManager.getUpSpace()));
+        TimeWight.setValue(infoNoiseManager.getTimeWight());
+        FreWight.setValue(infoNoiseManager.getFreWight());
+        Initime.setText(String.valueOf(infoNoiseManager.getInitime()));
+        DayOverValue.setText(String.valueOf(infoNoiseManager.getDayOverValue()));
+        NightOverValue.setText(String.valueOf(infoNoiseManager.getNightOverValue()));
+        OverDlay.setText(String.valueOf(infoNoiseManager.getOverDlay()));
+        DayOctValue.setText(String.valueOf(infoNoiseManager.getDayOctValue()));
+        NightOctValue.setText(String.valueOf(infoNoiseManager.getNightOctValue()));
+        OctDlay.setText(String.valueOf(infoNoiseManager.getOctDlay()));
+        DayRecordValue.setText(String.valueOf(infoNoiseManager.getDayRecordValue()));
+        NightRecordValue.setText(String.valueOf(infoNoiseManager.getNightRecordValue()));
+        RecordDlay.setText(String.valueOf(infoNoiseManager.getRecordDlay()));
+        if(infoNoiseManager.getIsRecord() == 1){IsRecord.setSelected(true);}
+        //RecordStartTime.setPromptText(rstime[0]);
+        //StartTime.setPromptText(rstime[1]);
+        //RecordEndTime.setPromptText(retime[0]);
+        //EndTime.setPromptText(retime[1]);
+        ///AdjustTime.setPromptText(adTime[0]);
+        //ajTime.setPromptText(adTime[1]);
+        AdjustSpace.setValue(String.valueOf(infoNoiseManager.getAdjustSpace()));
+        if(infoNoiseManager.getIsAutoAdjust() == 1){isAutoAdjust.setSelected(true);}
+        if(infoNoiseManager.getWeaUpSpace() == 1)WeaAutoSave.setSelected(true);
+        if(infoNoiseManager.getWeaAutoUp() == 1)WeaAutoUp.setSelected(true);
+        WeaUpSpace.setText(String.valueOf(infoNoiseManager.getWeaUpSpace()));
+        if(infoNoiseManager.getCarAutoSave() == 1)CarAutoSave.setSelected(true);
+        if(infoNoiseManager.getCarAutoUp() == 1)CarAutoUp.setSelected(true);
+        CarUpSpace.setText(String.valueOf(infoNoiseManager.getCarUpSpace()));
+        if(infoNoiseManager.getDustAutoSave() == 1)DustAutoSave.setSelected(true);
+        if(infoNoiseManager.getDustAutoUp() == 1)DustAutoUp.setSelected(true);
+        CarUpSpace.setText(String.valueOf(infoNoiseManager.getDustUpSpace()));
+        if(infoNoiseManager.getON_OFF_LEQZ() == 1)ON_OFF_LEQZ.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LEQC() == 1)ON_OFF_LEQC.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LEQA() == 1)ON_OFF_LEQA.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPFZ() == 1)ON_OFF_LPFZ.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPSZ() == 1)ON_OFF_LPSZ.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPIZ() == 1)ON_OFF_LPIZ.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPFC() == 1)ON_OFF_LPFC.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPSC() == 1)ON_OFF_LPSC.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPIC() == 1)ON_OFF_LPIC.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPFA() == 1)ON_OFF_LPFA.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPSA() == 1)ON_OFF_LPSA.setSelected(true);
+        if(infoNoiseManager.getON_OFF_LPIA() == 1)ON_OFF_LPIA.setSelected(true);
+        if(infoNoiseManager.getON_OFF_HOUR() == 1)ON_OFF_HOUR.setSelected(true);
+        if(infoNoiseManager.getON_OFF_DAY() == 1)ON_OFF_DAY.setSelected(true);
+        if(infoNoiseManager.getON_OFF_UDT() == 1)ON_OFF_UDT.setSelected(true);
+        if(infoNoiseManager.getON_OFF_RADF() == 1)ON_OFF_RADF.setSelected(true);
+        if(infoNoiseManager.getON_OFF_FAMF() == 1)ON_OFF_FAMF.setSelected(true);
+        if(infoNoiseManager.getON_OFF_PDWIV() == 1)ON_OFF_PDWIV.setSelected(true);
+        if(infoNoiseManager.getON_OFF_13OCT() == 1)ON_OFF_13OCT.setSelected(true);
+        if(infoNoiseManager.getON_OFF_11OCT() == 1)ON_OFF_11OCT.setSelected(true);
+        if(infoNoiseManager.getEvent_01() == 3)Event_01.setSelected(true);
+        if(infoNoiseManager.getEvent_02() == 3)Event_02.setSelected(true);
+        if(infoNoiseManager.getEvent_03() == 3)Event_03.setSelected(true);
+        if(infoNoiseManager.getEvent_04() == 3)Event_04.setSelected(true);
+        if(infoNoiseManager.getEvent_07() == 3)Event_07.setSelected(true);
+        if(infoNoiseManager.getEvent_08() == 3)Event_08.setSelected(true);
+        if(infoNoiseManager.getEvent_09() == 3)Event_09.setSelected(true);
+        if(infoNoiseManager.getEvent_10() == 3)Event_10.setSelected(true);
+        if(infoNoiseManager.getEvent_12() == 3)Event_12.setSelected(true);
+        if(infoNoiseManager.getEvent_13() == 3)Event_13.setSelected(true);
     }
 
     /**
@@ -416,7 +1167,26 @@ public class NoiseDeviceManageController {
      * 状态操作 Start
      * */
     private void status(){
-
+        LinkState.setText(String.valueOf(stateNoise.getLinkState()));
+        NowDateTime.setText(String.valueOf(sdf.format(stateNoise.getNowDateTime())));
+        LpTime.setText(SendingThread.data);
+        UsedRoom.setText(String.valueOf(stateNoise.getUsedRoom()));
+        FreeRoom.setText(String.valueOf(stateNoise.getUsedRoom()));
+        BatteryVoltage.setText(String.valueOf(stateNoise.getBatteryVoltage()));
+        WorkingVoltage.setText(String.valueOf(stateNoise.getWorkingVoltage()));
+        NetworkState.setText(String.valueOf(stateNoise.getNetworkState()));
+        SIMICCID.setText(stateNoise.getSIMICCID());
+        SIMIMSI.setText(stateNoise.getSIMIMSI());
+        OutTemperature.setText(String.valueOf(stateNoise.getOutTemperature()));
+        Humi_R.setText(String.valueOf(stateNoise.getHumi_R()));
+        AriPressure.setText(String.valueOf(stateNoise.getAriPressure()));
+        WindSpeed.setText(String.valueOf(stateNoise.getWindSpeed()));
+        W_Direction.setText(String.valueOf(stateNoise.getW_Direction()));
+        Rainfall.setText(String.valueOf(stateNoise.getRainfall()));
+        PerFlux.setText(String.valueOf(stateNoise.getPerFlux()));
+        AvgSpeed.setText(String.valueOf(stateNoise.getAvgSpeed()));
+        PM25.setText(String.valueOf(stateNoise.getPM25()));
+        PM10.setText(String.valueOf(stateNoise.getPM10()));
     }
 
     //历史事件列表
@@ -444,30 +1214,366 @@ public class NoiseDeviceManageController {
     }
     //授权信息
     private void authorize(){
-        if(infoNoiseManager1.getHasAll() == 0){
-            HasAll.setSelected(false);
-        }else{
+        if(infoNoiseManager1.getHasAll() == 1){
             HasAll.setSelected(true);
+        }else{
+            HasAll.setSelected(false);
         }
-        if(infoNoiseManager1.getHasOct() == 0){
-            HasOct.setSelected(false);
-        }else {
+        if(infoNoiseManager1.getHasOct() == 1){
             HasOct.setSelected(true);
-        }
-        if(infoNoiseManager1.getHasRecord() == 0){
-            HasRecord.setSelected(false);
         }else {
+            HasOct.setSelected(false);
+        }
+        if(infoNoiseManager1.getHasRecord() == 1){
             HasRecord.setSelected(true);
-        }
-        if(infoNoiseManager1.getHasSoundtrans() == 0){
-            HasSoundtrans.setSelected(false);
         }else {
-            HasSoundtrans.setSelected(true);
+            HasRecord.setSelected(false);
         }
+        if(infoNoiseManager1.getHasSoundtrans() == 1){
+            HasSoundtrans.setSelected(true);
+        }else {
+            HasSoundtrans.setSelected(false);
+        }
+    }
+    //远程升级操作
+    private void upGrade(){
+        sendFile.setOnAction(event -> {
+            getFileSize(fileName);
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct170();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        otherSendFile.setOnAction(event -> {
+            getFileSize(fileName); //获取文件大小
+            getFileData(fileName); //获取文件内容
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct171();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        checkUp.setOnAction(event -> {
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct172();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        cancelSend.setOnAction(event -> {
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct173();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        commitUpgrade.setOnAction(event -> {
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct175();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
     }
 
     /**
      * 状态操作 End
+     * */
+
+    /**
+     * 文件操作 start
+     * */
+    private void allFile(){
+        //读取文件操作
+        readFile.setOnAction(event -> {
+            /*filePath.append(fileText.getText());
+            filePath.toString();*/
+            fileText.setText("/");
+            filePath.append(fileText.getText());
+            filePath.toString();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct180();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+            //文件列表
+            noiseFileList();
+        });
+
+        //返回操作
+        returnBefore.setOnAction(event -> {
+            String[] split = fileText.getText().split("/");
+            int pathLength = split.length;
+            for (int i = 0;i<pathLength;i++){
+                filePath.append("/"+split[i]);
+            }
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct180();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+
+        //查看某个文件发送指令
+        readOneFile.setOnAction(event -> {
+            if(noiseFile.getFileType().equals("1")){
+                actiontarget.setText("选择的不是文件，请重新选择...");
+            }
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct181();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+    }
+
+    private void noiseFileList(){
+        noiseFileName.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+        noiseFileSize.setCellValueFactory(new PropertyValueFactory<>("fileSize"));
+        noiseFileCreateTime.setCellValueFactory(new PropertyValueFactory<>("fileDateTime"));
+        noiseFileTableView.setItems(fileList);
+
+        noiseFileTableView.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<NoiseFile>() {
+                    @Override
+                    public void changed(ObservableValue<? extends NoiseFile> observable, NoiseFile oldValue, NoiseFile newValue) {
+                        noiseFile = newValue;
+                    }
+                });
+
+        //双击进入下一级目录
+        noiseFileTableView.setRowFactory(tv->{
+            TableRow<NoiseFile> row = new TableRow<NoiseFile>();
+            row.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && (!row.isEmpty())){
+                    NoiseFile noiseFile = row.getItem();
+                    filePath.append(noiseFile.getFileName());
+                    filePath.toString();
+                    fileText.setText("/"+filePath);
+                    SendingInstruct sendingInstruct = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct.instruct180();
+                    SendingThread sendingThread = new SendingThread(SendingThread.socket);
+                    sendingThread.SendingSock(SendingThread.instruct);
+                }
+            });
+            return row;
+        });
+    }
+
+    //发送查看全部文件时的临时对象，存储文件信息
+    public static class NoiseFile{
+        private StringProperty noiseCode;
+        private StringProperty fileName;
+        private StringProperty fileType;
+        private StringProperty fileSize;
+        private Date fileDateTime;
+
+        @Override
+        public String toString() {
+            return "NoiseFile{" +
+                    "noiseCode=" + noiseCode +
+                    ", fileName=" + fileName +
+                    ", fileType=" + fileType +
+                    ", fileSize=" + fileSize +
+                    ", fileDateTime=" + fileDateTime +
+                    '}';
+        }
+
+        public String getNoiseCode() {
+            return noiseCode.get();
+        }
+
+        public StringProperty noiseCodeProperty() {
+            return noiseCode;
+        }
+
+        public void setNoiseCode(String noiseCode) {
+            this.noiseCode = new SimpleStringProperty(noiseCode);
+        }
+
+        public String getFileName() {
+            return fileName.get();
+        }
+
+        public StringProperty fileNameProperty() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = new SimpleStringProperty(fileName);
+        }
+
+        public String getFileType() {
+            return fileType.get();
+        }
+
+        public StringProperty fileTypeProperty() {
+            return fileType;
+        }
+
+        public void setFileType(String fileType) {
+            this.fileType = new SimpleStringProperty(fileType);
+        }
+
+        public String getFileSize() {
+            return fileSize.get();
+        }
+
+        public StringProperty fileSizeProperty() {
+            return fileSize;
+        }
+
+        public void setFileSize(String fileSize) {
+            this.fileSize = new SimpleStringProperty(fileSize);
+        }
+
+        public Date getFileDateTime() {
+            return fileDateTime;
+        }
+
+        public void setFileDateTime(Date fileDateTime) {
+            this.fileDateTime = fileDateTime;
+        }
+
+        public NoiseFile(String noiseCode, String fileName, String fileType, String fileSize, Date fileDateTime) {
+            this.noiseCode = new SimpleStringProperty(noiseCode);
+            this.fileName = new SimpleStringProperty(fileName);
+            this.fileType = new SimpleStringProperty(fileType);
+            this.fileSize = new SimpleStringProperty(fileSize);
+            this.fileDateTime = fileDateTime;
+        }
+
+        public NoiseFile() {
+        }
+    }
+    //发送查询某个文件时。存储的单个文件信息
+    public static class OneNoiseFile{
+        private StringProperty fileName;
+        private StringProperty fileSize;
+        private SimpleIntegerProperty fileOffset;
+        private SimpleIntegerProperty fileDataSize;
+        private StringProperty fileData;
+
+        @Override
+        public String toString() {
+            return "OneNoiseFile{" +
+                    "fileName=" + fileName +
+                    ", fileSize=" + fileSize +
+                    ", fileOffset=" + fileOffset +
+                    ", fileDataSize=" + fileDataSize +
+                    ", fileData=" + fileData +
+                    '}';
+        }
+
+        public String getFileName() {
+            return fileName.get();
+        }
+
+        public StringProperty fileNameProperty() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = new SimpleStringProperty(fileName);
+        }
+
+        public String getFileSize() {
+            return fileSize.get();
+        }
+
+        public StringProperty fileSizeProperty() {
+            return fileSize;
+        }
+
+        public void setFileSize(String fileSize) {
+            this.fileSize = new SimpleStringProperty(fileSize);
+        }
+
+        public int getFileOffset() {
+            return fileOffset.get();
+        }
+
+        public SimpleIntegerProperty fileOffsetProperty() {
+            return fileOffset;
+        }
+
+        public void setFileOffset(int fileOffset) {
+            this.fileOffset = new SimpleIntegerProperty(fileOffset);
+        }
+
+        public int getFileDataSize() {
+            return fileDataSize.get();
+        }
+
+        public SimpleIntegerProperty fileDataSizeProperty() {
+            return fileDataSize;
+        }
+
+        public void setFileDataSize(int fileDataSize) {
+            this.fileDataSize = new SimpleIntegerProperty(fileDataSize);
+        }
+
+        public String getFileData() {
+            return fileData.get();
+        }
+
+        public StringProperty fileDataProperty() {
+            return fileData;
+        }
+
+        public void setFileData(String fileData) {
+            this.fileData = new SimpleStringProperty(fileData);
+        }
+
+        public OneNoiseFile(String fileName, String fileSize, int fileOffset, int fileDataSize, String fileData) {
+            this.fileName = new SimpleStringProperty(fileName);
+            this.fileSize = new SimpleStringProperty(fileSize);
+            this.fileOffset = new SimpleIntegerProperty(fileOffset);
+            this.fileDataSize = new SimpleIntegerProperty(fileDataSize);
+            this.fileData = new SimpleStringProperty(fileData);
+        }
+
+        public OneNoiseFile() {
+        }
+    }
+    /**
+     * 文件操作 end
+     * */
+
+    /**
+     * 操作界面 start
+     * */
+    private void soundAndVideo(){
+        //开始录音
+        sound.setOnAction(event -> {
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct143();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        //开始录像
+        video.setOnAction(event -> {
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct144();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        //结束录音
+        endSound.setOnAction(event -> {
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.info = 0;
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct143();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+        //结束录像
+        endVideo.setOnAction(event -> {
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.info = 0;
+            SendingInstruct sendingInstruct = new SendingInstruct();
+            SendingThread.instruct = sendingInstruct.instruct144();
+            SendingThread sendingThread = new SendingThread(SendingThread.socket);
+            sendingThread.SendingSock(SendingThread.instruct);
+        });
+    }
+    /**
+     *操作界面 end
      * */
 
     /**
@@ -537,9 +1643,6 @@ public class NoiseDeviceManageController {
         });
         subTitleButton.fire();
     }
-    /**
-     * 节目操作 End
-     * */
 
     @FXML
     private void changePage() {
@@ -1673,5 +2776,9 @@ public class NoiseDeviceManageController {
 
         public TextPara() {
         }
+        /**
+         * 节目操作 End
+         * */
     }
+
 }

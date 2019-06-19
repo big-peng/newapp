@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.CarFlowLPDao">
+    <!--查询所有  -->
+    <select id="queryAllCarFlow" resultType="com.hzaihua.jfoenix.entity.CarFlowLP">
+      select * from carFlow_LP
+    </select>
+    <!-- 添加 -->
+    <insert id="insertCarFlow" parameterType="com.hzaihua.jfoenix.entity.CarFlowLP">
+      insert into carFlow_LP
+      values(#{noiseCode},#{measureTime},#{radarID},#{unitTime},#{roadWayNum},#{totalFlux},
+            #{occupyRation},#{longRation},#{midRation},#{shortRation},#{avgSpeed},#{longSpeed},
+            #{midSpeed},#{shortSpeed},#{preFlux},#{longCarNums},#{midCarNums},#{shortCarNums})
+    </insert>
+    <!-- 根据时间段查询 -->
+    <select id="queryAllCarFlowByTime" resultType="com.hzaihua.jfoenix.entity.CarFlowLP">
+      select * from carFlow_LP
+      between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!-- 根据时间段、设备编号查询 -->
+    <select id="queryCarFlowByTimeAndCode" resultType="com.hzaihua.jfoenix.entity.CarFlowLP">
+        select * from carFlow_LP
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

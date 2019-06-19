@@ -16,4 +16,12 @@
     <delete id="deleteNoiseDevice">
         delete from info_${deviceTableName} where deviceCode=#{deviceCode}
     </delete>
+    <!--根据测点编号查询该测点下的设备-->
+    <select id="queryByMeasureCode" resultType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
+        select * from info_noise where measureCode = #{measureCode}
+    </select>
+    <!--查询所有设备-->
+    <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.InfoNoiseDevice">
+        select * from info_noise
+    </select>
 </mapper>

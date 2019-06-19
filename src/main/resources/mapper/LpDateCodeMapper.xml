@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.LpDateCodeDao">
+    <!-- 添加 -->
+    <insert id="insertLpDateCode" parameterType="com.hzaihua.jfoenix.entity.LpDateCode">
+      insert into LpData_code
+      values(#{noiseCode},#{measureTime},#{LASP},#{LAFP},#{LAIP},#{LCSP},#{LCFP},#{LCIP},
+            #{LZSP},#{LZFP},#{LZIP},#{normal},#{sift})
+    </insert>
+    <!--根据时间段查询开关量数据-->
+    <select id="queryLpDateByTime" resultType="com.hzaihua.jfoenix.entity.LpDateCode">
+        select * from LpData_code
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询该设备在某个时间段的开关量数据-->
+    <select id="queryLpDateByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.LpDateCode">
+        select * from LpData_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

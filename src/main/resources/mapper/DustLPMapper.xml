@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.DustLPDao">
+    <!--查询所有数据-->
+    <select id="queryAllDustLP" resultType="com.hzaihua.jfoenix.entity.DustLP">
+        select noiseCode,measureTime,unitTime,TSP,PM10,PM2_5,SOx.NOx,anion
+        from Dust_LP
+    </select>
+    <!-- 添加 -->
+    <insert id="insertDustLP" parameterType="com.hzaihua.jfoenix.entity.DustLP">
+        insert into Dust_LP
+        values(#{noiseCode},#{measureTime},#{unitTime},#{TSP},#{PM10},#{PM2_5},#{SOx},#{NOx},#{anion})
+    </insert>
+    <!--根据时间段查询数据-->
+    <select id="queryByTime" resultType="com.hzaihua.jfoenix.entity.DustLP">
+        select noiseCode,measureTime,unitTime,TSP,PM10,PM2_5,SOx.NOx,anion
+        from Dust_LP
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

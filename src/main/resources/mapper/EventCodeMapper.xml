@@ -8,12 +8,12 @@
     <!-- 添加 -->
     <insert id="insertEventCode" parameterType="com.hzaihua.jfoenix.entity.EventCode">
       insert into event_code
-      values(#{EventCode},#{EventSourceType},#{EventSource},#{EventType},#{EventBeginTime,jdbcType=TIMESTAMP},#{EventEndTime,jdbcType=TIMESTAMP},#{EventLevel},#{EventDescribe})
+      values(#{eventCode},#{eventSourceType},#{eventSource},#{eventType},#{eventBeginTime,jdbcType=TIMESTAMP},#{eventEndTime,jdbcType=TIMESTAMP},#{eventLevel},#{eventDescribe})
     </insert>
 
     <!-- 根据事件来源查询 -->
     <select id="queryByEventSource" resultType="com.hzaihua.jfoenix.entity.EventCode">
       select * from event_code
-      where EventSource=#{EventSource}
+      where eventSource=#{eventSource}
     </select>
 </mapper>

@@ -19,7 +19,7 @@ public interface InfoNoiseManagerDao {
      *
      * @mbg.generated
      */
-    void queryNoiseManagerByNoiseCode(String noiseMeasureID);
+    InfoNoiseManager queryNoiseManagerByNoiseCode(String noiseManagerId);
 
 
     /**

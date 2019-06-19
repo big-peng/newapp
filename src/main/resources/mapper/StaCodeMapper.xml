@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.StaCodeDao">
+    <!-- 添加 -->
+    <insert id="insertStaCode" parameterType="com.hzaihua.jfoenix.entity.StaCode">
+      insert into sta_code
+      values(#{noiseCode},#{measureTime},#{leqT},#{LAFmax},#{LAF5},#{LAF10},#{LAF50},#{LAF90},
+          #{LAF95},#{SD},#{LAFmin},#{normal},#{rate},#{sift},#{softRate},#{detail})
+    </insert>
+    <!--根据时间段查询-->
+    <select id="queryStaByTime" resultType="com.hzaihua.jfoenix.entity.StaCode">
+        select * from sta_code
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询某个时间段的-->
+    <select id="queryStaByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.StaCode">
+        select * from sta_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

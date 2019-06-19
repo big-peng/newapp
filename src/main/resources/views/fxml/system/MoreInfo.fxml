@@ -8,17 +8,21 @@
 <?import com.jfoenix.controls.JFXTreeTableColumn?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="moreInfoPopup"
            xmlns="http://javafx.com/javafx/2.2" prefWidth="1000" prefHeight="300">
-        <JFXTreeTableView fx:id="treeTableView">
+        <TableView fx:id="treeTableView">
             <columns>
-                <JFXTreeTableColumn fx:id="deviceCode" prefWidth="130" resizable="false" sortable="false" text="设备编号"/>
-                <JFXTreeTableColumn fx:id="deviceType" prefWidth="130" resizable="false" sortable="false" text="设备类型"/>
-                <JFXTreeTableColumn fx:id="linkState" prefWidth="100" resizable="false" sortable="false" text="连接状态"/>
-                <JFXTreeTableColumn fx:id="dataTime" prefWidth="128" resizable="false" sortable="false" text="时间"/>
-                <JFXTreeTableColumn fx:id="data" prefWidth="100" resizable="false" sortable="false" text="数值"/>
-                <JFXTreeTableColumn fx:id="linkPort" prefWidth="160" resizable="false" sortable="false" text="连接端口"/>
-                <JFXTreeTableColumn fx:id="address" prefWidth="250" resizable="false" sortable="false" text="其他参数"/>
+                <TableColumn fx:id="deviceCode" prefWidth="130" resizable="false" sortable="false" text="设备编号"/>
+                <TableColumn fx:id="deviceType" prefWidth="130" resizable="false" sortable="false" text="设备类型"/>
+                <TableColumn fx:id="linkState" prefWidth="100" resizable="false" sortable="false" text="连接状态"/>
+                <TableColumn fx:id="dataTime" prefWidth="128" resizable="false" sortable="false" text="时间"/>
+                <TableColumn fx:id="data" prefWidth="100" resizable="false" sortable="false" text="数值"/>
+                <TableColumn fx:id="linkPort" prefWidth="160" resizable="false" sortable="false" text="连接端口"/>
+                <TableColumn fx:id="address" prefWidth="250" resizable="false" sortable="false" text="其他参数"/>
             </columns>
-        </JFXTreeTableView>
+        </TableView>
 </StackPane>

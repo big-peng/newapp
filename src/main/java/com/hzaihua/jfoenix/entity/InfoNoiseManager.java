@@ -1,58 +1,65 @@
 package com.hzaihua.jfoenix.entity;
 
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.DatePicker;
+import org.springframework.format.annotation.DateTimeFormat;
 
-public class InfoNoiseManager {
-    private StringProperty NoiseMeasureID; //设备编号
-    private SimpleIntegerProperty Sample; //瞬时采样间隔
-    private SimpleIntegerProperty UpSpace; //瞬时上传间隔
-    private SimpleDoubleProperty DayOverValue; //噪声白天超标值
-    private SimpleDoubleProperty NightOverValue; //噪声晚上超标值
-    private SimpleIntegerProperty OverDlay; //噪声超标延时
-    private SimpleIntegerProperty IsExceed; //是否超标报警
-    private SimpleDoubleProperty DayOctValue; //频谱白天超标限值
-    private SimpleDoubleProperty NightOctValue; //频谱晚上超标限值
-    private SimpleIntegerProperty OctDlay; //频谱超标延时
-    private SimpleIntegerProperty IsOct; //是否超标频谱分析
-    private SimpleDoubleProperty DayRecordValue; //录音白天超标
-    private SimpleDoubleProperty NightRecordValue; //录音晚上超标
-    private SimpleIntegerProperty RecordDlay; //录音超标延时
-    private SimpleIntegerProperty IsRecord; //是否录音
-    private DatePicker RecordStartTime; //上传开始时间
-    private DatePicker RecordEndTime; //上传结束时间
-    private SimpleDoubleProperty RecordModel; //上传模式
-    private StringProperty FreWight; //频率计权
-    private StringProperty TimeWight; //时间计权
-    private SimpleIntegerProperty Initime;// 积分统计时间
-    private DatePicker AdjustTime; //校准时间
-    private SimpleIntegerProperty AdjustSpace; //校准间隔
+import java.util.Date;
+
+public class InfoNoiseManager extends RecursiveTreeObject<InfoUser> {
+    private StringProperty noiseManagerId; //设备编号
+    private SimpleDoubleProperty sample; //瞬时采样间隔
+    private SimpleIntegerProperty upSpace; //瞬时上传间隔
+    private SimpleDoubleProperty dayOverValue; //噪声白天超标值
+    private SimpleDoubleProperty nightOverValue; //噪声晚上超标值
+    private SimpleIntegerProperty overDlay; //噪声超标延时
+    private SimpleIntegerProperty isExceed; //是否超标报警
+    private SimpleDoubleProperty dayOctValue; //频谱白天超标限值
+    private SimpleDoubleProperty nightOctValue; //频谱晚上超标限值
+    private SimpleIntegerProperty octDlay; //频谱超标延时
+    private SimpleIntegerProperty isOct; //是否超标频谱分析
+    private SimpleDoubleProperty dayRecordValue; //录音白天超标
+    private SimpleDoubleProperty nightRecordValue; //录音晚上超标
+    private SimpleIntegerProperty recordDlay; //录音超标延时
+    private SimpleIntegerProperty isRecord; //是否录音
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date recordStartTime; //上传开始时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date recordEndTime; //上传结束时间
+    private SimpleIntegerProperty recordModel; //上传模式
+    private StringProperty freWight; //频率计权
+    private StringProperty timeWight; //时间计权
+    private SimpleIntegerProperty initime;// 积分统计时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date adjustTime; //校准时间
+    private SimpleIntegerProperty adjustSpace; //校准间隔
     private SimpleIntegerProperty isAutoAdjust; //是否自动电校准
-    private SimpleIntegerProperty WeaAutoUp; //气象自动上传
-    private SimpleIntegerProperty WeaAutoSave; //气象自动保存
-    private SimpleIntegerProperty WeaUpSpace; //气象采集间隔
-    private SimpleIntegerProperty CarAutoUp; //车流量自动上传
-    private SimpleIntegerProperty CarAutoSave; //车流量自动保存
-    private SimpleIntegerProperty CarUpSpace; //车流量采集间隔
-    private SimpleIntegerProperty DustAutoUp; //粉尘自动上传
-    private SimpleIntegerProperty DustAutoSave; //粉尘自动保存
-    private SimpleIntegerProperty DustUpSpace; //粉尘采集间隔
-    private SimpleIntegerProperty Event_01; //手动控制电校准
-    private SimpleIntegerProperty Event_02; //自动电校准
-    private SimpleIntegerProperty Event_03; //加热
-    private SimpleIntegerProperty Event_04; //噪声超标
-    private SimpleIntegerProperty Event_05; //仪器启动
-    private SimpleIntegerProperty Event_06; //仪器正常关机
-    private SimpleIntegerProperty Event_07; //停电
-    private SimpleIntegerProperty Event_08; //机箱门被打开
-    private SimpleIntegerProperty Event_09; //读声级计出错
-    private SimpleIntegerProperty Event_10; //存储器出错
-    private SimpleIntegerProperty Event_11; //USB口出错
-    private SimpleIntegerProperty Event_12; //电池电压不足
-    private SimpleIntegerProperty Event_13; //声校准
+    private SimpleIntegerProperty weaAutoUp; //气象自动上传
+    private SimpleIntegerProperty weaAutoSave; //气象自动保存
+    private SimpleIntegerProperty weaUpSpace; //气象采集间隔
+    private SimpleIntegerProperty carAutoUp; //车流量自动上传
+    private SimpleIntegerProperty carAutoSave; //车流量自动保存
+    private SimpleIntegerProperty carUpSpace; //车流量采集间隔
+    private SimpleIntegerProperty dustAutoUp; //粉尘自动上传
+    private SimpleIntegerProperty dustAutoSave; //粉尘自动保存
+    private SimpleIntegerProperty dustUpSpace; //粉尘采集间隔
+    private SimpleIntegerProperty event_01; //手动控制电校准
+    private SimpleIntegerProperty event_02; //自动电校准
+    private SimpleIntegerProperty event_03; //加热
+    private SimpleIntegerProperty event_04; //噪声超标
+    private SimpleIntegerProperty event_05; //仪器启动
+    private SimpleIntegerProperty event_06; //仪器正常关机
+    private SimpleIntegerProperty event_07; //停电
+    private SimpleIntegerProperty event_08; //机箱门被打开
+    private SimpleIntegerProperty event_09; //读声级计出错
+    private SimpleIntegerProperty event_10; //存储器出错
+    private SimpleIntegerProperty event_11; //USB口出错
+    private SimpleIntegerProperty event_12; //电池电压不足
+    private SimpleIntegerProperty event_13; //声校准
     private SimpleIntegerProperty ON_OFF_LEQZ; //每秒的Z计权等效上传0：关； 1：开
     private SimpleIntegerProperty ON_OFF_LEQC; //每秒的C计权等效上传
     private SimpleIntegerProperty ON_OFF_LEQA; //每秒的A计权等效上传
@@ -68,21 +75,20 @@ public class InfoNoiseManager {
     private SimpleIntegerProperty ON_OFF_PEAKZ; //Z计权峰值上传
     private SimpleIntegerProperty ON_OFF_PEAKC; //C计权峰值上传
     private SimpleIntegerProperty ON_OFF_PEAKA; //A计权峰值上传
-    private SimpleIntegerProperty ON_OFF_MIN; //分钟统计数据自动上传
     private SimpleIntegerProperty ON_OFF_HOUR; //小时统计数据自动上传
     private SimpleIntegerProperty ON_OFF_DAY; //天统计数据自动上传
-    private SimpleIntegerProperty ON_OFF_UDT; //自定义积分时间统计数据自动上传
+    private SimpleIntegerProperty ON_OFF_UDT; //自定义分钟时间统计数据自动上传
     private SimpleIntegerProperty ON_OFF_13OCT; //1/3频谱数据按照采样间隔参数的间隔自动上传
     private SimpleIntegerProperty ON_OFF_11OCT; //1/1频谱数据按照采样间隔参数的间隔自动上传
     private SimpleIntegerProperty ON_OFF_RADF; //仪器出错时复位
     private SimpleIntegerProperty ON_OFF_FAMF; //存储器加载失败时格式化存储器
     private SimpleIntegerProperty ON_OFF_PDWIV; //低电压数据保护
     private SimpleIntegerProperty ON_OFF_LEQ1S; //保存每秒的Leq，包括A、C、Z 3个计权
-    private SimpleIntegerProperty HasOct; //是否有频谱授权
-    private SimpleIntegerProperty HasAll; //是否有积分授权
-    private SimpleIntegerProperty HasRecord; //是否有记录功能
-    private SimpleIntegerProperty HasSoundtrans; //实时语音授权
-    private SimpleIntegerProperty Record_On_Off; //录音启动终止
+    private SimpleIntegerProperty hasOct; //是否有频谱授权
+    private SimpleIntegerProperty hasAll; //是否有积分授权
+    private SimpleIntegerProperty hasRecord; //是否有记录功能
+    private SimpleIntegerProperty hasSoundtrans; //实时语音授权
+    private SimpleIntegerProperty record_On_Off; //录音启动终止
     private StringProperty version_Hardware; //硬件版本
     private StringProperty version_Linux; //内核版本
     private StringProperty version_N_VIEW; //界面版本
@@ -92,52 +98,52 @@ public class InfoNoiseManager {
     @Override
     public String toString() {
         return "InfoNoiseManager{" +
-                "NoiseMeasureID=" + NoiseMeasureID +
-                ", Sample=" + Sample +
-                ", UpSpace=" + UpSpace +
-                ", DayOverValue=" + DayOverValue +
-                ", NightOverValue=" + NightOverValue +
-                ", OverDlay=" + OverDlay +
-                ", IsExceed=" + IsExceed +
-                ", DayOctValue=" + DayOctValue +
-                ", NightOctValue=" + NightOctValue +
-                ", OctDlay=" + OctDlay +
-                ", IsOct=" + IsOct +
-                ", DayRecordValue=" + DayRecordValue +
-                ", NightRecordValue=" + NightRecordValue +
-                ", RecordDlay=" + RecordDlay +
-                ", IsRecord=" + IsRecord +
-                ", RecordStartTime=" + RecordStartTime +
-                ", RecordEndTime=" + RecordEndTime +
-                ", RecordModel=" + RecordModel +
-                ", FreWight=" + FreWight +
-                ", TimeWight=" + TimeWight +
-                ", Initime=" + Initime +
-                ", AdjustTime=" + AdjustTime +
-                ", AdjustSpace=" + AdjustSpace +
+                "noiseManagerId=" + noiseManagerId +
+                ", sample=" + sample +
+                ", upSpace=" + upSpace +
+                ", dayOverValue=" + dayOverValue +
+                ", nightOverValue=" + nightOverValue +
+                ", overDlay=" + overDlay +
+                ", isExceed=" + isExceed +
+                ", dayOctValue=" + dayOctValue +
+                ", nightOctValue=" + nightOctValue +
+                ", octDlay=" + octDlay +
+                ", isOct=" + isOct +
+                ", dayRecordValue=" + dayRecordValue +
+                ", nightRecordValue=" + nightRecordValue +
+                ", recordDlay=" + recordDlay +
+                ", isRecord=" + isRecord +
+                ", recordStartTime=" + recordStartTime +
+                ", recordEndTime=" + recordEndTime +
+                ", recordModel=" + recordModel +
+                ", freWight=" + freWight +
+                ", timeWight=" + timeWight +
+                ", initime=" + initime +
+                ", adjustTime=" + adjustTime +
+                ", adjustSpace=" + adjustSpace +
                 ", isAutoAdjust=" + isAutoAdjust +
-                ", WeaAutoUp=" + WeaAutoUp +
-                ", WeaAutoSave=" + WeaAutoSave +
-                ", WeaUpSpace=" + WeaUpSpace +
-                ", CarAutoUp=" + CarAutoUp +
-                ", CarAutoSave=" + CarAutoSave +
-                ", CarUpSpace=" + CarUpSpace +
-                ", DustAutoUp=" + DustAutoUp +
-                ", DustAutoSave=" + DustAutoSave +
-                ", DustUpSpace=" + DustUpSpace +
-                ", Event_01=" + Event_01 +
-                ", Event_02=" + Event_02 +
-                ", Event_03=" + Event_03 +
-                ", Event_04=" + Event_04 +
-                ", Event_05=" + Event_05 +
-                ", Event_06=" + Event_06 +
-                ", Event_07=" + Event_07 +
-                ", Event_08=" + Event_08 +
-                ", Event_09=" + Event_09 +
-                ", Event_10=" + Event_10 +
-                ", Event_11=" + Event_11 +
-                ", Event_12=" + Event_12 +
-                ", Event_13=" + Event_13 +
+                ", weaAutoUp=" + weaAutoUp +
+                ", weaAutoSave=" + weaAutoSave +
+                ", weaUpSpace=" + weaUpSpace +
+                ", carAutoUp=" + carAutoUp +
+                ", carAutoSave=" + carAutoSave +
+                ", carUpSpace=" + carUpSpace +
+                ", dustAutoUp=" + dustAutoUp +
+                ", dustAutoSave=" + dustAutoSave +
+                ", dustUpSpace=" + dustUpSpace +
+                ", event_01=" + event_01 +
+                ", event_02=" + event_02 +
+                ", event_03=" + event_03 +
+                ", event_04=" + event_04 +
+                ", event_05=" + event_05 +
+                ", event_06=" + event_06 +
+                ", event_07=" + event_07 +
+                ", event_08=" + event_08 +
+                ", event_09=" + event_09 +
+                ", event_10=" + event_10 +
+                ", event_11=" + event_11 +
+                ", event_12=" + event_12 +
+                ", event_13=" + event_13 +
                 ", ON_OFF_LEQZ=" + ON_OFF_LEQZ +
                 ", ON_OFF_LEQC=" + ON_OFF_LEQC +
                 ", ON_OFF_LEQA=" + ON_OFF_LEQA +
@@ -153,7 +159,6 @@ public class InfoNoiseManager {
                 ", ON_OFF_PEAKZ=" + ON_OFF_PEAKZ +
                 ", ON_OFF_PEAKC=" + ON_OFF_PEAKC +
                 ", ON_OFF_PEAKA=" + ON_OFF_PEAKA +
-                ", ON_OFF_MIN=" + ON_OFF_MIN +
                 ", ON_OFF_HOUR=" + ON_OFF_HOUR +
                 ", ON_OFF_DAY=" + ON_OFF_DAY +
                 ", ON_OFF_UDT=" + ON_OFF_UDT +
@@ -163,11 +168,11 @@ public class InfoNoiseManager {
                 ", ON_OFF_FAMF=" + ON_OFF_FAMF +
                 ", ON_OFF_PDWIV=" + ON_OFF_PDWIV +
                 ", ON_OFF_LEQ1S=" + ON_OFF_LEQ1S +
-                ", HasOct=" + HasOct +
-                ", HasAll=" + HasAll +
-                ", HasRecord=" + HasRecord +
-                ", HasSoundtrans=" + HasSoundtrans +
-                ", Record_On_Off=" + Record_On_Off +
+                ", hasOct=" + hasOct +
+                ", hasAll=" + hasAll +
+                ", hasRecord=" + hasRecord +
+                ", hasSoundtrans=" + hasSoundtrans +
+                ", record_On_Off=" + record_On_Off +
                 ", version_Hardware=" + version_Hardware +
                 ", version_Linux=" + version_Linux +
                 ", version_N_VIEW=" + version_N_VIEW +
@@ -176,271 +181,331 @@ public class InfoNoiseManager {
                 '}';
     }
 
-    public int getInitime() {
-        return Initime.get();
+    public String getNoiseManagerId() {
+        return noiseManagerId.get();
     }
 
-    public SimpleIntegerProperty initimeProperty() {
-        return Initime;
+    public StringProperty noiseManagerIdProperty() {
+        return noiseManagerId;
     }
 
-    public void setInitime(int initime) {
-        this.Initime = new SimpleIntegerProperty(initime);
+    public void setNoiseManagerId(String noiseManagerId) {
+        this.noiseManagerId = new SimpleStringProperty(noiseManagerId);
     }
 
-    public int getIsExceed() {
-        return IsExceed.get();
+    public double getSample() {
+        if(sample == null){
+            return 0;
+        }
+        return sample.get();
     }
 
-    public SimpleIntegerProperty isExceedProperty() {
-        return IsExceed;
+    public SimpleDoubleProperty sampleProperty() {
+        return sample;
     }
 
-    public void setIsExceed(int isExceed) {
-        this.IsExceed = new SimpleIntegerProperty(isExceed);
-    }
-
-    public String getNoiseMeasureID() {
-        return NoiseMeasureID.get();
-    }
-
-    public StringProperty noiseMeasureIDProperty() {
-        return NoiseMeasureID;
-    }
-
-    public void setNoiseMeasureID(String noiseMeasureID) {
-        this.NoiseMeasureID = new SimpleStringProperty(noiseMeasureID);
-    }
-
-    public int getSample() {
-        return Sample.get();
-    }
-
-    public SimpleIntegerProperty sampleProperty() {
-        return Sample;
-    }
-
-    public void setSample(int sample) {
-        this.Sample = new SimpleIntegerProperty(sample);
+    public void setSample(double sample) {
+        this.sample = new SimpleDoubleProperty(sample);
     }
 
     public int getUpSpace() {
-        return UpSpace.get();
+        if(upSpace == null){
+            return 0;
+        }
+        return upSpace.get();
     }
 
     public SimpleIntegerProperty upSpaceProperty() {
-        return UpSpace;
+        return upSpace;
     }
 
     public void setUpSpace(int upSpace) {
-        this.UpSpace = new SimpleIntegerProperty(upSpace);
+        this.upSpace = new SimpleIntegerProperty(upSpace);
     }
 
     public double getDayOverValue() {
-        return DayOverValue.get();
+        if(dayOverValue == null){
+            return 0;
+        }
+        return dayOverValue.get();
     }
 
     public SimpleDoubleProperty dayOverValueProperty() {
-        return DayOverValue;
+        return dayOverValue;
     }
 
     public void setDayOverValue(double dayOverValue) {
-        this.DayOverValue = new SimpleDoubleProperty(dayOverValue);
+        this.dayOverValue = new SimpleDoubleProperty(dayOverValue);
     }
 
     public double getNightOverValue() {
-        return NightOverValue.get();
+        if(nightOverValue == null){
+            return 0;
+        }
+        return nightOverValue.get();
     }
 
     public SimpleDoubleProperty nightOverValueProperty() {
-        return NightOverValue;
+        return nightOverValue;
     }
 
     public void setNightOverValue(double nightOverValue) {
-        this.NightOverValue = new SimpleDoubleProperty(nightOverValue);
+        this.nightOverValue = new SimpleDoubleProperty(nightOverValue);
     }
 
     public int getOverDlay() {
-        return OverDlay.get();
+        if(overDlay == null){
+            return 0;
+        }
+        return overDlay.get();
     }
 
     public SimpleIntegerProperty overDlayProperty() {
-        return OverDlay;
+        return overDlay;
     }
 
     public void setOverDlay(int overDlay) {
-        this.OverDlay = new SimpleIntegerProperty(overDlay);
+        this.overDlay = new SimpleIntegerProperty(overDlay);
+    }
+
+    public int getIsExceed() {
+        if(isExceed == null){
+            return 0;
+        }
+        return isExceed.get();
+    }
+
+    public SimpleIntegerProperty isExceedProperty() {
+        return isExceed;
+    }
+
+    public void setIsExceed(int isExceed) {
+        this.isExceed = new SimpleIntegerProperty(isExceed);
     }
 
     public double getDayOctValue() {
-        return DayOctValue.get();
+        if(dayOctValue == null){
+            return 0;
+        }
+        return dayOctValue.get();
     }
 
     public SimpleDoubleProperty dayOctValueProperty() {
-        return DayOctValue;
+        return dayOctValue;
     }
 
     public void setDayOctValue(double dayOctValue) {
-        this.DayOctValue = new SimpleDoubleProperty(dayOctValue);
+        this.dayOctValue = new SimpleDoubleProperty(dayOctValue);
     }
 
     public double getNightOctValue() {
-        return NightOctValue.get();
+        if(nightOverValue == null){
+            return 0;
+        }
+        return nightOctValue.get();
     }
 
     public SimpleDoubleProperty nightOctValueProperty() {
-        return NightOctValue;
+        return nightOctValue;
     }
 
     public void setNightOctValue(double nightOctValue) {
-        this.NightOctValue = new SimpleDoubleProperty(nightOctValue);
+        this.nightOctValue = new SimpleDoubleProperty(nightOctValue);
     }
 
     public int getOctDlay() {
-        return OctDlay.get();
+        if(octDlay == null){
+            return 0;
+        }
+        return octDlay.get();
     }
 
     public SimpleIntegerProperty octDlayProperty() {
-        return OctDlay;
+        return octDlay;
     }
 
     public void setOctDlay(int octDlay) {
-        this.OctDlay = new SimpleIntegerProperty(octDlay);
+        this.octDlay = new SimpleIntegerProperty(octDlay);
     }
 
     public int getIsOct() {
-        return IsOct.get();
+        if(isOct == null){
+            return 0;
+        }
+        return isOct.get();
     }
 
     public SimpleIntegerProperty isOctProperty() {
-        return IsOct;
+        return isOct;
     }
 
     public void setIsOct(int isOct) {
-        this.IsOct = new SimpleIntegerProperty(isOct);
+        this.isOct = new SimpleIntegerProperty(isOct);
     }
 
     public double getDayRecordValue() {
-        return DayRecordValue.get();
+        if(dayRecordValue == null){
+            return 0;
+        }
+        return dayRecordValue.get();
     }
 
     public SimpleDoubleProperty dayRecordValueProperty() {
-        return DayRecordValue;
+        return dayRecordValue;
     }
 
     public void setDayRecordValue(double dayRecordValue) {
-        this.DayRecordValue = new SimpleDoubleProperty(dayRecordValue);
+        this.dayRecordValue = new SimpleDoubleProperty(dayRecordValue);
     }
 
     public double getNightRecordValue() {
-        return NightRecordValue.get();
+        if(nightRecordValue == null){
+            return 0;
+        }
+        return nightRecordValue.get();
     }
 
     public SimpleDoubleProperty nightRecordValueProperty() {
-        return NightRecordValue;
+        return nightRecordValue;
     }
 
     public void setNightRecordValue(double nightRecordValue) {
-        this.NightRecordValue = new SimpleDoubleProperty(nightRecordValue);
+        this.nightRecordValue = new SimpleDoubleProperty(nightRecordValue);
     }
 
     public int getRecordDlay() {
-        return RecordDlay.get();
+        if(recordDlay == null){
+            return 0;
+        }
+        return recordDlay.get();
     }
 
     public SimpleIntegerProperty recordDlayProperty() {
-        return RecordDlay;
+        return recordDlay;
     }
 
     public void setRecordDlay(int recordDlay) {
-        this.RecordDlay = new SimpleIntegerProperty(recordDlay);
+        this.recordDlay = new SimpleIntegerProperty(recordDlay);
     }
 
     public int getIsRecord() {
-        return IsRecord.get();
+        if(isRecord == null){
+            return 0;
+        }
+        return isRecord.get();
     }
 
     public SimpleIntegerProperty isRecordProperty() {
-        return IsRecord;
+        return isRecord;
     }
 
     public void setIsRecord(int isRecord) {
-        this.IsRecord = new SimpleIntegerProperty(isRecord);
+        this.isRecord = new SimpleIntegerProperty(isRecord);
     }
 
-    public DatePicker getRecordStartTime() {
-        return RecordStartTime;
+    public Date getRecordStartTime() {
+        return recordStartTime;
     }
 
-    public void setRecordStartTime(DatePicker recordStartTime) {
-        RecordStartTime = recordStartTime;
+    public void setRecordStartTime(Date recordStartTime) {
+        this.recordStartTime = recordStartTime;
     }
 
-    public DatePicker getRecordEndTime() {
-        return RecordEndTime;
+    public Date getRecordEndTime() {
+        return recordEndTime;
     }
 
-    public void setRecordEndTime(DatePicker recordEndTime) {
-        RecordEndTime = recordEndTime;
+    public void setRecordEndTime(Date recordEndTime) {
+        this.recordEndTime = recordEndTime;
     }
 
-    public double getRecordModel() {
-        return RecordModel.get();
+    public int getRecordModel() {
+        if(recordModel == null){
+            return 0;
+        }
+        return recordModel.get();
     }
 
-    public SimpleDoubleProperty recordModelProperty() {
-        return RecordModel;
+    public SimpleIntegerProperty recordModelProperty() {
+        return recordModel;
     }
 
-    public void setRecordModel(double recordModel) {
-        this.RecordModel = new SimpleDoubleProperty(recordModel);
+    public void setRecordModel(int recordModel) {
+        this.recordModel = new SimpleIntegerProperty(recordModel);
     }
 
     public String getFreWight() {
-        return FreWight.get();
+        if(freWight == null){
+            return "请选择频率计权";
+        }
+        return freWight.get();
     }
 
     public StringProperty freWightProperty() {
-        return FreWight;
+        return freWight;
     }
 
     public void setFreWight(String freWight) {
-        this.FreWight = new SimpleStringProperty(freWight);
+        this.freWight = new SimpleStringProperty(freWight);
     }
 
     public String getTimeWight() {
-        return TimeWight.get();
+        if(timeWight == null){
+            return "请选择时间计权";
+        }
+        return timeWight.get();
     }
 
     public StringProperty timeWightProperty() {
-        return TimeWight;
+        return timeWight;
     }
 
     public void setTimeWight(String timeWight) {
-        this.TimeWight = new SimpleStringProperty(timeWight);
+        this.timeWight = new SimpleStringProperty(timeWight);
     }
 
-    public DatePicker getAdjustTime() {
-        return AdjustTime;
+    public int getInitime() {
+        if(initime == null){
+            return 0;
+        }
+        return initime.get();
     }
 
-    public void setAdjustTime(DatePicker adjustTime) {
-        AdjustTime = adjustTime;
+    public SimpleIntegerProperty initimeProperty() {
+        return initime;
+    }
+
+    public void setInitime(int initime) {
+        this.initime = new SimpleIntegerProperty(initime);
+    }
+
+    public Date getAdjustTime() {
+        return adjustTime;
+    }
+
+    public void setAdjustTime(Date adjustTime) {
+        this.adjustTime = adjustTime;
     }
 
     public int getAdjustSpace() {
-        return AdjustSpace.get();
+        if(adjustSpace == null){
+            return 0;
+        }
+        return adjustSpace.get();
     }
 
     public SimpleIntegerProperty adjustSpaceProperty() {
-        return AdjustSpace;
+        return adjustSpace;
     }
 
     public void setAdjustSpace(int adjustSpace) {
-        this.AdjustSpace = new SimpleIntegerProperty(adjustSpace);
+        this.adjustSpace = new SimpleIntegerProperty(adjustSpace);
     }
 
     public int getIsAutoAdjust() {
+        if(isAutoAdjust == null){
+            return 0;
+        }
         return isAutoAdjust.get();
     }
 
@@ -453,270 +518,339 @@ public class InfoNoiseManager {
     }
 
     public int getWeaAutoUp() {
-        return WeaAutoUp.get();
+        if(weaAutoUp == null){
+            return 0;
+        }
+        return weaAutoUp.get();
     }
 
     public SimpleIntegerProperty weaAutoUpProperty() {
-        return WeaAutoUp;
+        return weaAutoUp;
     }
 
     public void setWeaAutoUp(int weaAutoUp) {
-        this.WeaAutoUp = new SimpleIntegerProperty(weaAutoUp);
+        this.weaAutoUp = new SimpleIntegerProperty(weaAutoUp);
     }
 
     public int getWeaAutoSave() {
-        return WeaAutoSave.get();
+        if(weaAutoSave == null){
+            return 0;
+        }
+        return weaAutoSave.get();
     }
 
     public SimpleIntegerProperty weaAutoSaveProperty() {
-        return WeaAutoSave;
+        return weaAutoSave;
     }
 
     public void setWeaAutoSave(int weaAutoSave) {
-        this.WeaAutoSave = new SimpleIntegerProperty(weaAutoSave);
+        this.weaAutoSave = new SimpleIntegerProperty(weaAutoSave);
     }
 
     public int getWeaUpSpace() {
-        return WeaUpSpace.get();
+        if(weaUpSpace == null){
+            return 0;
+        }
+        return weaUpSpace.get();
     }
 
     public SimpleIntegerProperty weaUpSpaceProperty() {
-        return WeaUpSpace;
+        return weaUpSpace;
     }
 
     public void setWeaUpSpace(int weaUpSpace) {
-        this.WeaUpSpace = new SimpleIntegerProperty(weaUpSpace);
+        this.weaUpSpace = new SimpleIntegerProperty(weaUpSpace);
     }
 
     public int getCarAutoUp() {
-        return CarAutoUp.get();
+        if(carAutoUp == null){
+            return 0;
+        }
+        return carAutoUp.get();
     }
 
     public SimpleIntegerProperty carAutoUpProperty() {
-        return CarAutoUp;
+        return carAutoUp;
     }
 
     public void setCarAutoUp(int carAutoUp) {
-        this.CarAutoUp = new SimpleIntegerProperty(carAutoUp);
+        this.carAutoUp = new SimpleIntegerProperty(carAutoUp);
     }
 
     public int getCarAutoSave() {
-        return CarAutoSave.get();
+        if(carAutoSave == null){
+            return 0;
+        }
+        return carAutoSave.get();
     }
 
     public SimpleIntegerProperty carAutoSaveProperty() {
-        return CarAutoSave;
+        return carAutoSave;
     }
 
     public void setCarAutoSave(int carAutoSave) {
-        this.CarAutoSave = new SimpleIntegerProperty(carAutoSave);
+        this.carAutoSave = new SimpleIntegerProperty(carAutoSave);
     }
 
     public int getCarUpSpace() {
-        return CarUpSpace.get();
+        if(carUpSpace == null){
+            return 0;
+        }
+        return carUpSpace.get();
     }
 
     public SimpleIntegerProperty carUpSpaceProperty() {
-        return CarUpSpace;
+        return carUpSpace;
     }
 
     public void setCarUpSpace(int carUpSpace) {
-        this.CarUpSpace = new SimpleIntegerProperty(carUpSpace);
+        this.carUpSpace = new SimpleIntegerProperty(carUpSpace);
     }
 
     public int getDustAutoUp() {
-        return DustAutoUp.get();
+        if(dustAutoUp == null){
+            return 0;
+        }
+        return dustAutoUp.get();
     }
 
     public SimpleIntegerProperty dustAutoUpProperty() {
-        return DustAutoUp;
+        return dustAutoUp;
     }
 
     public void setDustAutoUp(int dustAutoUp) {
-        this.DustAutoUp = new SimpleIntegerProperty(dustAutoUp);
+        this.dustAutoUp = new SimpleIntegerProperty(dustAutoUp);
     }
 
     public int getDustAutoSave() {
-        return DustAutoSave.get();
+        if(dustAutoSave == null){
+            return 0;
+        }
+        return dustAutoSave.get();
     }
 
     public SimpleIntegerProperty dustAutoSaveProperty() {
-        return DustAutoSave;
+        return dustAutoSave;
     }
 
     public void setDustAutoSave(int dustAutoSave) {
-        this.DustAutoSave = new SimpleIntegerProperty(dustAutoSave);
+        this.dustAutoSave = new SimpleIntegerProperty(dustAutoSave);
     }
 
     public int getDustUpSpace() {
-        return DustUpSpace.get();
+        if(dustUpSpace == null){
+            return 0;
+        }
+        return dustUpSpace.get();
     }
 
     public SimpleIntegerProperty dustUpSpaceProperty() {
-        return DustUpSpace;
+        return dustUpSpace;
     }
 
     public void setDustUpSpace(int dustUpSpace) {
-        this.DustUpSpace = new SimpleIntegerProperty(dustUpSpace);
+        this.dustUpSpace = new SimpleIntegerProperty(dustUpSpace);
     }
 
     public int getEvent_01() {
-        return Event_01.get();
+        if(event_01 == null){
+            return 0;
+        }
+        return event_01.get();
     }
 
-    public SimpleIntegerProperty Event_01Property() {
-        return Event_01;
+    public SimpleIntegerProperty event_01Property() {
+        return event_01;
     }
 
-    public void setEvent_01(int Event_01) {
-        this.Event_01 = new SimpleIntegerProperty(Event_01);
+    public void setEvent_01(int event_01) {
+        this.event_01 = new SimpleIntegerProperty(event_01);
     }
 
     public int getEvent_02() {
-        return Event_02.get();
+        if(event_01 == null){
+            return 0;
+        }
+        return event_02.get();
     }
 
-    public SimpleIntegerProperty Event_02Property() {
-        return Event_02;
+    public SimpleIntegerProperty event_02Property() {
+        return event_02;
     }
 
-    public void setEvent_02(int Event_02) {
-        this.Event_02 = new SimpleIntegerProperty(Event_02);
+    public void setEvent_02(int event_02) {
+        this.event_02 = new SimpleIntegerProperty(event_02);
     }
 
     public int getEvent_03() {
-        return Event_03.get();
+        if(event_03 == null){
+            return 0;
+        }
+        return event_03.get();
     }
 
-    public SimpleIntegerProperty Event_03Property() {
-        return Event_03;
+    public SimpleIntegerProperty event_03Property() {
+        return event_03;
     }
 
-    public void setEvent_03(int Event_03) {
-        this.Event_03 = new SimpleIntegerProperty(Event_03);
+    public void setEvent_03(int event_03) {
+        this.event_03 = new SimpleIntegerProperty(event_03);
     }
 
     public int getEvent_04() {
-        return Event_04.get();
+        if(event_04 == null){
+            return 0;
+        }
+        return event_04.get();
     }
 
-    public SimpleIntegerProperty Event_04Property() {
-        return Event_04;
+    public SimpleIntegerProperty event_04Property() {
+        return event_04;
     }
 
-    public void setEvent_04(int Event_04) {
-        this.Event_04 = new SimpleIntegerProperty(Event_04);
+    public void setEvent_04(int event_04) {
+        this.event_04 = new SimpleIntegerProperty(event_04);
     }
 
     public int getEvent_05() {
-        return Event_05.get();
+        if(event_05 == null){
+            return 0;
+        }
+        return event_05.get();
     }
 
-    public SimpleIntegerProperty Event_05Property() {
-        return Event_05;
+    public SimpleIntegerProperty event_05Property() {
+        return event_05;
     }
 
-    public void setEvent_05(int Event_05) {
-        this.Event_05 = new SimpleIntegerProperty(Event_05);
+    public void setEvent_05(int event_05) {
+        this.event_05 = new SimpleIntegerProperty(event_05);
     }
 
     public int getEvent_06() {
-        return Event_06.get();
+        if(event_06 == null){
+            return 0;
+        }
+        return event_06.get();
     }
 
-    public SimpleIntegerProperty Event_06Property() {
-        return Event_06;
+    public SimpleIntegerProperty event_06Property() {
+        return event_06;
     }
 
-    public void setEvent_06(int Event_06) {
-        this.Event_06 = new SimpleIntegerProperty(Event_06);
+    public void setEvent_06(int event_06) {
+        this.event_06 = new SimpleIntegerProperty(event_06);
     }
 
     public int getEvent_07() {
-        return Event_07.get();
+        if(event_07 == null){
+            return 0;
+        }
+        return event_07.get();
     }
 
-    public SimpleIntegerProperty Event_07Property() {
-        return Event_07;
+    public SimpleIntegerProperty event_07Property() {
+        return event_07;
     }
 
-    public void setEvent_07(int Event_07) {
-        this.Event_07 = new SimpleIntegerProperty(Event_07);
+    public void setEvent_07(int event_07) {
+        this.event_07 = new SimpleIntegerProperty(event_07);
     }
 
     public int getEvent_08() {
-        return Event_08.get();
+        if(event_08 == null){
+            return 0;
+        }
+        return event_08.get();
     }
 
-    public SimpleIntegerProperty Event_08Property() {
-        return Event_08;
+    public SimpleIntegerProperty event_08Property() {
+        return event_08;
     }
 
-    public void setEvent_08(int Event_08) {
-        this.Event_08 = new SimpleIntegerProperty(Event_08);
+    public void setEvent_08(int event_08) {
+        this.event_08 = new SimpleIntegerProperty(event_08);
     }
 
     public int getEvent_09() {
-        return Event_09.get();
+        if(event_09 == null){
+            return 0;
+        }
+        return event_09.get();
     }
 
-    public SimpleIntegerProperty Event_09Property() {
-        return Event_09;
+    public SimpleIntegerProperty event_09Property() {
+        return event_09;
     }
 
-    public void setEvent_09(int Event_09) {
-        this.Event_09 = new SimpleIntegerProperty(Event_09);
+    public void setEvent_09(int event_09) {
+        this.event_09 = new SimpleIntegerProperty(event_09);
     }
 
     public int getEvent_10() {
-        return Event_10.get();
+        if(event_10 == null){
+            return 0;
+        }
+        return event_10.get();
     }
 
-    public SimpleIntegerProperty Event_10Property() {
-        return Event_10;
+    public SimpleIntegerProperty event_10Property() {
+        return event_10;
     }
 
-    public void setEvent_10(int Event_10) {
-        this.Event_10 = new SimpleIntegerProperty(Event_10);
+    public void setEvent_10(int event_10) {
+        this.event_10 = new SimpleIntegerProperty(event_10);
     }
 
     public int getEvent_11() {
-        return Event_11.get();
+        if(event_11 == null){
+            return 0;
+        }
+        return event_11.get();
     }
 
-    public SimpleIntegerProperty Event_11Property() {
-        return Event_11;
+    public SimpleIntegerProperty event_11Property() {
+        return event_11;
     }
 
-    public void setEvent_11(int Event_11) {
-        this.Event_11 = new SimpleIntegerProperty(Event_11);
+    public void setEvent_11(int event_11) {
+        this.event_11 = new SimpleIntegerProperty(event_11);
     }
 
     public int getEvent_12() {
-        return Event_12.get();
+        if(event_12 == null){
+            return 0;
+        }
+        return event_12.get();
     }
 
-    public SimpleIntegerProperty Event_12Property() {
-        return Event_12;
+    public SimpleIntegerProperty event_12Property() {
+        return event_12;
     }
 
-    public void setEvent_12(int Event_12) {
-        this.Event_12 = new SimpleIntegerProperty(Event_12);
+    public void setEvent_12(int event_12) {
+        this.event_12 = new SimpleIntegerProperty(event_12);
     }
 
     public int getEvent_13() {
-        return Event_13.get();
+        if(event_13 == null){
+            return 0;
+        }
+        return event_13.get();
     }
 
-    public SimpleIntegerProperty Event_13Property() {
-        return Event_13;
+    public SimpleIntegerProperty event_13Property() {
+        return event_13;
     }
 
-    public void setEvent_13(int Event_13) {
-        this.Event_13 = new SimpleIntegerProperty(Event_13);
+    public void setEvent_13(int event_13) {
+        this.event_13 = new SimpleIntegerProperty(event_13);
     }
 
     public int getON_OFF_LEQZ() {
+        if(ON_OFF_LEQZ == null){
+            return 0;
+        }
         return ON_OFF_LEQZ.get();
     }
 
@@ -729,6 +863,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LEQC() {
+        if(ON_OFF_LEQC == null){
+            return 0;
+        }
         return ON_OFF_LEQC.get();
     }
 
@@ -741,6 +878,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LEQA() {
+        if(ON_OFF_LEQA == null){
+            return 0;
+        }
         return ON_OFF_LEQA.get();
     }
 
@@ -753,6 +893,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPFZ() {
+        if(ON_OFF_LPFZ == null){
+            return 0;
+        }
         return ON_OFF_LPFZ.get();
     }
 
@@ -765,6 +908,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPSZ() {
+        if(ON_OFF_LPSZ == null){
+            return 0;
+        }
         return ON_OFF_LPSZ.get();
     }
 
@@ -777,6 +923,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPIZ() {
+        if(ON_OFF_LPIZ == null){
+            return 0;
+        }
         return ON_OFF_LPIZ.get();
     }
 
@@ -789,6 +938,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPFC() {
+        if(ON_OFF_LPFC == null){
+            return 0;
+        }
         return ON_OFF_LPFC.get();
     }
 
@@ -801,6 +953,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPSC() {
+        if(ON_OFF_LPSC == null){
+            return 0;
+        }
         return ON_OFF_LPSC.get();
     }
 
@@ -813,6 +968,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPIC() {
+        if(ON_OFF_LPIC == null ){
+            return 0;
+        }
         return ON_OFF_LPIC.get();
     }
 
@@ -825,6 +983,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPFA() {
+        if(ON_OFF_LPFA == null){
+            return 0;
+        }
         return ON_OFF_LPFA.get();
     }
 
@@ -837,6 +998,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPSA() {
+        if(ON_OFF_LPSA == null){
+            return 0;
+        }
         return ON_OFF_LPSA.get();
     }
 
@@ -849,6 +1013,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LPIA() {
+        if(ON_OFF_LPIA == null){
+            return 0;
+        }
         return ON_OFF_LPIA.get();
     }
 
@@ -861,6 +1028,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_PEAKZ() {
+        if(ON_OFF_PEAKZ == null){
+            return 0;
+        }
         return ON_OFF_PEAKZ.get();
     }
 
@@ -873,6 +1043,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_PEAKC() {
+        if(ON_OFF_PEAKC == null){
+            return 0;
+        }
         return ON_OFF_PEAKC.get();
     }
 
@@ -885,6 +1058,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_PEAKA() {
+        if(ON_OFF_PEAKA == null){
+            return 0;
+        }
         return ON_OFF_PEAKA.get();
     }
 
@@ -896,19 +1072,10 @@ public class InfoNoiseManager {
         this.ON_OFF_PEAKA = new SimpleIntegerProperty(ON_OFF_PEAKA);
     }
 
-    public int getON_OFF_MIN() {
-        return ON_OFF_MIN.get();
-    }
-
-    public SimpleIntegerProperty ON_OFF_MINProperty() {
-        return ON_OFF_MIN;
-    }
-
-    public void setON_OFF_MIN(int ON_OFF_MIN) {
-        this.ON_OFF_MIN = new SimpleIntegerProperty(ON_OFF_MIN);
-    }
-
     public int getON_OFF_HOUR() {
+        if(ON_OFF_HOUR == null){
+            return 0;
+        }
         return ON_OFF_HOUR.get();
     }
 
@@ -921,6 +1088,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_DAY() {
+        if(ON_OFF_DAY == null){
+            return 0;
+        }
         return ON_OFF_DAY.get();
     }
 
@@ -933,6 +1103,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_UDT() {
+        if(ON_OFF_UDT == null){
+            return 0;
+        }
         return ON_OFF_UDT.get();
     }
 
@@ -945,6 +1118,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_13OCT() {
+        if(ON_OFF_13OCT == null){
+            return 0;
+        }
         return ON_OFF_13OCT.get();
     }
 
@@ -957,6 +1133,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_11OCT() {
+        if(ON_OFF_11OCT == null){
+            return 0;
+        }
         return ON_OFF_11OCT.get();
     }
 
@@ -969,6 +1148,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_RADF() {
+        if(ON_OFF_RADF == null){
+            return 0;
+        }
         return ON_OFF_RADF.get();
     }
 
@@ -981,6 +1163,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_FAMF() {
+        if(ON_OFF_FAMF == null){
+            return 0;
+        }
         return ON_OFF_FAMF.get();
     }
 
@@ -993,6 +1178,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_PDWIV() {
+        if(ON_OFF_PDWIV == null){
+            return 0;
+        }
         return ON_OFF_PDWIV.get();
     }
 
@@ -1005,6 +1193,9 @@ public class InfoNoiseManager {
     }
 
     public int getON_OFF_LEQ1S() {
+        if(ON_OFF_LEQ1S == null){
+            return 0;
+        }
         return ON_OFF_LEQ1S.get();
     }
 
@@ -1017,66 +1208,84 @@ public class InfoNoiseManager {
     }
 
     public int getHasOct() {
-        return HasOct.get();
+        if(hasOct == null){
+            return 0;
+        }
+        return hasOct.get();
     }
 
     public SimpleIntegerProperty hasOctProperty() {
-        return HasOct;
+        return hasOct;
     }
 
     public void setHasOct(int hasOct) {
-        this.HasOct = new SimpleIntegerProperty(hasOct);
+        this.hasOct = new SimpleIntegerProperty(hasOct);
     }
 
     public int getHasAll() {
-        return HasAll.get();
+        if(hasAll == null){
+            return 0;
+        }
+        return hasAll.get();
     }
 
     public SimpleIntegerProperty hasAllProperty() {
-        return HasAll;
+        return hasAll;
     }
 
     public void setHasAll(int hasAll) {
-        this.HasAll = new SimpleIntegerProperty(hasAll);
+        this.hasAll = new SimpleIntegerProperty(hasAll);
     }
 
     public int getHasRecord() {
-        return HasRecord.get();
+        if(hasRecord == null){
+            return 0;
+        }
+        return hasRecord.get();
     }
 
     public SimpleIntegerProperty hasRecordProperty() {
-        return HasRecord;
+        return hasRecord;
     }
 
     public void setHasRecord(int hasRecord) {
-        this.HasRecord = new SimpleIntegerProperty(hasRecord);
+        this.hasRecord = new SimpleIntegerProperty(hasRecord);
     }
 
     public int getHasSoundtrans() {
-        return HasSoundtrans.get();
+        if(hasSoundtrans == null){
+            return 0;
+        }
+        return hasSoundtrans.get();
     }
 
     public SimpleIntegerProperty hasSoundtransProperty() {
-        return HasSoundtrans;
+        return hasSoundtrans;
     }
 
     public void setHasSoundtrans(int hasSoundtrans) {
-        this.HasSoundtrans = new SimpleIntegerProperty(hasSoundtrans);
+        this.hasSoundtrans = new SimpleIntegerProperty(hasSoundtrans);
     }
 
     public int getRecord_On_Off() {
-        return Record_On_Off.get();
+        if(record_On_Off == null){
+            return 0;
+        }
+        return record_On_Off.get();
     }
 
     public SimpleIntegerProperty record_On_OffProperty() {
-        return Record_On_Off;
+        return record_On_Off;
     }
 
     public void setRecord_On_Off(int record_On_Off) {
-        this.Record_On_Off = new SimpleIntegerProperty(record_On_Off);
+        this.record_On_Off = new SimpleIntegerProperty(record_On_Off);
     }
 
     public String getVersion_Hardware() {
+        if(version_Hardware == null){
+            return "";
+        }
         return version_Hardware.get();
     }
 
@@ -1089,6 +1298,9 @@ public class InfoNoiseManager {
     }
 
     public String getVersion_Linux() {
+        if(version_Linux == null){
+            return "";
+        }
         return version_Linux.get();
     }
 
@@ -1101,6 +1313,9 @@ public class InfoNoiseManager {
     }
 
     public String getVersion_N_VIEW() {
+        if(version_N_VIEW == null){
+            return "";
+        }
         return version_N_VIEW.get();
     }
 
@@ -1113,6 +1328,9 @@ public class InfoNoiseManager {
     }
 
     public String getVersion_NoiseMonitor() {
+        if(version_NoiseMonitor == null){
+            return "";
+        }
         return version_NoiseMonitor.get();
     }
 
@@ -1125,6 +1343,9 @@ public class InfoNoiseManager {
     }
 
     public String getVersion_normal() {
+        if(version_normal == null){
+            return "";
+        }
         return version_normal.get();
     }
 
@@ -1136,53 +1357,53 @@ public class InfoNoiseManager {
         this.version_normal = new SimpleStringProperty(version_normal);
     }
 
-    public InfoNoiseManager(String noiseMeasureID, int sample, int upSpace, double dayOverValue, double nightOverValue, int overDlay,int isExceed, double dayOctValue, double nightOctValue, int octDlay, int isOct, double dayRecordValue, double nightRecordValue, int recordDlay, int isRecord, DatePicker recordStartTime, DatePicker recordEndTime, double recordModel, String freWight, String timeWight,int initTime, DatePicker adjustTime, int adjustSpace, int isAutoAdjust, int weaAutoUp, int weaAutoSave, int weaUpSpace, int carAutoUp, int carAutoSave, int carUpSpace, int dustAutoUp, int dustAutoSave, int dustUpSpace, int Event_01, int Event_02, int Event_03, int Event_04, int Event_05, int Event_06, int Event_07, int Event_08, int Event_09, int Event_10, int Event_11, int Event_12, int Event_13, int ON_OFF_LEQZ, int ON_OFF_LEQC, int ON_OFF_LEQA, int ON_OFF_LPFZ, int ON_OFF_LPSZ, int ON_OFF_LPIZ, int ON_OFF_LPFC, int ON_OFF_LPSC, int ON_OFF_LPIC, int ON_OFF_LPFA, int ON_OFF_LPSA, int ON_OFF_LPIA, int ON_OFF_PEAKZ, int ON_OFF_PEAKC, int ON_OFF_PEAKA, int ON_OFF_MIN, int ON_OFF_HOUR, int ON_OFF_DAY, int ON_OFF_UDT, int ON_OFF_13OCT, int ON_OFF_11OCT, int ON_OFF_RADF, int ON_OFF_FAMF, int ON_OFF_PDWIV, int ON_OFF_LEQ1S, int hasOct, int hasAll, int hasRecord, int hasSoundtrans, int record_On_Off, String version_Hardware, String version_Linux, String version_N_VIEW, String version_NoiseMonitor, String version_normal) {
-        NoiseMeasureID = new SimpleStringProperty(noiseMeasureID);
-        Sample = new SimpleIntegerProperty(sample);
-        UpSpace = new SimpleIntegerProperty(upSpace);
-        DayOverValue = new SimpleDoubleProperty(dayOverValue);
-        NightOverValue = new SimpleDoubleProperty(nightOverValue);
-        OverDlay = new SimpleIntegerProperty(overDlay);
-        DayOctValue = new SimpleDoubleProperty(dayOctValue);
-        NightOctValue = new SimpleDoubleProperty(nightOctValue);
-        OctDlay = new SimpleIntegerProperty(octDlay);
-        IsExceed = new SimpleIntegerProperty(isExceed);
-        IsOct = new SimpleIntegerProperty(isOct);
-        DayRecordValue = new SimpleDoubleProperty(dayRecordValue);
-        NightRecordValue = new SimpleDoubleProperty(nightRecordValue);
-        RecordDlay = new SimpleIntegerProperty(recordDlay);
-        IsRecord = new SimpleIntegerProperty(isRecord);
-        RecordStartTime =recordStartTime;
-        RecordEndTime = recordEndTime;
-        RecordModel = new SimpleDoubleProperty(recordModel);
-        FreWight = new SimpleStringProperty(freWight);
-        TimeWight = new SimpleStringProperty(timeWight);
-        Initime = new SimpleIntegerProperty(initTime);
-        AdjustTime = adjustTime;
-        AdjustSpace = new SimpleIntegerProperty(adjustSpace);
+    public InfoNoiseManager(String noiseManagerId, Double sample, int upSpace, Double dayOverValue, Double nightOverValue, int overDlay, int isExceed, Double dayOctValue, Double nightOctValue, int octDlay, int isOct, Double dayRecordValue, Double nightRecordValue, int recordDlay, int isRecord, Date recordStartTime, Date recordEndTime, int recordModel, String freWight, String timeWight, int initime, Date adjustTime, int adjustSpace, int isAutoAdjust, int weaAutoUp, int weaAutoSave, int weaUpSpace, int carAutoUp, int carAutoSave, int carUpSpace, int dustAutoUp, int dustAutoSave, int dustUpSpace, int event_01, int event_02, int event_03, int event_04, int event_05, int event_06, int event_07, int event_08, int event_09, int event_10, int event_11, int event_12, int event_13, int ON_OFF_LEQZ, int ON_OFF_LEQC, int ON_OFF_LEQA, int ON_OFF_LPFZ, int ON_OFF_LPSZ, int ON_OFF_LPIZ, int ON_OFF_LPFC, int ON_OFF_LPSC, int ON_OFF_LPIC, int ON_OFF_LPFA, int ON_OFF_LPSA, int ON_OFF_LPIA, int ON_OFF_PEAKZ, int ON_OFF_PEAKC, int ON_OFF_PEAKA, int ON_OFF_HOUR, int ON_OFF_DAY, int ON_OFF_UDT, int ON_OFF_13OCT, int ON_OFF_11OCT, int ON_OFF_RADF, int ON_OFF_FAMF, int ON_OFF_PDWIV, int ON_OFF_LEQ1S, int hasOct, int hasAll, int hasRecord, int hasSoundtrans, int record_On_Off, String version_Hardware, String version_Linux, String version_N_VIEW, String version_NoiseMonitor, String version_normal) {
+        this.noiseManagerId = new SimpleStringProperty(noiseManagerId);
+        this.sample = new SimpleDoubleProperty(sample);
+        this.upSpace = new SimpleIntegerProperty(upSpace);
+        this.dayOverValue = new SimpleDoubleProperty(dayOverValue);
+        this.nightOverValue = new SimpleDoubleProperty(nightOverValue);
+        this.overDlay = new SimpleIntegerProperty(overDlay);
+        this.isExceed = new SimpleIntegerProperty(isExceed);
+        this.dayOctValue = new SimpleDoubleProperty(dayOctValue);
+        this.nightOctValue = new SimpleDoubleProperty(nightOctValue);
+        this.octDlay = new SimpleIntegerProperty(octDlay);
+        this.isOct = new SimpleIntegerProperty(isOct);
+        this.dayRecordValue = new SimpleDoubleProperty(dayRecordValue);
+        this.nightRecordValue = new SimpleDoubleProperty(nightRecordValue);
+        this.recordDlay = new SimpleIntegerProperty(recordDlay);
+        this.isRecord = new SimpleIntegerProperty(isRecord);
+        this.recordStartTime = recordStartTime;
+        this.recordEndTime = recordEndTime;
+        this.recordModel = new SimpleIntegerProperty(recordModel);
+        this.freWight = new SimpleStringProperty(freWight);
+        this.timeWight = new SimpleStringProperty(timeWight);
+        this.initime = new SimpleIntegerProperty(initime);
+        this.adjustTime = adjustTime;
+        this.adjustSpace = new SimpleIntegerProperty(adjustSpace);
         this.isAutoAdjust = new SimpleIntegerProperty(isAutoAdjust);
-        WeaAutoUp = new SimpleIntegerProperty(weaAutoUp);
-        WeaAutoSave = new SimpleIntegerProperty(weaAutoSave);
-        WeaUpSpace = new SimpleIntegerProperty(weaUpSpace);
-        CarAutoUp = new SimpleIntegerProperty(carAutoUp);
-        CarAutoSave = new SimpleIntegerProperty(carAutoSave);
-        CarUpSpace = new SimpleIntegerProperty(carUpSpace);
-        DustAutoUp = new SimpleIntegerProperty(dustAutoUp);
-        DustAutoSave = new SimpleIntegerProperty(dustAutoSave);
-        DustUpSpace = new SimpleIntegerProperty(dustUpSpace);
-        this.Event_01 = new SimpleIntegerProperty(Event_01);
-        this.Event_02 = new SimpleIntegerProperty(Event_02);
-        this.Event_03 = new SimpleIntegerProperty(Event_03);
-        this.Event_04 = new SimpleIntegerProperty(Event_04);
-        this.Event_05 = new SimpleIntegerProperty(Event_05);
-        this.Event_06 = new SimpleIntegerProperty(Event_06);
-        this.Event_07 = new SimpleIntegerProperty(Event_07);
-        this.Event_08 = new SimpleIntegerProperty(Event_08);
-        this.Event_09 = new SimpleIntegerProperty(Event_09);
-        this.Event_10 = new SimpleIntegerProperty(Event_10);
-        this.Event_11 = new SimpleIntegerProperty(Event_11);
-        this.Event_12 = new SimpleIntegerProperty(Event_12);
-        this.Event_13 = new SimpleIntegerProperty(Event_13);
+        this.weaAutoUp = new SimpleIntegerProperty(weaAutoUp);
+        this.weaAutoSave = new SimpleIntegerProperty(weaAutoSave);
+        this.weaUpSpace = new SimpleIntegerProperty(weaUpSpace);
+        this.carAutoUp = new SimpleIntegerProperty(carAutoUp);
+        this.carAutoSave = new SimpleIntegerProperty(carAutoSave);
+        this.carUpSpace = new SimpleIntegerProperty(carUpSpace);
+        this.dustAutoUp = new SimpleIntegerProperty(dustAutoUp);
+        this.dustAutoSave = new SimpleIntegerProperty(dustAutoSave);
+        this.dustUpSpace = new SimpleIntegerProperty(dustUpSpace);
+        this.event_01 = new SimpleIntegerProperty(event_01);
+        this.event_02 = new SimpleIntegerProperty(event_02);
+        this.event_03 = new SimpleIntegerProperty(event_03);
+        this.event_04 = new SimpleIntegerProperty(event_04);
+        this.event_05 = new SimpleIntegerProperty(event_05);
+        this.event_06 = new SimpleIntegerProperty(event_06);
+        this.event_07 = new SimpleIntegerProperty(event_07);
+        this.event_08 = new SimpleIntegerProperty(event_08);
+        this.event_09 = new SimpleIntegerProperty(event_09);
+        this.event_10 = new SimpleIntegerProperty(event_10);
+        this.event_11 = new SimpleIntegerProperty(event_11);
+        this.event_12 = new SimpleIntegerProperty(event_12);
+        this.event_13 = new SimpleIntegerProperty(event_13);
         this.ON_OFF_LEQZ = new SimpleIntegerProperty(ON_OFF_LEQZ);
         this.ON_OFF_LEQC = new SimpleIntegerProperty(ON_OFF_LEQC);
         this.ON_OFF_LEQA = new SimpleIntegerProperty(ON_OFF_LEQA);
@@ -1198,7 +1419,6 @@ public class InfoNoiseManager {
         this.ON_OFF_PEAKZ = new SimpleIntegerProperty(ON_OFF_PEAKZ);
         this.ON_OFF_PEAKC = new SimpleIntegerProperty(ON_OFF_PEAKC);
         this.ON_OFF_PEAKA = new SimpleIntegerProperty(ON_OFF_PEAKA);
-        this.ON_OFF_MIN = new SimpleIntegerProperty(ON_OFF_MIN);
         this.ON_OFF_HOUR = new SimpleIntegerProperty(ON_OFF_HOUR);
         this.ON_OFF_DAY = new SimpleIntegerProperty(ON_OFF_DAY);
         this.ON_OFF_UDT = new SimpleIntegerProperty(ON_OFF_UDT);
@@ -1208,11 +1428,11 @@ public class InfoNoiseManager {
         this.ON_OFF_FAMF = new SimpleIntegerProperty(ON_OFF_FAMF);
         this.ON_OFF_PDWIV = new SimpleIntegerProperty(ON_OFF_PDWIV);
         this.ON_OFF_LEQ1S = new SimpleIntegerProperty(ON_OFF_LEQ1S);
-        this.HasOct = new SimpleIntegerProperty(hasOct);
-        this.HasAll = new SimpleIntegerProperty(hasAll);
-        this.HasRecord = new SimpleIntegerProperty(hasRecord);
-        this.HasSoundtrans = new SimpleIntegerProperty(hasSoundtrans);
-        this.Record_On_Off = new SimpleIntegerProperty(record_On_Off);
+        this.hasOct = new SimpleIntegerProperty(hasOct);
+        this.hasAll = new SimpleIntegerProperty(hasAll);
+        this.hasRecord = new SimpleIntegerProperty(hasRecord);
+        this.hasSoundtrans = new SimpleIntegerProperty(hasSoundtrans);
+        this.record_On_Off = new SimpleIntegerProperty(record_On_Off);
         this.version_Hardware = new SimpleStringProperty(version_Hardware);
         this.version_Linux = new SimpleStringProperty(version_Linux);
         this.version_N_VIEW = new SimpleStringProperty(version_N_VIEW);

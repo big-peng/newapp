@@ -77,7 +77,7 @@ public class AddFixedMeasureController {
 
     @FXML private AnchorPane root;//删除成功后的提示出现地
     @FXML private JFXDialog dialog;
-    public static InfoNoiseDevice infoNoiseDevice;//需药删除时传入的对象
+    public static InfoNoiseDevice infoNoiseDevice;//需要删除时传入的对象
     public static String row;
 
     String path = null;
@@ -85,6 +85,7 @@ public class AddFixedMeasureController {
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
     InfoNoiseManagerService infoNoiseManagerService  = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseManagerService.class);
+    public static InfoMeasure infoMeasure = new InfoMeasure();
 
     @PostConstruct
     public void init(){
@@ -113,7 +114,12 @@ public class AddFixedMeasureController {
             trueButton.setStyle("-fx-text-fill: #D34336;-fx-background-color: white");
             closeButton.setOnAction(event1 -> alert.hideWithAnimation());
             trueButton.setOnAction(event2 -> {
-                noiseList.remove(infoNoiseDevice);
+                EditFixedMeasureController.downNoiseList.remove(infoNoiseDevice);
+                if (noiseList == null){
+                    actiontarget.setText("列表已空，请勿重复操作");
+                }else {
+                    noiseList.remove(infoNoiseDevice);
+                }
                 //删除成功后的提示，可以根据返回值判断是否删除成功，并弹出对应信息
                 infoNoiseTreeView.setItems(noiseList);
                 snackbar.fireEvent(new JFXSnackbar.SnackbarEvent(
@@ -153,7 +159,6 @@ public class AddFixedMeasureController {
                     actiontarget.setText("测点编号已存在");
                 }
             }
-            System.out.println(NoiseDeviceManageController.infoNoiseManager);
         });
 
         //图片选择按钮
@@ -174,7 +179,7 @@ public class AddFixedMeasureController {
             }
         });
         noiseDeviceList();
-        InfoMeasure infoMeasure = new InfoMeasure();
+
         //提交操作
         commitFixedMeasure.setOnAction(event -> {
             Stage stage = (Stage)commitFixedMeasure.getScene().getWindow();
@@ -223,13 +228,12 @@ public class AddFixedMeasureController {
                 }
                 infoMeasure.setDeviceTypeAndIDs(buffer.toString());
                 infoMeasureService.saveMeasure(infoMeasure);
-                //MainController.shuaxin.fire();
                 MainController.StateMeasure stateMeasure = new MainController.StateMeasure();
                 stateMeasure.setMeasureCode(measureCode);
                 stateMeasure.setMeasureName(measureName);
                 stateMeasure.setLinkState("断开连接");
                 stateMeasure.setAddress(measureLatitude+","+measureLongitude);
-                stateMeasure.setData("2019-02-02");
+                stateMeasure.setData("62.1");
                 stateMeasure.setDataTime("2019-02-02");
                 stateMeasure.setOther("0");
                 MainController.nowDummyData.add(stateMeasure);
@@ -237,7 +241,7 @@ public class AddFixedMeasureController {
                 stateNoise.setDeviceCode("0");
                 stateNoise.setLinkState(0);
                 deviceManageService.insertState(stateNoise);
-                NoiseDeviceManageController.infoNoiseManager.setNoiseMeasureID(measureCode);
+                NoiseDeviceManageController.infoNoiseManager.setNoiseManagerId(measureCode);
                 infoNoiseManagerService.saveInfoNoiseManager(NoiseDeviceManageController.infoNoiseManager);
             }
             noiseList.clear();

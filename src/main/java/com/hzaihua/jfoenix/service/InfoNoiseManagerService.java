@@ -21,8 +21,8 @@ public class InfoNoiseManagerService {
     /**
      * 根据NoiseCode查询出一个NoiseManager对象
      * */
-    public void queryByNoiseCode(String noiseCode){
-        infoNoiseManagerDao.queryNoiseManagerByNoiseCode(noiseCode);
+    public InfoNoiseManager queryByNoiseCode(String noiseManagerId){
+        return infoNoiseManagerDao.queryNoiseManagerByNoiseCode(noiseManagerId);
     }
 
     /**

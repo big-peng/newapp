@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTreeTableColumn?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -14,11 +12,12 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import com.jfoenix.controls.JFXCheckBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121">
-    <AnchorPane prefHeight="800.0" prefWidth="600.0">
+    <AnchorPane prefHeight="800.0" prefWidth="600.0" fx:id="root">
         <VBox prefHeight="350">
             <GridPane layoutY="20" layoutX="30">
                 <padding>
@@ -58,15 +57,16 @@
             </GridPane>
             <Label style="-fx-padding: 0 0 0 135">提示：*为必填项</Label>
             <HBox style="-fx-padding: 5 0 0 50">
-                <JFXCheckBox fx:id="AutoConnect" text="允许自动连接"/>
+                <JFXCheckBox fx:id="AutoConnect" selected="true" text="允许自动连接"/>
             </HBox>
         </VBox>
         <!--照片显示地-->
         <VBox layoutX="370" layoutY="130">
-            <ScrollPane prefHeight="100.0" prefWidth="100.0">
-                <ImageView fx:id="MeasureHead">
-                </ImageView>
-            </ScrollPane>
+            <ImageView fx:id="MeasureHead" fitHeight="100.0" fitWidth="100.0">
+            </ImageView>
+            <VBox style="-fx-padding: 5 0 0 15">
+                <JFXButton fx:id="photoChange" GridPane.columnIndex="2" GridPane.rowIndex="10" style="-fx-font-size: 13;-fx-background-color: pink" text="选择照片" />
+            </VBox>
         </VBox>
         <!--设备显示框-->
         <VBox layoutY="350" layoutX="35" maxHeight="400" maxWidth="650" spacing="10">
@@ -79,19 +79,22 @@
                                 <HBox alignment="CENTER_RIGHT">
                                     <children>
                                         <HBox spacing="10" style="-fx-padding: 0 0 0 10;">
-                                            <JFXButton fx:id="addFixedMeasure" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="addFixedNoiseDevice" prefHeight="30" buttonType="RAISED"
                                                        text="添加设备"
                                                        styleClass="custom-jfx-button-raised"/>
                                         </HBox>
                                         <HBox fx:id="editMeasure" spacing="10" style="-fx-padding: 0 0 0 10;"
                                               disable="true">
-                                            <JFXButton fx:id="editFixedMeasure" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="editFixedNoiseDevice" prefHeight="30" buttonType="RAISED"
                                                        text="编辑设备"
                                                        styleClass="custom-jfx-button-raised"/>
-                                            <JFXButton fx:id="deleteMeasure" prefHeight="30" buttonType="RAISED"
+                                            <JFXButton fx:id="deleteNoiseDevice" prefHeight="30" buttonType="RAISED"
                                                        text="删除设备"
                                                        styleClass="custom-jfx-button-raised"
                                                        style="-fx-text-fill: #D34336"/>
+                                            <JFXButton fx:id="deviceBeforeManager" prefHeight="30" buttonType="RAISED"
+                                                       text="前端管理"
+                                                       styleClass="custom-jfx-button-raised"/>
                                         </HBox>
                                     </children>
                                 </HBox>
@@ -99,20 +102,17 @@
                         </StackPane>
                     </children>
                 </HBox>
-                <JFXTreeTableView fx:id="downUserTreeTableView">
+                <TableView fx:id="infoNoiseTreeView">
                     <columns>
-                        <JFXTreeTableColumn fx:id="downusername" minWidth="133" prefWidth="133" resizable="true"
-                                            text="设备编号"/>
-                        <JFXTreeTableColumn fx:id="downname" minWidth="133" resizable="true" text="设备类型"/>
-                        <JFXTreeTableColumn fx:id="status" minWidth="133" resizable="true" text="侦听端口"/>
-                        <JFXTreeTableColumn minWidth="133" resizable="true" text="设备参数管理">
-                        </JFXTreeTableColumn>
+                        <TableColumn fx:id="noiseCode" prefWidth="172" resizable="true" text="设备编号"/>
+                        <TableColumn fx:id="noiseType" prefWidth="173" resizable="true" text="设备类型"/>
+                        <TableColumn fx:id="linkPort" prefWidth="173" resizable="true" text="侦听端口"/>
                     </columns>
-                </JFXTreeTableView>
+                </TableView>
             </children>
         </VBox>
         <HBox layoutY="760" layoutX="280" style="-fx-font-size: 14">
-            <JFXButton fx:id="comitFixedMeasure" buttonType="RAISED" style="-fx-background-color: green;"
+            <JFXButton fx:id="commitFixedMeasure" buttonType="RAISED" style="-fx-background-color: green;"
                        styleClass="custom-jfx-button-raised" prefHeight="30" text="确定"/>
         </HBox>
     </AnchorPane>

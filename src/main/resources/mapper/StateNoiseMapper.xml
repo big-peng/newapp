@@ -36,6 +36,11 @@
         <result column="shortCarNums" jdbcType="INTEGER" property="shortcarnums" />
         <result column="shortCarSpeed" jdbcType="DOUBLE" property="shortcarspeed" />
         <result column="PM25" jdbcType="DOUBLE" property="pm25" />
+        <result column="PM10" jdbcType="DOUBLE" property="pm10" />
+        <result column="SIMICCID" jdbcType="VARCHAR" property="simiccid" />
+        <result column="SIMIMSI" jdbcType="VARCHAR" property="simimsi" />
+        <result column="perFlux" jdbcType="DOUBLE" property="perflux" />
+        <result column="avgSpeed" jdbcType="DOUBLE" property="avgspeed" />
         <result column="longitude" jdbcType="DOUBLE" property="longitude" />
         <result column="latitude" jdbcType="DOUBLE" property="latitude" />
         <result column="speed" jdbcType="DOUBLE" property="speed" />
@@ -108,8 +113,8 @@
       outHumidity, ariPressure, rainfall,
       longCarNums, longCarSpeed, midCarNums,
       midCarSpeed, shortCarNums, shortCarSpeed,
-      PM25, longitude, latitude,
-      speed, usedRoom, freeRoom,
+      PM25, PM10, SIMICCID, SIMIMSI, perFlux, avgSpeed,
+      longitude, latitude, speed, usedRoom, freeRoom,
       batteryVoltage, workingVoltage, temperature,
       humidity, stataInfo, event_01,
       event_02, event_03, event_04,
@@ -138,7 +143,8 @@
       #{outhumidity,jdbcType=DOUBLE}, #{aripressure,jdbcType=DOUBLE}, #{rainfall,jdbcType=DOUBLE},
       #{longcarnums,jdbcType=INTEGER}, #{longcarspeed,jdbcType=DOUBLE}, #{midcarnums,jdbcType=INTEGER},
       #{midcarspeed,jdbcType=DOUBLE}, #{shortcarnums,jdbcType=INTEGER}, #{shortcarspeed,jdbcType=DOUBLE},
-      #{pm25,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, #{latitude,jdbcType=DOUBLE},
+      #{pm25,jdbcType=DOUBLE}, #{pm10,jdbcType=DOUBLE}, #{perflux,jdbcType=DOUBLE}, #{avgspeed,jdbcType=DOUBLE},
+      #{simiccid,jdbcType=VARCHAR}, #{simimsi,jdbcType=VARCHAR}, #{longitude,jdbcType=DOUBLE}, #{latitude,jdbcType=DOUBLE},
       #{speed,jdbcType=DOUBLE}, #{usedroom,jdbcType=DOUBLE}, #{freeroom,jdbcType=DOUBLE},
       #{batteryvoltage,jdbcType=DOUBLE}, #{workingvoltage,jdbcType=DOUBLE}, #{temperature,jdbcType=DOUBLE},
       #{humidity,jdbcType=DOUBLE}, #{statainfo,jdbcType=VARCHAR}, #{event01,jdbcType=INTEGER},
@@ -194,6 +200,11 @@
       shortCarNums = #{shortcarnums,jdbcType=INTEGER},
       shortCarSpeed = #{shortcarspeed,jdbcType=DOUBLE},
       PM25 = #{pm25,jdbcType=DOUBLE},
+      PM10 = #{pm10,jdbcType=DOUBLE},
+      SIMICCID = #{simiccid,jdbcType=VARCHAR},
+      SIMIMSI = #{simimsi,jdbcType=VARCHAR},
+      perFlux = #{perflux,jdbcType=DOUBLE},
+      avgSpeed = #{avgspeed,jdbcType=DOUBLE},
       longitude = #{longitude,jdbcType=DOUBLE},
       latitude = #{latitude,jdbcType=DOUBLE},
       speed = #{speed,jdbcType=DOUBLE},
@@ -295,4 +306,8 @@
     <insert id="insertStateNoise" parameterType="com.hzaihua.jfoenix.entity.StateNoise">
         insert into state_noise values(#{deviceCode},#{linkState})
     </insert>
+    <select id="queryByCode" resultType="com.hzaihua.jfoenix.entity.StateNoise">
+        select * from state_noise
+        where deviceCode=#{deviceCode}
+    </select>
 </mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.AWAServerInstructDao">
+    <!--查询所有  -->
+    <select id="queryAllServerInstruct" resultType="com.hzaihua.jfoenix.entity.AWAServerInstruct">
+        select
+        instructId,measureName,subTree,deviceType,
+        longitude,latitude,userLongitude,userLatitude,
+        functionCode,measureAddress,deviceAWAID,isAutoAdjust,
+        isReadMin,isReadHour,isReadDay,isReadLp,isReadLeq1s,
+        isReadOct,isReadWea,isReadCar,isReadDust,isReadEvent,isOpenVoice
+        from AWA_server_instruct
+    </select>
+    <!-- 添加 -->
+    <insert id="insertServerInstruct" parameterType="com.hzaihua.jfoenix.entity.AWAServerInstruct">
+        insert into AWA_server_instruct(instructId,measureName,subTree,deviceType,
+        longitude,latitude,userLongitude,userLatitude,
+        functionCode,measureAddress,deviceAWAID,isAutoAdjust,
+        isReadMin,isReadHour,isReadDay,isReadLp,isReadLeq1s,
+        isReadOct,isReadWea,isReadCar,isReadDust,isReadEvent,isOpenVoice)
+        values(#{instructId},#{measureName},#{subTree},#{deviceType},
+        #{longitude},#{latitude},#{userLongitude},#{userLatitude},
+        #{functionCode},#{measureAddress},#{deviceAWAID},#{isAutoAdjust},
+        #{isReadMin},#{isReadHour},#{isReadDay},#{isReadLp},#{isReadLeq1s},
+        #{isReadOct},#{isReadWea},#{isReadCar},#{isReadDust},#{isReadEvent},#{isOpenVoice})
+    </insert>
+    <!--根据测点类型查询指令-->
+    <select id="queryServerInstructByDeviceType" resultType="com.hzaihua.jfoenix.entity.AWAServerInstruct">
+        select
+        instructId,measureName,subTree,deviceType,
+        longitude,latitude,userLongitude,userLatitude,
+        functionCode,measureAddress,deviceAWAID,isAutoAdjust,
+        isReadMin,isReadHour,isReadDay,isReadLp,isReadLeq1s,
+        isReadOct,isReadWea,isReadCar,isReadDust,isReadEvent,isOpenVoice
+        from AWA_server_instruct
+        where deviceType=#{deviceType}
+    </select>
+</mapper>

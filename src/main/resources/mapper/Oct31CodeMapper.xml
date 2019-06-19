@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.Oct31CodeDao">
+    <!-- 添加 -->
+    <insert id="insertOct31Code" parameterType="com.hzaihua.jfoenix.entity.Oct31Code">
+      insert into oct31_code
+      values(#{noiseCode},#{measureTime},#{millisecond},#{HZ10},#{HZ12P5},#{HZ16},#{HZ20},#{HZ25},#{HZ31P5},
+            #{HZ40},#{HZ50},#{HZ63},#{HZ80},#{HZ100},#{HZ125},#{HZ160},#{HZ200},#{HZ250},#{HZ315},
+            #{HZ400},#{HZ500},#{HZ630},#{HZ800},#{HZ1000},#{HZ1250},#{HZ1600},#{HZ2000},#{HZ2500},
+            #{HZ3150},#{HZ4000},#{HZ5000},#{HZ6300},#{HZ8000},#{HZ10000},
+            #{HZ12500},#{HZ16000},#{HZ20000})
+    </insert>
+    <!--根据时间段查询-->
+    <select id="queryOct31CodeByTime" resultType="com.hzaihua.jfoenix.entity.Oct31Code">
+        select * from oct31_code
+        between measureTime=#{measureTime} and measureTime=#{endTime}
+    </select>
+    <!--根据设备编号查询时间段数据-->
+    <select id="queryOct31CodeByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.Oct31Code">
+        select * from oct31_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{endTime}
+    </select>
+    <select id="queryAllOct31Code" resultType="com.hzaihua.jfoenix.entity.Oct31Code">
+        select * from oct31_code
+    </select>
+</mapper>

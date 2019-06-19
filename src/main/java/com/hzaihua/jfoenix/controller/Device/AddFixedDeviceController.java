@@ -1,10 +1,18 @@
 package com.hzaihua.jfoenix.controller.Device;
 
+import com.hzaihua.jfoenix.controller.MainController;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingInstruct;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingSocketThread;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingThread;
 import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
+import com.hzaihua.jfoenix.controller.measure.EditFixedMeasureController;
+import com.hzaihua.jfoenix.entity.AWAServerInstruct;
 import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
+import com.hzaihua.jfoenix.entity.Instructions;
 import com.hzaihua.jfoenix.entity.StateNoise;
 import com.hzaihua.jfoenix.service.DeviceManageService;
 import com.hzaihua.jfoenix.service.InfoNoiseService;
+import com.hzaihua.jfoenix.service.InstructionsService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
@@ -17,6 +25,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
+import java.util.Date;
+import java.util.UUID;
 
 @ViewController(value = "/views/fxml/device/AddDeviceAfter.fxml")
 public class AddFixedDeviceController {
@@ -47,11 +57,12 @@ public class AddFixedDeviceController {
 
     InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
     String deviceCode = null;
+    InfoNoiseDevice infoNoiseDevice = new InfoNoiseDevice();
+    AWAServerInstruct awaServerInstruct = new AWAServerInstruct();
+    InstructionsService instructionsService = BeanFactoryUtil.getApplicationContext().getBean(InstructionsService.class);
 
     @PostConstruct
     public void init(){
-        InfoNoiseDevice infoNoiseDevice = new InfoNoiseDevice();
-
 
         //判断设备编号是否已存在
         NoiseDeviceCode.focusedProperty().addListener((ob,old,now)->{
@@ -104,7 +115,7 @@ public class AddFixedDeviceController {
                 infoNoiseDevice.setDeviceType("AWA6218j");
                 infoNoiseDevice.setDevicePassword(devicePassword);
                 infoNoiseDevice.setLinkType(1);
-                infoNoiseDevice.setLinkPort(linkPort);
+                infoNoiseDevice.setLinkPort(Integer.parseInt(linkPort));
                 infoNoiseDevice.setDTUSIM(dtusim);
                 infoNoiseDevice.setFunCode(FunCode.getValue());
                 infoNoiseDevice.setMicrophoneHeight(microphoneHeight);
@@ -171,8 +182,90 @@ public class AddFixedDeviceController {
                 }
                 infoNoiseDevice.setStateType(1);
                 AddFixedMeasureController.noiseList.add(infoNoiseDevice);
+                EditFixedMeasureController.downNoiseList.add(infoNoiseDevice);
+                //监听端口,发送连接指令
+                if(!MainController.ports.containsKey(infoNoiseDevice.getLinkPort())) {
+                    SendingSocketThread.port = infoNoiseDevice.getLinkPort();
+                    System.out.println(SendingSocketThread.port);
+                    MainController.ports.put(infoNoiseDevice.getLinkPort(), infoNoiseDevice.getLinkPort());
+                    new Thread(new SendingSocketThread()).start();
+                    SendingInstruct sendingInstruct = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct.instruct000();
+                }
                 stage.close();
             }
         });
+    }
+
+
+    /**
+     * 把指令拼接成JSON格式字符串，暂时不用
+     * */
+    private void changeServiceJSON(){
+        //服务器指令赋值
+        awaServerInstruct.setInstructId(UUID.randomUUID().toString().replace("-",""));
+        awaServerInstruct.setMeasureName(null);
+        awaServerInstruct.setSubTree(null);
+        awaServerInstruct.setDeviceType("AWA6218j");
+        awaServerInstruct.setLatitude(12.0);
+        awaServerInstruct.setLongitude(12.0);
+        awaServerInstruct.setUserLatitude(10.0);
+        awaServerInstruct.setUserLongitude(10.0);
+        awaServerInstruct.setFunctionCode(infoNoiseDevice.getFunCode());
+        awaServerInstruct.setMeasureAddress(null);
+        awaServerInstruct.setDeviceAWAID(infoNoiseDevice.getDeviceCode());
+        awaServerInstruct.setIsAutoAdjust(infoNoiseDevice.getIsAutoAdjust());
+        awaServerInstruct.setIsReadMin(infoNoiseDevice.getIsReadMin());
+        awaServerInstruct.setIsReadHour(infoNoiseDevice.getIsReadHour());
+        awaServerInstruct.setIsReadDay(infoNoiseDevice.getIsReadDay());
+        awaServerInstruct.setIsReadLp(infoNoiseDevice.getIsReadLp());
+        awaServerInstruct.setIsReadLeq1s(infoNoiseDevice.getIsReadLeq1s());
+        awaServerInstruct.setIsReadOct(infoNoiseDevice.getIsReadOct());
+        awaServerInstruct.setIsReadWea(infoNoiseDevice.getIsReadWea());
+        awaServerInstruct.setIsReadCar(infoNoiseDevice.getIsReadCar());
+        awaServerInstruct.setIsReadDust(infoNoiseDevice.getIsReadDust());
+        awaServerInstruct.setIsReadEvent(infoNoiseDevice.getIsReadEvent());
+        awaServerInstruct.setIsOpenVoice(infoNoiseDevice.getIsOpenVoice());
+
+        //转换json字符串
+        StringBuffer inputServerInstruct = new StringBuffer();
+        inputServerInstruct.append("{");
+        inputServerInstruct.append("\"measureName\":\""+awaServerInstruct.getMeasureName()+"\",");
+        inputServerInstruct.append("\"subTree\":\""+awaServerInstruct.getSubTree()+"\",");
+        inputServerInstruct.append("\"deviceType\":\""+awaServerInstruct.getDeviceType()+"\",");
+        inputServerInstruct.append("\"longitude\":\""+awaServerInstruct.getLongitude()+"\",");
+        inputServerInstruct.append("\"latitude\":\""+awaServerInstruct.getLatitude()+"\",");
+        inputServerInstruct.append("\"userLongitude\":\""+awaServerInstruct.getUserLongitude()+"\",");
+        inputServerInstruct.append("\"userLatitude\":\""+awaServerInstruct.getUserLatitude()+"\",");
+        inputServerInstruct.append("\"functionCode\":\""+awaServerInstruct.getFunctionCode()+"\",");
+        inputServerInstruct.append("\"measureAddress\":\""+awaServerInstruct.getMeasureAddress()+"\",");
+        inputServerInstruct.append("\"deviceAWAID\":\""+awaServerInstruct.getDeviceAWAID()+"\",");
+        inputServerInstruct.append("\"isAutoAdjust\":\""+awaServerInstruct.getIsAutoAdjust()+"\",");
+        inputServerInstruct.append("\"isReadMin\":\""+awaServerInstruct.getIsReadMin()+"\",");
+        inputServerInstruct.append("\"isReadHour\":\""+awaServerInstruct.getIsReadHour()+"\",");
+        inputServerInstruct.append("\"isReadDay\":\""+awaServerInstruct.getIsReadDay()+"\",");
+        inputServerInstruct.append("\"isReadLp\":\""+awaServerInstruct.getIsReadLp()+"\",");
+        inputServerInstruct.append("\"isReadLeq1s\":\""+awaServerInstruct.getIsReadLeq1s()+"\",");
+        inputServerInstruct.append("\"isReadOct\":\""+awaServerInstruct.getIsReadOct()+"\",");
+        inputServerInstruct.append("\"isReadWea\":\""+awaServerInstruct.getIsReadWea()+"\",");
+        inputServerInstruct.append("\"isReadCar\":\""+awaServerInstruct.getIsReadCar()+"\",");
+        inputServerInstruct.append("\"isReadDust\":\""+awaServerInstruct.getIsReadDust()+"\",");
+        inputServerInstruct.append("\"isReadEvent\":\""+awaServerInstruct.getIsReadEvent()+"\",");
+        inputServerInstruct.append("\"isOpenVoice\":\""+awaServerInstruct.getIsOpenVoice()+"\",");
+        inputServerInstruct.append("}");
+
+        //存入指令列表供使用
+        Instructions instructions = new Instructions();
+        instructions.setInstructFlag(UUID.randomUUID().toString().replace("-",""));
+        instructions.setInstructType("noise");
+        instructions.setInstructClass("设置参数");
+        instructions.setUserName("admin");
+        instructions.setNoiseCode(NoiseDeviceCode.getText());
+        instructions.setInstructInput(inputServerInstruct.toString());
+        instructions.setInstructRet(0);
+        instructions.setInstructResult(null);
+        instructions.setCreateTime(new Date());
+        instructions.setOutDieTime(60);
+        instructionsService.saveInstructions(instructions);
     }
 }

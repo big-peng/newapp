@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.WeatherLPDao">
+    <!-- 添加 -->
+    <insert id="insertWeather" parameterType="com.hzaihua.jfoenix.entity.WeatherLP">
+        insert into weather_LP
+        values(#{noiseCode},#{measureTime},#{unitTime},#{w_Speed},#{w_Direction},#{a_Temp},#{humi_R},#{ari_p},#{PRF})
+    </insert>
+    <!--根据时间段查询-->
+    <select id="queryWeaLPByTime" resultType="com.hzaihua.jfoenix.entity.WeatherLP">
+        select * from weather_LP
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询-->
+    <select id="queryWeaLPByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.WeatherLP">
+        select * from weather_LP
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--查询全部气象数据-->
+    <select id="queryAll" resultType="com.hzaihua.jfoenix.entity.WeatherLP">
+        select noiseCode,measureTime from weather_LP
+    </select>
+</mapper>

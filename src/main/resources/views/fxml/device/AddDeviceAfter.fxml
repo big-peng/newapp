@@ -30,7 +30,7 @@
             <Label GridPane.columnIndex="2" GridPane.rowIndex="4">*</Label>
             <Label prefHeight="30.0" prefWidth="60.0" text="功  能 区:" style="-fx-padding: 0 0 5 0" GridPane.columnIndex="0"
                    GridPane.rowIndex="5"/>
-            <ComboBox fx:id="FunCode" prefWidth="170" promptText="选择设备类型" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <ComboBox fx:id="FunCode" prefWidth="170" promptText="选择功能区" GridPane.columnIndex="1" GridPane.rowIndex="5">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="0"/>

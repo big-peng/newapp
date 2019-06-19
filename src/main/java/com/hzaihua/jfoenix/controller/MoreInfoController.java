@@ -1,54 +1,90 @@
 package com.hzaihua.jfoenix.controller;
 
+import com.hzaihua.jfoenix.controller.TCPLink.SendingThread;
 import com.hzaihua.jfoenix.service.DeviceManageService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class MoreInfoController implements Initializable {
     @FXML
-    private JFXTreeTableView<StateDevice> treeTableView;
+    public TableView<StateDevice> treeTableView;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> deviceCode;
+    private TableColumn deviceCode;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> deviceType;
+    private TableColumn deviceType;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> linkState;
+    private TableColumn linkState;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> dataTime;
+    private TableColumn dataTime;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> data;
+    private TableColumn data;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> linkPort;
+    private TableColumn linkPort;
     @FXML
-    private JFXTreeTableColumn<StateDevice, String> address;
+    private TableColumn address;
 
     DeviceManageService deviceManageService = BeanFactoryUtil.getApplicationContext().getBean(DeviceManageService.class);
+    public static ObservableList<StateDevice> dummyData;
+    public static ObservableList<StateDevice> stateDevices = null;
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        setupCellValueFactory(deviceCode,StateDevice::deviceCodeProperty);
-        setupCellValueFactory(deviceType,StateDevice::deviceTypeProperty);
-        setupCellValueFactory(linkState,StateDevice::linkStateProperty);
-        setupCellValueFactory(dataTime,StateDevice::dataTimeProperty);
-        setupCellValueFactory(data,StateDevice::dataProperty);
-        setupCellValueFactory(linkPort,StateDevice::linkPortProperty);
-        setupCellValueFactory(address,StateDevice::addressProperty);
-        ObservableList<StateDevice> dummyData = deviceManageService.queryDeviceByMeasureCode(MainController.deleteMeasureCode);
-        treeTableView.setRoot(new RecursiveTreeItem<>(dummyData, RecursiveTreeObject::getChildren));
-        treeTableView.setShowRoot(false);
+        deviceCode.setCellValueFactory(new PropertyValueFactory("deviceCode"));
+        deviceType.setCellValueFactory(new PropertyValueFactory("deviceType"));
+        linkState.setCellValueFactory(new PropertyValueFactory("linkState"));
+        dataTime.setCellValueFactory(new PropertyValueFactory("dataTime"));
+        data.setCellValueFactory(new PropertyValueFactory("data"));
+        linkPort.setCellValueFactory(new PropertyValueFactory("linkPort"));
+        address.setCellValueFactory(new PropertyValueFactory("address"));
+
+
+        dummyData = deviceManageService.queryDeviceByMeasureCode(MainController.deleteMeasureCode);
+        stateDevices = deviceManageService.queryAll();
+        treeTableView.setItems(dummyData);
+        SendingThread sendingThread = new SendingThread(SendingThread.socket);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(dummyData != null){
+                    for (StateDevice stateDevice : stateDevices) {
+                        for (StateDevice dummyDatum : dummyData) {
+                            if(stateDevice.getDeviceCode().equals(dummyDatum.getDeviceCode())){
+                                if(sendingThread.deviceCode.equals(dummyDatum.getDeviceCode())) {
+                                    dummyDatum.setDataTime(sendingThread.flag);
+                                    dummyDatum.setData(sendingThread.data);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.scheduleAtFixedRate(runnable, 0, 10, TimeUnit.SECONDS);
     }
+
+
 
     public <T> void setupCellValueFactory(JFXTreeTableColumn<StateDevice, T> column, Function<StateDevice, ObservableValue<T>> mapper) {
         column.setCellValueFactory((TreeTableColumn.CellDataFeatures<StateDevice, T> param) -> {
@@ -61,96 +97,96 @@ public class MoreInfoController implements Initializable {
     }
     //表格的实体类
     public static class StateDevice extends RecursiveTreeObject<StateDevice>{
-        private SimpleStringProperty deviceCode;//测点的编号
-        private SimpleStringProperty deviceType;//测点的名称
-        private SimpleStringProperty linkState;//测点中的设备连接状态
-        private SimpleStringProperty dataTime;//数值时间
-        private SimpleStringProperty data;//数值
-        private SimpleStringProperty linkPort;//测点的位置信息
-        private SimpleStringProperty address;//测点的其他参数
+        private StringProperty deviceCode = new SimpleStringProperty();
+        private StringProperty deviceType = new SimpleStringProperty();
+        private StringProperty linkState = new SimpleStringProperty();
+        private StringProperty dataTime = new SimpleStringProperty();
+        private StringProperty data = new SimpleStringProperty();
+        private StringProperty linkPort = new SimpleStringProperty();
+        private StringProperty address = new SimpleStringProperty();
 
         public String getDeviceCode() {
             return deviceCode.get();
         }
 
-        public SimpleStringProperty deviceCodeProperty() {
+        public StringProperty deviceCodeProperty() {
             return deviceCode;
         }
 
         public void setDeviceCode(String deviceCode) {
-            this.deviceCode = new SimpleStringProperty(deviceCode);
+            this.deviceCode.set(deviceCode);
         }
 
         public String getDeviceType() {
             return deviceType.get();
         }
 
-        public SimpleStringProperty deviceTypeProperty() {
+        public StringProperty deviceTypeProperty() {
             return deviceType;
         }
 
         public void setDeviceType(String deviceType) {
-            this.deviceType = new SimpleStringProperty(deviceType);
+            this.deviceType.set(deviceType);
         }
 
         public String getLinkState() {
             return linkState.get();
         }
 
-        public SimpleStringProperty linkStateProperty() {
+        public StringProperty linkStateProperty() {
             return linkState;
         }
 
         public void setLinkState(String linkState) {
-            this.linkState = new SimpleStringProperty(linkState);
+            this.linkState.set(linkState);
         }
 
         public String getDataTime() {
             return dataTime.get();
         }
 
-        public SimpleStringProperty dataTimeProperty() {
+        public StringProperty dataTimeProperty() {
             return dataTime;
         }
 
         public void setDataTime(String dataTime) {
-            this.dataTime = new SimpleStringProperty(dataTime);
+            this.dataTime.set(dataTime);
         }
 
         public String getData() {
             return data.get();
         }
 
-        public SimpleStringProperty dataProperty() {
+        public StringProperty dataProperty() {
             return data;
         }
 
         public void setData(String data) {
-            this.data = new SimpleStringProperty(data);
+            this.data.set(data);
         }
 
         public String getLinkPort() {
             return linkPort.get();
         }
 
-        public SimpleStringProperty linkPortProperty() {
+        public StringProperty linkPortProperty() {
             return linkPort;
         }
 
         public void setLinkPort(String linkPort) {
-            this.linkPort = new SimpleStringProperty(linkPort);
+            this.linkPort.set(linkPort);
         }
 
         public String getAddress() {
             return address.get();
         }
 
-        public SimpleStringProperty addressProperty() {
+        public StringProperty addressProperty() {
             return address;
         }
 
         public void setAddress(String address) {
-            this.address = new SimpleStringProperty(address);
+            this.address.set(address);
         }
 
         public StateDevice(String deviceCode, String deviceType, String linkState, String dataTime, String data, String linkPort, String address) {

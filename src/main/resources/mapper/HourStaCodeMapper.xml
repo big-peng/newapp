@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.HourStaCodeDao">
+    <!-- 添加 -->
+    <insert id="insertHourStaCode" parameterType="com.hzaihua.jfoenix.entity.HourStaCode">
+      insert into hourSta_code
+      values(#{noiseCode},#{measureTime},#{leqT},#{LAFmax},#{LAF5},#{LAF10},#{LAF50},#{LAF90},
+          #{LAF95},#{SD},#{LAFmin},#{normal},#{rate},#{sift},#{softRate})
+    </insert>
+    <!--根据时间段查询小时统计数据-->
+    <select id="queryHourStaCodeByTime" resultType="com.hzaihua.jfoenix.entity.HourStaCode">
+        select * from hourSta_code
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询该设备在某个时间段的小时统计数据-->
+    <select id="queryHourStaCodeByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.HourStaCode">
+        select * from hourSta_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

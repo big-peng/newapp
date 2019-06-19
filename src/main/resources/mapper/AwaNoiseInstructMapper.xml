@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hzaihua.jfoenix.dao.AWANoiseInstructDao">
+  <resultMap id="BaseResultMap" type="com.hzaihua.jfoenix.entity.AWANoiseInstruct">
+    <result column="noiseInstructId" jdbcType="VARCHAR" property="noiseinstructid" />
+    <result column="noiseCode" jdbcType="VARCHAR" property="noiseCode" />
+    <result column="sample" jdbcType="REAL" property="sample" />
+    <result column="upSpace" jdbcType="REAL" property="upspace" />
+    <result column="timeWight" jdbcType="VARCHAR" property="timewight" />
+    <result column="freWight" jdbcType="VARCHAR" property="frewight" />
+    <result column="initime" jdbcType="REAL" property="initime" />
+    <result column="ON_OFF_MIN" jdbcType="INTEGER" property="onOffMin" />
+    <result column="ON_OFF_HOUR" jdbcType="INTEGER" property="onOffHour" />
+    <result column="ON_OFF_DAY" jdbcType="INTEGER" property="onOffDay" />
+    <result column="isExceed" jdbcType="INTEGER" property="isexceed" />
+    <result column="dayOverValue" jdbcType="REAL" property="dayovervalue" />
+    <result column="nightOverValue" jdbcType="REAL" property="nightovervalue" />
+    <result column="overDlay" jdbcType="REAL" property="overdlay" />
+    <result column="isOct" jdbcType="INTEGER" property="isoct" />
+    <result column="dayOctValue" jdbcType="REAL" property="dayoctvalue" />
+    <result column="nightOctValue" jdbcType="REAL" property="nightoctvalue" />
+    <result column="octDlay" jdbcType="REAL" property="octdlay" />
+    <result column="ON_OFF_11OCT" jdbcType="INTEGER" property="onOff11oct" />
+    <result column="ON_OFF_13OCT" jdbcType="INTEGER" property="onOff13oct" />
+    <result column="isRecord" jdbcType="INTEGER" property="isrecord" />
+    <result column="dayRecordValue" jdbcType="REAL" property="dayrecordvalue" />
+    <result column="nightRecordValue" jdbcType="REAL" property="nightrecordvalue" />
+    <result column="recordDlay" jdbcType="REAL" property="recorddlay" />
+    <result column="recordModel" jdbcType="REAL" property="recordmodel" />
+    <result column="recordStartTime" jdbcType="TIMESTAMP" property="recordstarttime" />
+    <result column="recordEndTime" jdbcType="TIMESTAMP" property="recordendtime" />
+    <result column="isAutoAdjust" jdbcType="INTEGER" property="isautoadjust" />
+    <result column="adjustTime" jdbcType="TIMESTAMP" property="adjusttime" />
+    <result column="adjustSpace" jdbcType="REAL" property="adjustspace" />
+    <result column="weaAutoSave" jdbcType="INTEGER" property="weaautosave" />
+    <result column="weaAutoUp" jdbcType="INTEGER" property="weaautoup" />
+    <result column="weaUpSpace" jdbcType="REAL" property="weaupspace" />
+    <result column="carAutoSave" jdbcType="INTEGER" property="carautosave" />
+    <result column="carAutoUp" jdbcType="INTEGER" property="carautoup" />
+    <result column="carUpSpace" jdbcType="REAL" property="carupspace" />
+    <result column="dustAutoSave" jdbcType="INTEGER" property="dustautosave" />
+    <result column="dustAutoUp" jdbcType="INTEGER" property="dustautoup" />
+    <result column="dustUpSpace" jdbcType="INTEGER" property="dustupspace" />
+    <result column="ON_OFF_LEQA" jdbcType="INTEGER" property="onOffLeqa" />
+    <result column="ON_OFF_LPFA" jdbcType="INTEGER" property="onOffLpfa" />
+    <result column="ON_OFF_LPSA" jdbcType="INTEGER" property="onOffLpsa" />
+    <result column="ON_OFF_LPIA" jdbcType="INTEGER" property="onOffLpia" />
+    <result column="ON_OFF_LEQC" jdbcType="INTEGER" property="onOffLeqc" />
+    <result column="ON_OFF_LPFC" jdbcType="INTEGER" property="onOffLpfc" />
+    <result column="ON_OFF_LPSC" jdbcType="INTEGER" property="onOffLpsc" />
+    <result column="ON_OFF_LPIC" jdbcType="INTEGER" property="onOffLpic" />
+    <result column="ON_OFF_LEQZ" jdbcType="INTEGER" property="onOffLeqz" />
+    <result column="ON_OFF_LPFZ" jdbcType="INTEGER" property="onOffLpfz" />
+    <result column="ON_OFF_LPSZ" jdbcType="INTEGER" property="onOffLpsz" />
+    <result column="ON_OFF_LPIZ" jdbcType="INTEGER" property="onOffLpiz" />
+    <result column="event_01" jdbcType="INTEGER" property="event01" />
+    <result column="event_02" jdbcType="INTEGER" property="event02" />
+    <result column="event_03" jdbcType="INTEGER" property="event03" />
+    <result column="event_04" jdbcType="INTEGER" property="event04" />
+    <result column="event_05" jdbcType="INTEGER" property="event05" />
+    <result column="event_06" jdbcType="INTEGER" property="event06" />
+    <result column="event_07" jdbcType="INTEGER" property="event07" />
+    <result column="event_08" jdbcType="INTEGER" property="event08" />
+    <result column="event_09" jdbcType="INTEGER" property="event09" />
+    <result column="event_10" jdbcType="INTEGER" property="event10" />
+    <result column="event_11" jdbcType="INTEGER" property="event11" />
+    <result column="event_12" jdbcType="INTEGER" property="event12" />
+    <result column="event_13" jdbcType="INTEGER" property="event13" />
+    <result column="ON_OFF_RADF" jdbcType="INTEGER" property="onOffRadf" />
+    <result column="ON_OFF_FAMF" jdbcType="INTEGER" property="onOffFamf" />
+    <result column="ON_OFF_PDWIV" jdbcType="INTEGER" property="onOffPdwiv" />
+  </resultMap>
+  <insert id="insertNoiseInstruct" parameterType="com.hzaihua.jfoenix.entity.AWANoiseInstruct">
+    insert into AWA_noise_instruct (noiseInstructId, noiseCode, sample,
+      upSpace, timeWight, freWight, 
+      initime, ON_OFF_MIN, ON_OFF_HOUR, 
+      ON_OFF_DAY, isExceed, dayOverValue, 
+      nightOverValue, overDlay, isOct, 
+      dayOctValue, nightOctValue, octDlay, 
+      ON_OFF_11OCT, ON_OFF_13OCT, isRecord, 
+      dayRecordValue, nightRecordValue, recordDlay, 
+      recordModel, recordStartTime, recordEndTime, 
+      isAutoAdjust, adjustTime, adjustSpace, 
+      weaAutoSave, weaAutoUp, weaUpSpace, 
+      carAutoSave, carAutoUp, carUpSpace, 
+      dustAutoSave, dustAutoUp, dustUpSpace, 
+      ON_OFF_LEQA, ON_OFF_LPFA, ON_OFF_LPSA, 
+      ON_OFF_LPIA, ON_OFF_LEQC, ON_OFF_LPFC, 
+      ON_OFF_LPSC, ON_OFF_LPIC, ON_OFF_LEQZ, 
+      ON_OFF_LPFZ, ON_OFF_LPSZ, ON_OFF_LPIZ, 
+      event_01, event_02, event_03, 
+      event_04, event_05, event_06, 
+      event_07, event_08, event_09, 
+      event_10, event_11, event_12, 
+      event_13, ON_OFF_RADF, ON_OFF_FAMF, 
+      ON_OFF_PDWIV)
+    values (#{noiseInstructId,jdbcType=VARCHAR}, #{noiseCode,jdbcType=VARCHAR}, #{sample,jdbcType=REAL},
+      #{upSpace,jdbcType=REAL}, #{timeWight,jdbcType=VARCHAR}, #{freWight,jdbcType=VARCHAR},
+      #{initime,jdbcType=REAL}, #{ON_OFF_MIN,jdbcType=INTEGER}, #{ON_OFF_HOUR,jdbcType=INTEGER},
+      #{ON_OFF_DAY,jdbcType=INTEGER}, #{isExceed,jdbcType=INTEGER}, #{dayOverValue,jdbcType=REAL},
+      #{nightOverValue,jdbcType=REAL}, #{overDlay,jdbcType=REAL}, #{isOct,jdbcType=INTEGER},
+      #{dayOctValue,jdbcType=REAL}, #{nightOctValue,jdbcType=REAL}, #{octDlay,jdbcType=REAL},
+      #{ON_OFF_11OCT,jdbcType=INTEGER}, #{ON_OFF_13OCT,jdbcType=INTEGER}, #{isRecord,jdbcType=INTEGER},
+      #{dayRecordValue,jdbcType=REAL}, #{nightRecordValue,jdbcType=REAL}, #{recordDlay,jdbcType=REAL},
+      #{recordModel,jdbcType=REAL}, #{recordStartTime,jdbcType=TIMESTAMP}, #{recordEndTime,jdbcType=TIMESTAMP},
+      #{isAutoAdjust,jdbcType=INTEGER}, #{adjustTime,jdbcType=TIMESTAMP}, #{adjustSpace,jdbcType=REAL},
+      #{weaAutoSave,jdbcType=INTEGER}, #{weaAutoUp,jdbcType=INTEGER}, #{weaUpSpace,jdbcType=REAL},
+      #{carAutoSave,jdbcType=INTEGER}, #{carAutoUp,jdbcType=INTEGER}, #{carUpSpace,jdbcType=REAL},
+      #{dustAutoSave,jdbcType=INTEGER}, #{dustAutoUp,jdbcType=INTEGER}, #{dustUpSpace,jdbcType=INTEGER},
+      #{ON_OFF_LEQA,jdbcType=INTEGER}, #{ON_OFF_LPFA,jdbcType=INTEGER}, #{ON_OFF_LPSA,jdbcType=INTEGER},
+      #{ON_OFF_LPIA,jdbcType=INTEGER}, #{ON_OFF_LEQC,jdbcType=INTEGER}, #{ON_OFF_LPFC,jdbcType=INTEGER},
+      #{ON_OFF_LPSC,jdbcType=INTEGER}, #{ON_OFF_LPIC,jdbcType=INTEGER}, #{ON_OFF_LEQZ,jdbcType=INTEGER},
+      #{ON_OFF_LPFZ,jdbcType=INTEGER}, #{ON_OFF_LPSZ,jdbcType=INTEGER}, #{ON_OFF_LPIZ,jdbcType=INTEGER},
+      #{event_01,jdbcType=INTEGER}, #{event_02,jdbcType=INTEGER}, #{event_03,jdbcType=INTEGER},
+      #{event_04,jdbcType=INTEGER}, #{event_05,jdbcType=INTEGER}, #{event_06,jdbcType=INTEGER},
+      #{event_07,jdbcType=INTEGER}, #{event_08,jdbcType=INTEGER}, #{event_09,jdbcType=INTEGER},
+      #{event_10,jdbcType=INTEGER}, #{event_11,jdbcType=INTEGER}, #{event_12,jdbcType=INTEGER},
+      #{event_13,jdbcType=INTEGER}, #{ON_OFF_RADF,jdbcType=INTEGER}, #{ON_OFF_FAMF,jdbcType=INTEGER},
+      #{ON_OFF_PDWIV,jdbcType=INTEGER})
+  </insert>
+  <select id="queryAllNoiseInstruct" resultMap="BaseResultMap">
+    select noiseInstructId, noiseCode, sample, upSpace, timeWight, freWight, initime,
+    ON_OFF_MIN, ON_OFF_HOUR, ON_OFF_DAY, isExceed, dayOverValue, nightOverValue, overDlay, 
+    isOct, dayOctValue, nightOctValue, octDlay, ON_OFF_11OCT, ON_OFF_13OCT, isRecord, 
+    dayRecordValue, nightRecordValue, recordDlay, recordModel, recordStartTime, recordEndTime, 
+    isAutoAdjust, adjustTime, adjustSpace, weaAutoSave, weaAutoUp, weaUpSpace, carAutoSave, 
+    carAutoUp, carUpSpace, dustAutoSave, dustAutoUp, dustUpSpace, ON_OFF_LEQA, ON_OFF_LPFA, 
+    ON_OFF_LPSA, ON_OFF_LPIA, ON_OFF_LEQC, ON_OFF_LPFC, ON_OFF_LPSC, ON_OFF_LPIC, ON_OFF_LEQZ, 
+    ON_OFF_LPFZ, ON_OFF_LPSZ, ON_OFF_LPIZ, event_01, event_02, event_03, event_04, event_05, 
+    event_06, event_07, event_08, event_09, event_10, event_11, event_12, event_13, ON_OFF_RADF, 
+    ON_OFF_FAMF, ON_OFF_PDWIV
+    from AWA_noise_instruct
+  </select>
+  <!--根据设备编号查询指令-->
+  <select id="queryNosieInstructByNoiceCode" resultType="com.hzaihua.jfoenix.entity.AWANoiseInstruct">
+    select noiseInstructId, noiseCode, sample, upSpace, timeWight, freWight, initime,
+    ON_OFF_MIN, ON_OFF_HOUR, ON_OFF_DAY, isExceed, dayOverValue, nightOverValue, overDlay,
+    isOct, dayOctValue, nightOctValue, octDlay, ON_OFF_11OCT, ON_OFF_13OCT, isRecord,
+    dayRecordValue, nightRecordValue, recordDlay, recordModel, recordStartTime, recordEndTime,
+    isAutoAdjust, adjustTime, adjustSpace, weaAutoSave, weaAutoUp, weaUpSpace, carAutoSave,
+    carAutoUp, carUpSpace, dustAutoSave, dustAutoUp, dustUpSpace, ON_OFF_LEQA, ON_OFF_LPFA,
+    ON_OFF_LPSA, ON_OFF_LPIA, ON_OFF_LEQC, ON_OFF_LPFC, ON_OFF_LPSC, ON_OFF_LPIC, ON_OFF_LEQZ,
+    ON_OFF_LPFZ, ON_OFF_LPSZ, ON_OFF_LPIZ, event_01, event_02, event_03, event_04, event_05,
+    event_06, event_07, event_08, event_09, event_10, event_11, event_12, event_13, ON_OFF_RADF,
+    ON_OFF_FAMF, ON_OFF_PDWIV
+    from AWA_noise_instruct
+    where noiseCode=#{noiseCode}
+  </select>
+</mapper>

@@ -21,6 +21,7 @@
         <HBox style="-fx-padding: 10 0 0 30">
             <JFXButton fx:id="1102" text="AWA6218s"/>
         </HBox>
+            <JFXButton fx:id="lppp" text="lppp"/>
         </HBox>
     </VBox>
 </AnchorPane>

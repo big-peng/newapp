@@ -14,6 +14,11 @@ public interface StateNoiseDao {
      */
     public StateNoise queryByDeviceCode(@Param("deviceCode") String deviceCode, @Param("deviceTableName")String deviceTableName);
 
+
+    /**
+     * 根据设备编号查询状态
+     * */
+    public StateNoise queryByCode(String deviceCode);
     /**
      * 修改设备的状态
      * @param stateNoise 要修改的设备状态对象

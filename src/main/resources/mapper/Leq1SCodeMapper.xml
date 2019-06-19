@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.Leq1SCodeDao">
+    <!-- 添加 -->
+    <insert id="insertLeq1SCode" parameterType="com.hzaihua.jfoenix.entity.Leq1SCode">
+      insert into leq1s_code
+      values(#{noiseCode},#{measureTime},#{LEQA},#{LEQC},#{LEQZ})
+    </insert>
+    <!--根据时间段查询瞬时数据-->
+    <select id="queryLeq1sByTime" resultType="com.hzaihua.jfoenix.entity.Leq1SCode">
+        select * from leq1s_code
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <select id="queryleq1sByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.Leq1SCode">
+        select * from leq1s_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

@@ -53,13 +53,11 @@ public class EditFixedDeviceController {
     @PostConstruct
     public void init() {
         String deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
-
         for (InfoNoiseDevice infoNoiseDevice : AddFixedMeasureController.noiseList) {
             if(infoNoiseDevice.getDeviceCode().equals(deviceCode)){
-                infoNoiseDevice1 = infoNoiseDevice;
                 NoiseDeviceCode.setText(infoNoiseDevice.getDeviceCode());
                 DevicePassword.setText(infoNoiseDevice.getDevicePassword());
-                LinkPort.setText(infoNoiseDevice.getLinkPort());
+                LinkPort.setText(String.valueOf(infoNoiseDevice.getLinkPort()));
                 DTUSIM.setText(infoNoiseDevice.getDTUSIM());
                 MicrophoneHeight.setText(infoNoiseDevice.getMicrophoneHeight());
                 FunCode.setValue(infoNoiseDevice.getFunCode());
@@ -104,7 +102,7 @@ public class EditFixedDeviceController {
                 infoNoiseDevice1.setDeviceType(deviceType);
                 infoNoiseDevice1.setDevicePassword(password);
                 infoNoiseDevice1.setLinkType(deviceLinkType);
-                infoNoiseDevice1.setLinkPort(linkPort);
+                infoNoiseDevice1.setLinkPort(Integer.parseInt(linkPort));
                 infoNoiseDevice1.setDTUSIM(dtusim);
                 infoNoiseDevice1.setFunCode(FunCode.getValue());
                 infoNoiseDevice1.setMicrophoneHeight(microphoneHeight);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.LpppDao">
+    <!-- 添加 -->
+    <insert id="insertlppp" parameterType="com.hzaihua.jfoenix.entity.Lppp">
+      insert into lppp(PNO,PNUM,DateTime,CollctionCyc,DataType,Data)
+      values(#{PNO},#{PNUM},#{DateTime},#{CollctionCyc},#{DataType},#{Data})
+    </insert>
+</mapper>

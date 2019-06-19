@@ -9,10 +9,10 @@ public interface InfoNoiseDeviceDao {
      * 查询全部的设备，不区分属于哪一个测点，该接口很少会用到，一般都是以测点为上级进行查询
      * @return 返回全部的设备信息集合
      */
-    public List<InfoNoiseDevice> queryAll();
+    List<InfoNoiseDevice> queryAll();
 
     /**
-     * 根据测点编号查询该测点之霞的所有设备
+     * 根据测点编号查询该测点之下的所有设备
      * @param measureCode 测点编号
      * @return 返回该测点之下的所有设备集合
      */

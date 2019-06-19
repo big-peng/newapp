@@ -1,11 +1,17 @@
 package com.hzaihua.jfoenix.controller;
 
+import com.hzaihua.jfoenix.controller.TCPLink.SendingInstruct;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingSocketThread;
+import com.hzaihua.jfoenix.controller.TCPLink.SendingThread;
+import com.hzaihua.jfoenix.entity.InfoNoiseDevice;
 import com.hzaihua.jfoenix.load.MainLoad;
 import com.hzaihua.jfoenix.load.SystemSetupLoad;
 import com.hzaihua.jfoenix.load.User.UserLoad;
 import com.hzaihua.jfoenix.load.measure.AddFixedMeasureLoad;
 import com.hzaihua.jfoenix.load.measure.AddMoveMeasureLoad;
+import com.hzaihua.jfoenix.load.measure.EditFixedMeasureLoad;
 import com.hzaihua.jfoenix.service.DeviceManageService;
+import com.hzaihua.jfoenix.service.InfoNoiseService;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXListView;
@@ -17,15 +23,11 @@ import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TreeTableRow;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.annotation.PostConstruct;
@@ -39,20 +41,22 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeTableColumn;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @ViewController(value = "/views/fxml/main/main.fxml")
 public class MainController {
     //查询到的全部数据
-    ObservableList<StateMeasure> dummyData = null;
+    public static ObservableList<StateMeasure> dummyData = null;
+    public static Map<Integer,Integer> ports =new HashMap<Integer, Integer>();
     //表格中需要呈现的数据
     public static ObservableList<StateMeasure> nowDummyData = FXCollections.observableArrayList();
     ObservableList<StateMeasure> searchFieldDummyData = FXCollections.observableArrayList();
     ObservableList<StateMeasure> searchComboBoxDummyData = FXCollections.observableArrayList();
+    ObservableList<InfoNoiseDevice> infoNoiseDevices = FXCollections.observableArrayList();
     @FXMLViewFlowContext
     private ViewFlowContext context;
     @FXML
@@ -74,7 +78,9 @@ public class MainController {
     private JFXPopup changeMeasureMove;
     // readonly table view
     @FXML
-    private JFXTreeTableView<StateMeasure> treeTableView;
+    private JFXButton editMeasure;
+    @FXML
+    public static JFXTreeTableView<StateMeasure> treeTableView;
     @FXML
     private JFXTreeTableColumn<StateMeasure, String> measureCode;
     @FXML
@@ -119,6 +125,11 @@ public class MainController {
     @FXML
     private VBox tableVBox;
 
+    InfoNoiseService infoNoiseService = BeanFactoryUtil.getApplicationContext().getBean(InfoNoiseService.class);
+
+    public static Calendar calendar = Calendar.getInstance();
+    public static Date oldTime;
+
     @PostConstruct
     public void init() throws Exception {
         FXMLLoader loaderFile = new FXMLLoader(getClass().getResource("/views/fxml/main/mainPopupFile.fxml"));
@@ -157,7 +168,23 @@ public class MainController {
         setupReadOnlyTableView();
         //可以编辑的表格
         //setupEditableTableView();
+        editMeasure.setOnAction(event -> {
+            EditFixedMeasureLoad editFixedMeasureLoad = new EditFixedMeasureLoad();
+        });
 
+        infoNoiseDevices = infoNoiseService.queryAllNoise();
+        //监听端口
+        for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+            System.out.println(ports);
+            if(!MainController.ports.containsKey(infoNoiseDevice.getLinkPort())) {
+                SendingSocketThread.port = infoNoiseDevice.getLinkPort();
+                System.out.println(SendingSocketThread.port);
+                ports.put(infoNoiseDevice.getLinkPort(), infoNoiseDevice.getLinkPort());
+                new Thread(new SendingSocketThread()).start();
+                SendingInstruct sendingInstruct = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct.instruct000();
+            }
+        }
         //建立删除按钮点击事件
         JFXSnackbar snackbar = new JFXSnackbar(root);
         snackbar.setPrefWidth(300);
@@ -208,14 +235,275 @@ public class MainController {
             searchComboBox.setValue(null);
             searchField.setText(null);
         });
-        //给筛选的下拉框赋值
-        /*ObservableList<Label> as = FXCollections.observableArrayList();
-        for (String name:names) {
-            as.add(new Label(name));
-        }
-        searchComboBox.setItems(as);*/
         //根据窗口大小调节表格大小的方法
         autoTableSize();
+        timer();
+        hourTimer();
+        dateTimer();
+
+        //定时发送指令
+        //分钟数据
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                //即时采样命令
+                SendingInstruct sendingInstruct140 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct140.instruct140();
+                SendingThread sendingThread140 = new SendingThread(SendingThread.socket);
+                sendingThread140.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == -1){
+                    for (int i=0;i<3;i++){
+                        try {
+                            SendingInstruct sendingInstruct140n = new SendingInstruct();
+                            SendingThread.instruct = sendingInstruct140n.instruct140();
+                            SendingThread sendingThread140n = new SendingThread(SendingThread.socket);
+                            sendingThread140n.SendingSock(SendingThread.instruct);
+                            sendingThread140n.sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        };
+        //监听发出的指令，每十分钟发送一次
+        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutor.scheduleAtFixedRate(runnable, 0, 60*4, TimeUnit.SECONDS);
+    }
+
+    private void timer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
+
+                //读取污染物的分钟数据
+                SendingInstruct sendingInstruct130 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct130.instruct130();
+                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                sendingThread130.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }
+
+                //提取瞬时声级记录
+                SendingInstruct sendingInstruct131 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct131.instruct131();
+                SendingThread sendingThread131 = new SendingThread(SendingThread.socket);
+                sendingThread131.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct131n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct131n.instruct131Next();
+                    SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
+                    sendingThread131n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct131n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct131n.instruct131Next();
+                    SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
+                    sendingThread131n.SendingSock(SendingThread.instruct);
+                }
+
+                //提取oct记录
+                SendingInstruct sendingInstruct132130 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct132130.instruct132();
+                SendingThread sendingThread132130 = new SendingThread(SendingThread.socket);
+                sendingThread132130.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct132n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                    sendingThread132n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct132n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                    sendingThread132n.SendingSock(SendingThread.instruct);
+                }
+
+                //提取oct记录
+                SendingInstruct.dataType = 1;
+                SendingInstruct sendingInstruct132110 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct132110.instruct132();
+                SendingThread sendingThread132110 = new SendingThread(SendingThread.socket);
+                sendingThread132110.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct132n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                    sendingThread132n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct132n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                    sendingThread132n.SendingSock(SendingThread.instruct);
+                }
+
+                //提取每秒的leq数据
+                SendingInstruct sendingInstruct133 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct133.instruct133();
+                SendingThread sendingThread133 = new SendingThread(SendingThread.socket);
+                sendingThread133.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct133n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct133n.instruct133Next();
+                    SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
+                    sendingThread133n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct133n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct133n.instruct133Next();
+                    SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
+                    sendingThread133n.SendingSock(SendingThread.instruct);
+                }
+
+                //定时发送读取气象数据
+                SendingInstruct sendingInstruct134 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct134.instruct134();
+                SendingThread sendingThread134 = new SendingThread(SendingThread.socket);
+                sendingThread134.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct134n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct134n.instruct134Next();
+                    SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
+                    sendingThread134n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct134n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct134n.instruct134Next();
+                    SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
+                    sendingThread134n.SendingSock(SendingThread.instruct);
+                }
+
+                //定时发送读取车流量数据
+                SendingInstruct sendingInstruct135 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct135.instruct135();
+                SendingThread sendingThread135 = new SendingThread(SendingThread.socket);
+                sendingThread135.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct135n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct135n.instruct135Next();
+                    SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
+                    sendingThread135n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct135n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct135n.instruct135Next();
+                    SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
+                    sendingThread135n.SendingSock(SendingThread.instruct);
+                }
+
+                //定时发送读取粉尘数据
+                SendingInstruct sendingInstruct136 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct136.instruct136();
+                SendingThread sendingThread136 = new SendingThread(SendingThread.socket);
+                sendingThread136.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct136n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct136n.instruct136Next();
+                    SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
+                    sendingThread136n.SendingSock(SendingThread.instruct);
+                }else {
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct136n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct136n.instruct136Next();
+                    SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
+                    sendingThread136n.SendingSock(SendingThread.instruct);
+                }
+
+                //读取气象统计历史数据
+                SendingInstruct sendingInstruct137 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct137.instruct137();
+                SendingThread sendingThread137 = new SendingThread(SendingThread.socket);
+                sendingThread137.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct137n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct137n.instruct137Next();
+                    SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
+                    sendingThread137n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct137n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct137n.instruct137Next();
+                    SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
+                    sendingThread137n.SendingSock(SendingThread.instruct);
+                }
+            }
+        },10*1000,60*1000);
+    }
+
+    private void hourTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.HOUR,-1);
+                oldTime = calendar.getTime();
+                SendingInstruct.dataType = 1;
+                //读取污染物的分钟数据
+                SendingInstruct sendingInstruct130 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct130.instruct130();
+                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                sendingThread130.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }
+            }
+        },10000,60*60*10*1000);
+    }
+
+    private void dateTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE,-7);
+                oldTime = calendar.getTime();
+                SendingInstruct.dataType = 2;
+                //读取污染物的分钟数据
+                SendingInstruct sendingInstruct130 = new SendingInstruct();
+                SendingThread.instruct = sendingInstruct130.instruct130();
+                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                sendingThread130.SendingSock(SendingThread.instruct);
+                if(SendingThread.rtn == 1){
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }else{
+                    SendingInstruct.temp = -1;
+                    SendingInstruct sendingInstruct130n = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                    sendingThread130n.SendingSock(SendingThread.instruct);
+                }
+            }
+        },10000,60*60*24*1000);
     }
 
     public void autoTableSize(){
@@ -271,23 +559,8 @@ public class MainController {
         dummyData = deviceManageService.getIndexList();
         nowDummyData.addAll(dummyData);
         treeTableView.setRoot(new RecursiveTreeItem<>(nowDummyData, RecursiveTreeObject::getChildren));
-
         treeTableView.setShowRoot(false);
-        /*TableRow<Person> row = new TableRow<Person>();
-        row.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-                //Person emailInfo = row.getItem();
-                System.out.println(123);
-            }
-        });*/
-        /*System.out.println(firstNameColumn.getTreeTableView());
-        treeTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                //Person emailInfo = row.getItem();
-                System.out.println(event.getSource());
 
-            }
-        });*/
         //表格的点击事件
         treeTableView.setRowFactory(tv->{
             TreeTableRow<StateMeasure> row = new TreeTableRow<StateMeasure>();

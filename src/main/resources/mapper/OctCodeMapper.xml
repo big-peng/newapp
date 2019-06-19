@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.OctCodeDao">
+    <!-- 添加 -->
+    <insert id="insertOctCode" parameterType="com.hzaihua.jfoenix.entity.OctCode">
+      insert into oct_code
+      values(#{noiseCode},#{measureTime},#{millisecond},#{HZ16},#{HZ31P5},#{HZ63},#{HZ125},#{HZ250},
+            #{HZ500},#{HZ1000},#{HZ2000},#{HZ4000},#{HZ8000},#{HZ16000})
+    </insert>
+    <!--根据时间段查询-->
+    <select id="queryOctByTime" resultType="com.hzaihua.jfoenix.entity.OctCode">
+        select * from oct_code
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询时间段数据-->
+    <select id="queryOctByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.OctCode">
+        select * from oct_code
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <select id="queryAllOct" resultType="com.hzaihua.jfoenix.entity.OctCode">
+        select noiseCode,measureTime from oct_code
+    </select>
+</mapper>

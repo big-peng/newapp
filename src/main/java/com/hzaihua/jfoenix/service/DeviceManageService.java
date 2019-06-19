@@ -74,8 +74,8 @@ public class DeviceManageService{
             }
             InfoNoiseDevice infoNoiseDevice = infoNoiseDeviceDao.queryByDeviceCode(deviceCode,tableName);
             String deviceType = infoNoiseDevice.getDeviceType();
-            String linkPort = infoNoiseDevice.getLinkPort();
-            MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode,deviceType+"",linkState,"","",linkPort+"","");
+            String linkPort = String.valueOf(infoNoiseDevice.getLinkPort());
+            MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode+"",deviceType+"",linkState,"0","0",linkPort,"");
             result.add(stateDevice);
         }
         return result;
@@ -142,6 +142,30 @@ public class DeviceManageService{
             result.add(stateMeasure);
         }
         System.out.println(result);
+        return result;
+    }
+
+    /**
+     * 查询全部设备
+     * */
+    public ObservableList<MoreInfoController.StateDevice> queryAll(){
+        ObservableList<MoreInfoController.StateDevice> result = FXCollections.observableArrayList();
+        List<InfoNoiseDevice> infoNoiseDevices = infoNoiseDeviceDao.queryAll();
+        for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+            //得到要查询的设备的编号
+            String deviceCode = infoNoiseDevice.getDeviceCode();
+            StateNoise stateNoise = stateNoiseDao.queryByCode(deviceCode);
+            String linkState = "已连接";
+            if (stateNoise.getLinkState()==0){
+                linkState = "连接断开";
+            }else if(stateNoise.getLinkState()==1){
+                linkState = "正在连接";
+            }
+            String deviceType = infoNoiseDevice.getDeviceType();
+            String linkPort = String.valueOf(infoNoiseDevice.getLinkPort());
+            MoreInfoController.StateDevice stateDevice = new MoreInfoController.StateDevice(deviceCode+"",deviceType+"",linkState,"","",linkPort,"");
+            result.add(stateDevice);
+    }
         return result;
     }
 

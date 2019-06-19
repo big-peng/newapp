@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.DustDateDao">
+    <!--查询所有  -->
+    <select id="queryAllDustDate" resultType="com.hzaihua.jfoenix.entity.DustDate">
+      select * from Dust_date
+    </select>
+    <!-- 添加 -->
+    <insert id="insertDustDate" parameterType="com.hzaihua.jfoenix.entity.DustDate">
+      insert into Dust_date
+      values(#{noiseCode},#{measureTime},#{unitTime},#{TSP},#{PM10},#{PM2_5},#{SOx},#{NOx},
+              #{anion},#{maxTSP},#{minTSP},#{maxPM10},#{minPM10},
+              #{maxPM25},#{minPM25},#{maxSOx},#{minSOx},#{maxNOx},#{minNOx},#{maxAnion},#{minAnion})
+    </insert>
+    <!-- 根据时间段查询 -->
+    <select id="queryDustDateByTime" resultType="com.hzaihua.jfoenix.entity.DustDate">
+      select * from Dust_date
+      between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据时间段、设备编号查询-->
+    <select id="queryDustDateByTimeAndCode" resultType="com.hzaihua.jfoenix.entity.DustDate">
+        select * from Dust_date
+      where noiseCode=#{noiseCode}
+      between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+</mapper>

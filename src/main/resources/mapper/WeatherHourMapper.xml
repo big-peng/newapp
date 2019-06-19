@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hzaihua.jfoenix.dao.WeatherHourDao">
+    <!-- 添加 -->
+    <insert id="insertWeatherHour" parameterType="com.hzaihua.jfoenix.entity.WeatherHour">
+      insert into weather_hour
+        values(#{noiseCode},#{measureTime},#{unitTime},#{w_Speed},
+        #{w_Direction},#{a_Temp},#{humi_R},#{ari_p},#{PRF},
+        #{maxSpeed},#{minSpeed},#{maxHumi},#{minHumi},#{maxAtemp},#{minAtemp})
+    </insert>
+    <!--根据时间段查询-->
+    <select id="queryWeaHourByTime" resultType="com.hzaihua.jfoenix.entity.WeatherHour">
+        select * from weather_hour
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <!--根据设备编号查询-->
+    <select id="queryWeaHourByCodeAndTime" resultType="com.hzaihua.jfoenix.entity.WeatherHour">
+        select * from weather_hour
+        where noiseCode=#{noiseCode}
+        between measureTime=#{measureTime} and measureTime=#{measureTime}
+    </select>
+    <select id="queryAllWeaHour" resultType="com.hzaihua.jfoenix.entity.WeatherHour">
+        select noiseCode,measureTime from weather_hour
+    </select>
+</mapper>
