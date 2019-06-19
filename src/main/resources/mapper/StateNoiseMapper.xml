@@ -6,7 +6,7 @@
         <result column="linkState" jdbcType="INTEGER" property="linkstate" />
         <result column="networkState" jdbcType="INTEGER" property="networkstate" />
         <result column="nowDateTime" jdbcType="TIMESTAMP" property="nowdatetime" />
-        <result column="lpTime" jdbcType="TIMESTAMP" property="lptime" />
+        <result column="lpTime" jdbcType="DOUBLE" property="lptime" />
         <result column="LEQZ" jdbcType="DOUBLE" property="leqz" />
         <result column="LEQC" jdbcType="DOUBLE" property="leqc" />
         <result column="LEQA" jdbcType="DOUBLE" property="leqa" />
@@ -134,7 +134,7 @@
       event_12_etime, event_13_etime, event_0211_etime
       )
     values (#{deviceCode,jdbcType=VARCHAR}, #{linkstate,jdbcType=INTEGER}, #{networkstate,jdbcType=INTEGER},
-      #{nowdatetime,jdbcType=TIMESTAMP}, #{lptime,jdbcType=TIMESTAMP}, #{leqz,jdbcType=DOUBLE},
+      #{nowdatetime,jdbcType=TIMESTAMP}, #{lptime,jdbcType=DOUBLE}, #{leqz,jdbcType=DOUBLE},
       #{leqc,jdbcType=DOUBLE}, #{leqa,jdbcType=DOUBLE}, #{lpfz,jdbcType=DOUBLE}, #{lpsz,jdbcType=DOUBLE},
       #{lpiz,jdbcType=DOUBLE}, #{lpfc,jdbcType=DOUBLE}, #{lpsc,jdbcType=DOUBLE}, #{lpic,jdbcType=DOUBLE},
       #{lpfa,jdbcType=DOUBLE}, #{lpsa,jdbcType=DOUBLE}, #{lpia,jdbcType=DOUBLE}, #{peakz,jdbcType=DOUBLE},
@@ -170,7 +170,7 @@
     set linkState = #{linkstate,jdbcType=INTEGER},
       networkState = #{networkstate,jdbcType=INTEGER},
       nowDateTime = #{nowdatetime,jdbcType=TIMESTAMP},
-      lpTime = #{lptime,jdbcType=TIMESTAMP},
+      lpTime = #{lptime,jdbcType=DOUBLE},
       LEQZ = #{leqz,jdbcType=DOUBLE},
       LEQC = #{leqc,jdbcType=DOUBLE},
       LEQA = #{leqa,jdbcType=DOUBLE},
