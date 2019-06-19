@@ -185,6 +185,7 @@ public class AddFixedDeviceController {
                 EditFixedMeasureController.downNoiseList.add(infoNoiseDevice);
                 //监听端口,发送连接指令
                 if(!MainController.ports.containsKey(infoNoiseDevice.getLinkPort())) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
                     SendingSocketThread.port = infoNoiseDevice.getLinkPort();
                     System.out.println(SendingSocketThread.port);
                     MainController.ports.put(infoNoiseDevice.getLinkPort(), infoNoiseDevice.getLinkPort());

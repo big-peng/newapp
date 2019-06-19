@@ -279,6 +279,7 @@ public class NoiseDeviceManageController {
         //发送设置瞬时采样间隔指令
         commitSample.setOnAction(event -> {
             infoNoiseManager.setSample(Double.valueOf(Sample.getText()));
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingThread.instruct = sendingInstruct.instruct124();

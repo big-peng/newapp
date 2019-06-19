@@ -237,41 +237,60 @@ public class MainController {
         });
         //根据窗口大小调节表格大小的方法
         autoTableSize();
-        timer();
+        //定时发送指令获取数据
+        StateCodetimer();
+        LpDataTimer();
+        Oct31Timer();
+        Oct10Timer();
+        Leq1sTimer();
+        WeatherLpTimer();
+        CarLpTimer();
+        DustLpimer();
+        WeatherHourAndDateTimer();
+        //小时统计
         hourTimer();
+        //天统计
         dateTimer();
+        //心跳指令发送
+        HeatTimer();
+    }
 
-        //定时发送指令
-        //分钟数据
-        Runnable runnable = new Runnable() {
+    //定时发送心跳指令
+    private void HeatTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //即时采样命令
-                SendingInstruct sendingInstruct140 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct140.instruct140();
-                SendingThread sendingThread140 = new SendingThread(SendingThread.socket);
-                sendingThread140.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == -1){
-                    for (int i=0;i<3;i++){
-                        try {
-                            SendingInstruct sendingInstruct140n = new SendingInstruct();
-                            SendingThread.instruct = sendingInstruct140n.instruct140();
-                            SendingThread sendingThread140n = new SendingThread(SendingThread.socket);
-                            sendingThread140n.SendingSock(SendingThread.instruct);
-                            sendingThread140n.sleep(10000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
+
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct140 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct140.instruct140();
+                    SendingThread sendingThread140 = new SendingThread(SendingThread.socket);
+                    sendingThread140.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == -1){
+                        for (int i=0;i<3;i++){
+                            try {
+                                SendingInstruct sendingInstruct140n = new SendingInstruct();
+                                SendingThread.instruct = sendingInstruct140n.instruct140();
+                                SendingThread sendingThread140n = new SendingThread(SendingThread.socket);
+                                sendingThread140n.SendingSock(SendingThread.instruct);
+                                sendingThread140n.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
             }
-        };
-        //监听发出的指令，每十分钟发送一次
-        ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutor.scheduleAtFixedRate(runnable, 0, 60*4, TimeUnit.SECONDS);
+        },10*1000,60*1000*4);
     }
 
-    private void timer(){
+    private void StateCodetimer(){
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -281,166 +300,291 @@ public class MainController {
                 oldTime = calendar.getTime();
 
                 //读取污染物的分钟数据
-                SendingInstruct sendingInstruct130 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct130.instruct130();
-                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
-                sendingThread130.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct130 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130.instruct130();
+                    SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                    sendingThread130.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void LpDataTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //提取瞬时声级记录
-                SendingInstruct sendingInstruct131 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct131.instruct131();
-                SendingThread sendingThread131 = new SendingThread(SendingThread.socket);
-                sendingThread131.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct131n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct131n.instruct131Next();
-                    SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
-                    sendingThread131n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct131n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct131n.instruct131Next();
-                    SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
-                    sendingThread131n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct131 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct131.instruct131();
+                    SendingThread sendingThread131 = new SendingThread(SendingThread.socket);
+                    sendingThread131.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct131n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct131n.instruct131Next();
+                        SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
+                        sendingThread131n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct131n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct131n.instruct131Next();
+                        SendingThread sendingThread131n = new SendingThread(SendingThread.socket);
+                        sendingThread131n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void Oct31Timer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //提取oct记录
-                SendingInstruct sendingInstruct132130 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct132130.instruct132();
-                SendingThread sendingThread132130 = new SendingThread(SendingThread.socket);
-                sendingThread132130.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct132n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
-                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
-                    sendingThread132n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct132n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
-                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
-                    sendingThread132n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct132130 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132130.instruct132();
+                    SendingThread sendingThread132130 = new SendingThread(SendingThread.socket);
+                    sendingThread132130.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct132n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                        SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                        sendingThread132n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct132n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                        SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                        sendingThread132n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void Oct10Timer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //提取oct记录
                 SendingInstruct.dataType = 1;
-                SendingInstruct sendingInstruct132110 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct132110.instruct132();
-                SendingThread sendingThread132110 = new SendingThread(SendingThread.socket);
-                sendingThread132110.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct132n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
-                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
-                    sendingThread132n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct132n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct132n.instruct132Next();
-                    SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
-                    sendingThread132n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct132110 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct132110.instruct132();
+                    SendingThread sendingThread132110 = new SendingThread(SendingThread.socket);
+                    sendingThread132110.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct132n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                        SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                        sendingThread132n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct132n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct132n.instruct132Next();
+                        SendingThread sendingThread132n = new SendingThread(SendingThread.socket);
+                        sendingThread132n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void Leq1sTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //提取每秒的leq数据
-                SendingInstruct sendingInstruct133 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct133.instruct133();
-                SendingThread sendingThread133 = new SendingThread(SendingThread.socket);
-                sendingThread133.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct133n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct133n.instruct133Next();
-                    SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
-                    sendingThread133n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct133n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct133n.instruct133Next();
-                    SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
-                    sendingThread133n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct133 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct133.instruct133();
+                    SendingThread sendingThread133 = new SendingThread(SendingThread.socket);
+                    sendingThread133.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct133n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct133n.instruct133Next();
+                        SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
+                        sendingThread133n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct133n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct133n.instruct133Next();
+                        SendingThread sendingThread133n = new SendingThread(SendingThread.socket);
+                        sendingThread133n.SendingSock(SendingThread.instruct);
+                    }
                 }
+
+            }
+        },10*1000,60*1000);
+    }
+    private void WeatherLpTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //定时发送读取气象数据
-                SendingInstruct sendingInstruct134 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct134.instruct134();
-                SendingThread sendingThread134 = new SendingThread(SendingThread.socket);
-                sendingThread134.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct134n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct134n.instruct134Next();
-                    SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
-                    sendingThread134n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct134n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct134n.instruct134Next();
-                    SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
-                    sendingThread134n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct134 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct134.instruct134();
+                    SendingThread sendingThread134 = new SendingThread(SendingThread.socket);
+                    sendingThread134.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct134n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct134n.instruct134Next();
+                        SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
+                        sendingThread134n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct134n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct134n.instruct134Next();
+                        SendingThread sendingThread134n = new SendingThread(SendingThread.socket);
+                        sendingThread134n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void CarLpTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //定时发送读取车流量数据
-                SendingInstruct sendingInstruct135 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct135.instruct135();
-                SendingThread sendingThread135 = new SendingThread(SendingThread.socket);
-                sendingThread135.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct135n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct135n.instruct135Next();
-                    SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
-                    sendingThread135n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct135n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct135n.instruct135Next();
-                    SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
-                    sendingThread135n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct135 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct135.instruct135();
+                    SendingThread sendingThread135 = new SendingThread(SendingThread.socket);
+                    sendingThread135.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct135n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct135n.instruct135Next();
+                        SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
+                        sendingThread135n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct135n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct135n.instruct135Next();
+                        SendingThread sendingThread135n = new SendingThread(SendingThread.socket);
+                        sendingThread135n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void DustLpimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //定时发送读取粉尘数据
-                SendingInstruct sendingInstruct136 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct136.instruct136();
-                SendingThread sendingThread136 = new SendingThread(SendingThread.socket);
-                sendingThread136.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct136n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct136n.instruct136Next();
-                    SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
-                    sendingThread136n.SendingSock(SendingThread.instruct);
-                }else {
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct136n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct136n.instruct136Next();
-                    SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
-                    sendingThread136n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct136 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct136.instruct136();
+                    SendingThread sendingThread136 = new SendingThread(SendingThread.socket);
+                    sendingThread136.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct136n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct136n.instruct136Next();
+                        SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
+                        sendingThread136n.SendingSock(SendingThread.instruct);
+                    }else {
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct136n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct136n.instruct136Next();
+                        SendingThread sendingThread136n = new SendingThread(SendingThread.socket);
+                        sendingThread136n.SendingSock(SendingThread.instruct);
+                    }
                 }
+            }
+        },10*1000,60*1000);
+    }
+    private void WeatherHourAndDateTimer(){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE,-10);
+                oldTime = calendar.getTime();
 
                 //读取气象统计历史数据
-                SendingInstruct sendingInstruct137 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct137.instruct137();
-                SendingThread sendingThread137 = new SendingThread(SendingThread.socket);
-                sendingThread137.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct137n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct137n.instruct137Next();
-                    SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
-                    sendingThread137n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct137n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct137n.instruct137Next();
-                    SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
-                    sendingThread137n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct137 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct137.instruct137();
+                    SendingThread sendingThread137 = new SendingThread(SendingThread.socket);
+                    sendingThread137.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct137n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct137n.instruct137Next();
+                        SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
+                        sendingThread137n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct137n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct137n.instruct137Next();
+                        SendingThread sendingThread137n = new SendingThread(SendingThread.socket);
+                        sendingThread137n.SendingSock(SendingThread.instruct);
+                    }
                 }
             }
         },10*1000,60*1000);
@@ -456,24 +600,28 @@ public class MainController {
                 oldTime = calendar.getTime();
                 SendingInstruct.dataType = 1;
                 //读取污染物的分钟数据
-                SendingInstruct sendingInstruct130 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct130.instruct130();
-                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
-                sendingThread130.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct130 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130.instruct130();
+                    SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                    sendingThread130.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }
                 }
             }
-        },10000,60*60*10*1000);
+        },10000,60*10*1000);
     }
 
     private void dateTimer(){
@@ -486,21 +634,25 @@ public class MainController {
                 oldTime = calendar.getTime();
                 SendingInstruct.dataType = 2;
                 //读取污染物的分钟数据
-                SendingInstruct sendingInstruct130 = new SendingInstruct();
-                SendingThread.instruct = sendingInstruct130.instruct130();
-                SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
-                sendingThread130.SendingSock(SendingThread.instruct);
-                if(SendingThread.rtn == 1){
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
-                }else{
-                    SendingInstruct.temp = -1;
-                    SendingInstruct sendingInstruct130n = new SendingInstruct();
-                    SendingThread.instruct = sendingInstruct130n.instruct130Next();
-                    SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
-                    sendingThread130n.SendingSock(SendingThread.instruct);
+                for (InfoNoiseDevice infoNoiseDevice : infoNoiseDevices) {
+                    SendingInstruct.device = infoNoiseDevice.getDeviceCode();
+
+                    SendingInstruct sendingInstruct130 = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct130.instruct130();
+                    SendingThread sendingThread130 = new SendingThread(SendingThread.socket);
+                    sendingThread130.SendingSock(SendingThread.instruct);
+                    if(SendingThread.rtn == 1){
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }else{
+                        SendingInstruct.temp = -1;
+                        SendingInstruct sendingInstruct130n = new SendingInstruct();
+                        SendingThread.instruct = sendingInstruct130n.instruct130Next();
+                        SendingThread sendingThread130n = new SendingThread(SendingThread.socket);
+                        sendingThread130n.SendingSock(SendingThread.instruct);
+                    }
                 }
             }
         },10000,60*60*24*1000);
