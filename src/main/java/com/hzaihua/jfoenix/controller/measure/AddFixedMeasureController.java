@@ -245,9 +245,9 @@ public class AddFixedMeasureController {
                 }
                 NoiseDeviceManageController.infoNoiseManager.setNoiseManagerId(measureCode);
                 //infoNoiseManagerService.saveInfoNoiseManager(NoiseDeviceManageController.infoNoiseManager);
+                noiseList.clear();
+                stage.close();
             }
-            noiseList.clear();
-            stage.close();
         });
     }
     private void noiseDeviceList(){
