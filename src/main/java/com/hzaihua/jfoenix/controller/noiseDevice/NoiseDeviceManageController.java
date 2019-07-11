@@ -281,7 +281,6 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setSample(Double.valueOf(Sample.getText()));
             SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingThread.instruct = sendingInstruct.instruct124();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
             sendingThread.SendingSock(SendingThread.instruct);
@@ -325,7 +324,7 @@ public class NoiseDeviceManageController {
         //发送设置瞬时上传间隔指令
         commitUpSpace.setOnAction(event -> {
             infoNoiseManager.setUpSpace(Integer.valueOf(UpSpace.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct107();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -360,7 +359,7 @@ public class NoiseDeviceManageController {
         commitTF.setOnAction(event -> {
             infoNoiseManager.setFreWight(FreWight.getValue());
             infoNoiseManager.setTimeWight(TimeWight.getValue());
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct122();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -396,7 +395,7 @@ public class NoiseDeviceManageController {
         commitInitTime.setOnAction(event -> {
             infoNoiseManager.setInitime(Integer.valueOf(Initime.getText()));
             SendingInstruct sendingInstruct = new SendingInstruct();
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingThread.instruct = sendingInstruct.instruct114();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
             sendingThread.SendingSock(SendingThread.instruct);
@@ -431,7 +430,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setDayOverValue(Double.valueOf(DayOverValue.getText()));
             infoNoiseManager.setNightRecordValue(Double.valueOf(NightOverValue.getText()));
             infoNoiseManager.setOverDlay(Integer.valueOf(OverDlay.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct105();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -467,7 +466,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setDayOctValue(Double.valueOf(DayOctValue.getText()));
             infoNoiseManager.setNightOctValue(Double.valueOf(NightOctValue.getText()));
             infoNoiseManager.setOctDlay(Integer.valueOf(OctDlay.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct202();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -504,7 +503,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setNightRecordValue(Double.valueOf(NightRecordValue.getText()));
             infoNoiseManager.setRecordDlay(Integer.valueOf(RecordDlay.getText()));
             infoNoiseManager.setIsRecord(IsRecord.isSelected()?0:1);
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct126();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -540,7 +539,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setRecordStartTime(startDate);
             infoNoiseManager.setRecordEndTime(endDate);
             infoNoiseManager.setIsRecord(IsRecord.isSelected()?0:1);
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct129();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -576,7 +575,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setAdjustTime(adjust);
             infoNoiseManager.setAdjustSpace(Integer.valueOf(AdjustSpace.getValue()));
             infoNoiseManager.setIsAutoAdjust(isAutoAdjust.isSelected()?0:1);
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct116();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -612,7 +611,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setWeaAutoSave(WeaAutoSave.isSelected()?0:1);
             infoNoiseManager.setWeaAutoUp(WeaAutoUp.isSelected()?0:1);
             infoNoiseManager.setWeaUpSpace(Integer.valueOf(WeaUpSpace.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct206();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -648,7 +647,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setCarAutoSave(CarAutoSave.isSelected()?0:1);
             infoNoiseManager.setCarAutoUp(CarAutoUp.isSelected()?0:1);
             infoNoiseManager.setCarUpSpace(Integer.valueOf(CarUpSpace.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct208();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -684,7 +683,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setDustAutoSave(DustAutoSave.isSelected()?0:1);
             infoNoiseManager.setDustAutoUp(DustAutoUp.isSelected()?0:1);
             infoNoiseManager.setDustUpSpace(Integer.valueOf(DustUpSpace.getText()));
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct210();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -741,7 +740,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setON_OFF_LEQ1S(1);
             infoNoiseManager.setON_OFF_13OCT(ON_OFF_13OCT.isSelected()?0:1);
             infoNoiseManager.setON_OFF_11OCT(ON_OFF_11OCT.isSelected()?0:1);
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct204();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);
@@ -787,7 +786,7 @@ public class NoiseDeviceManageController {
             infoNoiseManager.setEvent_11(1);
             infoNoiseManager.setEvent_12(Event_12.isSelected()?0:1);
             infoNoiseManager.setEvent_13(Event_13.isSelected()?0:1);
-            SendingThread.deviceCode = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
+            SendingInstruct.device = AddFixedMeasureController.infoNoiseDevice.getDeviceCode();
             SendingInstruct sendingInstruct = new SendingInstruct();
             SendingThread.instruct = sendingInstruct.instruct120();
             SendingThread sendingThread = new SendingThread(SendingThread.socket);

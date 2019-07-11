@@ -23,6 +23,7 @@ public class SendingInstruct{
     public static int temp = 1;
     public static int info = 1;
     public static String device;
+    public static String passWord;
     public static int dataType = 0;
 
     public SendingInstruct() {}
@@ -33,7 +34,7 @@ public class SendingInstruct{
     public String instruct000(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[000000]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N000]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -47,7 +48,7 @@ public class SendingInstruct{
     public String instruct105(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N105]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -67,7 +68,7 @@ public class SendingInstruct{
     public String instruct106(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N106]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -81,13 +82,13 @@ public class SendingInstruct{
     public String instruct107(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N107]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
         sub.append("<Data>");
         sub.append("<Name>[RtdInterval]</Name>");
-        sub.append("<Value>["+NoiseDeviceManageController.infoNoiseManager.getSample()+"]</Value>");
+        sub.append("<Value>["+NoiseDeviceManageController.infoNoiseManager.getUpSpace()+"]</Value>");
         sub.append("</Data>");
         sub.append("</Package>");
         instruct = sub.toString();
@@ -100,7 +101,7 @@ public class SendingInstruct{
     public String instruct108(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N108]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -114,7 +115,7 @@ public class SendingInstruct{
     public String instruct110(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N110]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -128,7 +129,7 @@ public class SendingInstruct{
     public String instruct111(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N111]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -147,7 +148,7 @@ public class SendingInstruct{
     public String instruct112(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N112]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -166,7 +167,7 @@ public class SendingInstruct{
     public String instruct113(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N113]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -180,7 +181,7 @@ public class SendingInstruct{
     public String instruct114(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N114]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -199,7 +200,7 @@ public class SendingInstruct{
     public String instruct115(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N115]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -213,7 +214,7 @@ public class SendingInstruct{
     public String instruct116(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N116]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -232,7 +233,7 @@ public class SendingInstruct{
     public String instruct117(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N117]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -246,7 +247,7 @@ public class SendingInstruct{
     public String instruct118(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N118]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -265,7 +266,7 @@ public class SendingInstruct{
     public String instruct119(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N119]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -279,7 +280,7 @@ public class SendingInstruct{
     public String instruct120(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N120]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -311,7 +312,7 @@ public class SendingInstruct{
     public String instruct121(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N121]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -325,7 +326,7 @@ public class SendingInstruct{
     public String instruct122(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N122]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -344,7 +345,7 @@ public class SendingInstruct{
     public String instruct123(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N123]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -352,12 +353,12 @@ public class SendingInstruct{
         return instruct;
     }
     /**
-     * 设置实时采样数据采样间隔
+     * 设置实时数据采样间隔
      * */
     public String instruct124(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N124]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -375,7 +376,7 @@ public class SendingInstruct{
     public String instruct125(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N125]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -388,7 +389,7 @@ public class SendingInstruct{
     public String instruct126(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N126]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -408,7 +409,7 @@ public class SendingInstruct{
     public String instruct127(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N127]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -427,7 +428,7 @@ public class SendingInstruct{
     public String instruct128(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N128]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -440,7 +441,7 @@ public class SendingInstruct{
     public String instruct129(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N129]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -459,7 +460,7 @@ public class SendingInstruct{
     public String instruct201(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N201]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -473,7 +474,7 @@ public class SendingInstruct{
     public String instruct202(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N202]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -492,7 +493,7 @@ public class SendingInstruct{
     public String instruct203(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N203]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -505,7 +506,7 @@ public class SendingInstruct{
     public String instruct204(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N204]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -548,7 +549,7 @@ public class SendingInstruct{
     public String instruct205(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N205]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -562,7 +563,7 @@ public class SendingInstruct{
     public String instruct206(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N206]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -581,7 +582,7 @@ public class SendingInstruct{
     public String instruct207(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N207]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -595,7 +596,7 @@ public class SendingInstruct{
     public String instruct208(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N208]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -614,7 +615,7 @@ public class SendingInstruct{
     public String instruc209(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N209]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -628,7 +629,7 @@ public class SendingInstruct{
     public String instruct210(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N210]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -647,7 +648,7 @@ public class SendingInstruct{
     public String instruct211(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N211]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -661,7 +662,7 @@ public class SendingInstruct{
     public String instruct212(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N212]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -680,7 +681,7 @@ public class SendingInstruct{
     public String instruct102(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N102]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -695,7 +696,7 @@ public class SendingInstruct{
     public String instruct102Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N102]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>"); //操作结果
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -710,7 +711,7 @@ public class SendingInstruct{
     public String instruct103(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N103]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -724,7 +725,7 @@ public class SendingInstruct{
     public String instruct130(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N130]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -739,7 +740,7 @@ public class SendingInstruct{
     public String instruct130Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N130]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>"); //操作结果
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -754,7 +755,7 @@ public class SendingInstruct{
     public String instruct131(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N131]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -769,7 +770,7 @@ public class SendingInstruct{
     public String instruct131Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N131]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>"); //操作结果
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -785,7 +786,7 @@ public class SendingInstruct{
     public String instruct132(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N132]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -800,7 +801,7 @@ public class SendingInstruct{
     public String instruct132Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N132]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>"); //操作结果
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -815,7 +816,7 @@ public class SendingInstruct{
     public String instruct133(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N133]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -830,7 +831,7 @@ public class SendingInstruct{
     public String instruct133Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N133]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -845,7 +846,7 @@ public class SendingInstruct{
     public String instruct134(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N134]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -860,7 +861,7 @@ public class SendingInstruct{
     public String instruct134Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N134]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -875,7 +876,7 @@ public class SendingInstruct{
     public String instruct135(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N135]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -890,7 +891,7 @@ public class SendingInstruct{
     public String instruct135Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N135]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -905,7 +906,7 @@ public class SendingInstruct{
     public String instruct136(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N136]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -920,7 +921,7 @@ public class SendingInstruct{
     public String instruct136Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N136]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -934,7 +935,7 @@ public class SendingInstruct{
     public String instruct137(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N137]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -949,7 +950,7 @@ public class SendingInstruct{
     public String instruct137Next(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N137]</Class>");
         sub.append("<Rtn>["+temp+"]</Rtn>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
@@ -964,7 +965,7 @@ public class SendingInstruct{
     public String instruct104(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N104]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -983,7 +984,7 @@ public class SendingInstruct{
     public String instruct140(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[000000]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N140]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -997,7 +998,7 @@ public class SendingInstruct{
     public String instruct141(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[000000]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N141]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo></Package>");
@@ -1011,7 +1012,7 @@ public class SendingInstruct{
     public String instruct142(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N142]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1029,7 +1030,7 @@ public class SendingInstruct{
     public String instruct143(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>"+passWord+"]</Pwd>");
         sub.append("<Class>[N143]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1047,7 +1048,7 @@ public class SendingInstruct{
     public String instruct144(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N144]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1065,7 +1066,7 @@ public class SendingInstruct{
     public String instruct145(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N145]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1080,7 +1081,7 @@ public class SendingInstruct{
     public String instruct146(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N146]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1099,7 +1100,7 @@ public class SendingInstruct{
     public String instruct148(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N148]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1114,7 +1115,7 @@ public class SendingInstruct{
     public String instruct147(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N147]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1129,7 +1130,7 @@ public class SendingInstruct{
     public String instruct042(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N042]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1147,7 +1148,7 @@ public class SendingInstruct{
     public String instruct150(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N150]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1162,7 +1163,7 @@ public class SendingInstruct{
     public String instruct151(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N151]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1181,7 +1182,7 @@ public class SendingInstruct{
     public String instruct152(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N152]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1196,7 +1197,7 @@ public class SendingInstruct{
     public String instruct153(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N153]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1215,7 +1216,7 @@ public class SendingInstruct{
     public String instruct160(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N160]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1230,7 +1231,7 @@ public class SendingInstruct{
     public String instruct161(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N161]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1248,7 +1249,7 @@ public class SendingInstruct{
     public String instruct170(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N170]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1267,7 +1268,7 @@ public class SendingInstruct{
     public String instruct171(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N171]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1286,7 +1287,7 @@ public class SendingInstruct{
     public String instruct172(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N172]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1301,7 +1302,7 @@ public class SendingInstruct{
     public String instruct173(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N173]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1316,7 +1317,7 @@ public class SendingInstruct{
     public String instruct174(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N174]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1331,7 +1332,7 @@ public class SendingInstruct{
     public String instruct175(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N175]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1346,7 +1347,7 @@ public class SendingInstruct{
     public String instruct176(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N176]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1361,7 +1362,7 @@ public class SendingInstruct{
     public String instruct177(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N177]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1380,7 +1381,7 @@ public class SendingInstruct{
     public String instruct178(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N178]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1395,7 +1396,7 @@ public class SendingInstruct{
     public String instruct180(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N180]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");
@@ -1414,7 +1415,7 @@ public class SendingInstruct{
     public String instruct181(){
         sub.append("<Package><LtdInfo>");
         sub.append("<Code>["+device+"]</Code>");
-        sub.append("<Pwd>[123456]</Pwd>");
+        sub.append("<Pwd>["+passWord+"]</Pwd>");
         sub.append("<Class>[N181]</Class>");
         sub.append("<Flag>["+sdf.format(date)+"]</Flag>");
         sub.append("</LtdInfo>");

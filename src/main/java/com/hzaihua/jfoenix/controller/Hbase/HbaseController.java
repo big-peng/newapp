@@ -1,22 +1,31 @@
 package com.hzaihua.jfoenix.controller.Hbase;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 
 public class HbaseController {
-    static Configuration conf = null;
-
+    public static Configuration conf = null;
+    public static void main(String[] args) throws Exception{
+        conf=HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum","hbasenode47,hbasenode48,hbasenode49");//服务地址
+        conf.set("hbase.zookeeper.property.clientPort","2181");//端口号
+        //createTable("Leq1s_code");
+        //createTable("T_USER");
+        //insert("T_USER");
+        queryTable("Leq1s_code");
+        //queryByRowkey("T_USER","test_1111");
+        //deleteByRowkey("T_USER","test_1112");
+        //deleteTable("LpData_code");
+    }
     /*
      * 建表
      * */
     public static void createTable(String tableName)throws Exception {
-        Connection connection= ConnectionFactory.createConnection(conf);
+        Connection connection=ConnectionFactory.createConnection(conf);
         Admin admin=connection.getAdmin();
         System.out.println(admin);
         TableName tableName1=TableName.valueOf(tableName);
@@ -29,7 +38,6 @@ public class HbaseController {
 
         System.out.println("...............成功...............");
     }
-
     /*
      *添加数据
      */
@@ -56,13 +64,13 @@ public class HbaseController {
         System.out.println(table);
         ResultScanner results=table.getScanner(new Scan());
         for (Result result : results) {
-            /*byte[] name=result.getValue(Bytes.toBytes("info1"),Bytes.toBytes("name"));
+           /* byte[] name=result.getValue(Bytes.toBytes("info1"),Bytes.toBytes("name"));
             byte[] age=result.getValue(Bytes.toBytes("info1"),Bytes.toBytes("age"));
-            byte[] sex=result.getValue(Bytes.toBytes("info1"),Bytes.toBytes("sex"));
-            byte[] address=result.getValue(Bytes.toBytes("info1"),Bytes.toBytes("address"));
+            byte[] sex=result.getValue(Bytes.toBytes("info2"),Bytes.toBytes("sex"));
+            byte[] address=result.getValue(Bytes.toBytes("info2"),Bytes.toBytes("address"));
             System.out.println("value="+Bytes.toString(name)+","+Bytes.toInt(age)+","
                                 +Bytes.toString(sex)+","+Bytes.toString(address));*/
-            System.out.println(result);
+            System.out.println("result="+result);
         }
         System.out.println("........查询结束........");
     }

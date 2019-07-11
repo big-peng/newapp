@@ -1,17 +1,21 @@
 package com.hzaihua.jfoenix.controller.TCPLink;
 
-import com.hzaihua.jfoenix.controller.MainController;
+import com.hzaihua.jfoenix.controller.Hbase.HbaseController;
 import com.hzaihua.jfoenix.controller.MoreInfoController;
-import com.hzaihua.jfoenix.controller.measure.AddFixedMeasureController;
-import com.hzaihua.jfoenix.controller.measure.ReadNotesController;
 import com.hzaihua.jfoenix.controller.noiseDevice.NoiseDeviceManageController;
 import com.hzaihua.jfoenix.entity.*;
 import com.hzaihua.jfoenix.service.*;
 import com.hzaihua.jfoenix.util.BeanFactoryUtil;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import sun.applet.Main;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,8 +24,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.hzaihua.jfoenix.controller.noiseDevice.NoiseDeviceManageController.infoNoiseManager;
 
 public class SendingThread extends Thread {
 
@@ -58,6 +62,11 @@ public class SendingThread extends Thread {
     HourStaCodeService hourStaCodeService = BeanFactoryUtil.getApplicationContext().getBean(HourStaCodeService.class);
     DateStaCodeService dateStaCodeService = BeanFactoryUtil.getApplicationContext().getBean(DateStaCodeService.class);
     public static int rtn;
+    final List<Put> puts = new CopyOnWriteArrayList<>();
+    final List<Put> HourPuts = new CopyOnWriteArrayList<>();
+    final List<Put> DatePuts = new CopyOnWriteArrayList<>();
+    static Configuration conf = null;
+
 
     public void run() {
         SendingSock(instruct);
@@ -84,6 +93,9 @@ public class SendingThread extends Thread {
     //接收
     public void AcceptSock() {
         InputStream inputStream = null;
+        conf= HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum","hbasenode47,hbasenode48,hbasenode49");//服务地址
+        conf.set("hbase.zookeeper.property.clientPort","2181");//端口号
         try {
             inputStream = socket.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -97,6 +109,12 @@ public class SendingThread extends Thread {
                         + socket.getInetAddress().getHostAddress());
                 if (classes.equals("N000")) {
                     String name = getCode(pack, "Name");
+                    deviceCode = getCode(pack,"Code");
+                    System.out.println(name);
+                    SendingInstruct sendingInstruct = new SendingInstruct();
+                    SendingThread.instruct = sendingInstruct.instruct000();
+                    SendingThread sendingThread = new SendingThread(SendingThread.socket);
+                    sendingThread.SendingSock(SendingThread.instruct);
                     rtn = Integer.parseInt(getCode(pack, "Rtn")); //提取接收返回标记
                 } else if (classes.equals("N123")) { //提取实时采样数据采样间隔
                     value = getCode(pack, "Value");
@@ -257,11 +275,13 @@ public class SendingThread extends Thread {
                     //实时事件记录
                     rtn = Integer.parseInt(getCode(pack, "Rtn")); //提取接收返回标记
                 } else if (classes.equals("N131")) { //提取瞬时声级记录（一秒一个采样数据）
-                    for (int i = 0; i < 3000; i++) {
+                    Connection connection= ConnectionFactory.createConnection(conf);
+                    Table table=connection.getTable(TableName.valueOf("LpData_code"));
+                    for (int i = 0; i < 10000; i++) {
                         value = getCode(pack, "H" + i);
                         if (value == null) return;
                         split = value.split(",");
-                        Date datetime = sdf.parse(split[2]);
+                        Date datetime = simpleDateFormat.parse(split[2]);
                         LpDateCode lpDateCode = new LpDateCode();
                         lpDateCode.setNoiseCode(getCode(pack, "Code"));
                         lpDateCode.setMeasureTime(datetime);
@@ -313,92 +333,209 @@ public class SendingThread extends Thread {
                         lpDateCode.setNormal("");
                         lpDateCode.setSift("");
                         lpDateService.saveLpDateCode(lpDateCode);
+
+                        //存储到Hbase数据库中
+                        Put put=new Put(Bytes.toBytes("measureTime"));
+                        put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                        put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(String.valueOf(datetime)));
+                        if ("Lasp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lasp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lasp"),Bytes.toBytes(0));
+                        }
+                        if ("Lafp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lafp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lafp"),Bytes.toBytes(0));
+                        }
+                        if ("Laip".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Laip"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Laip"),Bytes.toBytes(0));
+                        }
+                        if ("Lcsp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcsp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcsp"),Bytes.toBytes(0));
+                        }
+                        if ("Lcfp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcfp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcfp"),Bytes.toBytes(0));
+                        }
+                        if ("Lcip".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcip"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lcip"),Bytes.toBytes(0));
+                        }
+                        if ("Lzsp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzsp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzsp"),Bytes.toBytes(0));
+                        }
+                        if ("Lzfp".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzfp"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzfp"),Bytes.toBytes(0));
+                        }
+                        if ("Lzip".equals(split[4])) {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzip"),Bytes.toBytes(split[5]));
+                        } else {
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Lzip"),Bytes.toBytes(0));
+                        }
+                        puts.add(put);
                     }
+                    table.put(puts);
                     rtn = Integer.parseInt(getCode(pack, "Rtn")); //提取接收返回标记
                 } else if (classes.equals("N132")) { //提取OCT记录(频谱授权)
+                    Connection connection= ConnectionFactory.createConnection(conf);
                     for (int i=0;i<3000;i++){
                         value = getCode(pack, "H"+i);
+                        if (value == null) return;
                         split = value.split(","); //根据发送指令时给的参数选择是存到OCT中还是OCT31中
                         if(SendingInstruct.dataType == 0){
+                            Table table=connection.getTable(TableName.valueOf("Oct31_code"));
                             ObservableList<Oct31Code> oct31Codes = oct31CodeService.queryAllOct31Code();
                             for (Oct31Code oct31Code : oct31Codes) {
                                 if(!(oct31Code.getNoiseCode().equals(getCode(pack,"Code"))) && !(sdf.format(oct31Code.getMeasureTime()).equals(sdf.format(split[2])))){
                                     Oct31Code oct31Code1 = new Oct31Code();
                                     oct31Code1.setNoiseCode(getCode(pack,"Code"));
-                                    oct31Code1.setMeasureTime(sdf.parse(split[1]));
-                                    oct31Code1.setMillisecond(Integer.parseInt(split[2]));
-                                    oct31Code1.setHZ10(Double.parseDouble(split[3]));
-                                    oct31Code1.setHZ12P5(Double.parseDouble(split[4]));
-                                    oct31Code1.setHZ16(Double.parseDouble(split[5]));
-                                    oct31Code1.setHZ20(Double.parseDouble(split[6]));
-                                    oct31Code1.setHZ25(Double.parseDouble(split[7]));
-                                    oct31Code1.setHZ31P5(Double.parseDouble(split[8]));
-                                    oct31Code1.setHZ40(Double.parseDouble(split[9]));
-                                    oct31Code1.setHZ50(Double.parseDouble(split[10]));
-                                    oct31Code1.setHZ63(Double.parseDouble(split[11]));
-                                    oct31Code1.setHZ80(Double.parseDouble(split[12]));
-                                    oct31Code1.setHZ100(Double.parseDouble(split[13]));
-                                    oct31Code1.setHZ125(Double.parseDouble(split[14]));
-                                    oct31Code1.setHZ160(Double.parseDouble(split[15]));
-                                    oct31Code1.setHZ200(Double.parseDouble(split[16]));
-                                    oct31Code1.setHZ250(Double.parseDouble(split[17]));
-                                    oct31Code1.setHZ315(Double.parseDouble(split[18]));
-                                    oct31Code1.setHZ400(Double.parseDouble(split[19]));
-                                    oct31Code1.setHZ500(Double.parseDouble(split[20]));
-                                    oct31Code1.setHZ630(Double.parseDouble(split[21]));
-                                    oct31Code1.setHZ800(Double.parseDouble(split[22]));
-                                    oct31Code1.setHZ1000(Double.parseDouble(split[23]));
-                                    oct31Code1.setHZ1250(Double.parseDouble(split[24]));
-                                    oct31Code1.setHZ1600(Double.parseDouble(split[25]));
-                                    oct31Code1.setHZ2000(Double.parseDouble(split[26]));
-                                    oct31Code1.setHZ2500(Double.parseDouble(split[27]));
-                                    oct31Code1.setHZ3150(Double.parseDouble(split[28]));
-                                    oct31Code1.setHZ4000(Double.parseDouble(split[29]));
-                                    oct31Code1.setHZ5000(Double.parseDouble(split[30]));
-                                    oct31Code1.setHZ6300(Double.parseDouble(split[31]));
-                                    oct31Code1.setHZ8000(Double.parseDouble(split[32]));
-                                    oct31Code1.setHZ10000(Double.parseDouble(split[33]));
-                                    oct31Code1.setHZ12500(Double.parseDouble(split[34]));
-                                    oct31Code1.setHZ16000(Double.parseDouble(split[35]));
-                                    oct31Code1.setHZ20000(Double.parseDouble(split[36]));
+                                    oct31Code1.setMeasureTime(sdf.parse(split[2]));
+                                    oct31Code1.setMillisecond(Integer.parseInt(split[3]));
+                                    oct31Code1.setHZ10(Double.parseDouble(split[4]));
+                                    oct31Code1.setHZ12P5(Double.parseDouble(split[5]));
+                                    oct31Code1.setHZ16(Double.parseDouble(split[6]));
+                                    oct31Code1.setHZ20(Double.parseDouble(split[7]));
+                                    oct31Code1.setHZ25(Double.parseDouble(split[8]));
+                                    oct31Code1.setHZ31P5(Double.parseDouble(split[9]));
+                                    oct31Code1.setHZ40(Double.parseDouble(split[10]));
+                                    oct31Code1.setHZ50(Double.parseDouble(split[11]));
+                                    oct31Code1.setHZ63(Double.parseDouble(split[12]));
+                                    oct31Code1.setHZ80(Double.parseDouble(split[13]));
+                                    oct31Code1.setHZ100(Double.parseDouble(split[14]));
+                                    oct31Code1.setHZ125(Double.parseDouble(split[15]));
+                                    oct31Code1.setHZ160(Double.parseDouble(split[16]));
+                                    oct31Code1.setHZ200(Double.parseDouble(split[17]));
+                                    oct31Code1.setHZ250(Double.parseDouble(split[18]));
+                                    oct31Code1.setHZ315(Double.parseDouble(split[19]));
+                                    oct31Code1.setHZ400(Double.parseDouble(split[20]));
+                                    oct31Code1.setHZ500(Double.parseDouble(split[21]));
+                                    oct31Code1.setHZ630(Double.parseDouble(split[22]));
+                                    oct31Code1.setHZ800(Double.parseDouble(split[23]));
+                                    oct31Code1.setHZ1000(Double.parseDouble(split[24]));
+                                    oct31Code1.setHZ1250(Double.parseDouble(split[25]));
+                                    oct31Code1.setHZ1600(Double.parseDouble(split[26]));
+                                    oct31Code1.setHZ2000(Double.parseDouble(split[27]));
+                                    oct31Code1.setHZ2500(Double.parseDouble(split[28]));
+                                    oct31Code1.setHZ3150(Double.parseDouble(split[29]));
+                                    oct31Code1.setHZ4000(Double.parseDouble(split[30]));
+                                    oct31Code1.setHZ5000(Double.parseDouble(split[31]));
+                                    oct31Code1.setHZ6300(Double.parseDouble(split[32]));
+                                    oct31Code1.setHZ8000(Double.parseDouble(split[33]));
+                                    oct31Code1.setHZ10000(Double.parseDouble(split[34]));
+                                    oct31Code1.setHZ12500(Double.parseDouble(split[35]));
+                                    oct31Code1.setHZ16000(Double.parseDouble(split[36]));
+                                    oct31Code1.setHZ20000(Double.parseDouble(split[37]));
                                     //将接收到的数据放入一个对象内，存入数据库
                                     oct31CodeService.saveOct31Code(oct31Code1);
+                                    Put put = new Put(Bytes.toBytes("oct31Code"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("Millisecond"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ10"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ12P5"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ16"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ20"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ25"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ31P5"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ40"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ50"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ63"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ80"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ100"),Bytes.toBytes(split[14]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ125"),Bytes.toBytes(split[15]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ160"),Bytes.toBytes(split[16]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ200"),Bytes.toBytes(split[17]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ250"),Bytes.toBytes(split[18]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ315"),Bytes.toBytes(split[19]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ400"),Bytes.toBytes(split[20]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ500"),Bytes.toBytes(split[21]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ630"),Bytes.toBytes(split[22]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ800"),Bytes.toBytes(split[23]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ1000"),Bytes.toBytes(split[24]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ1250"),Bytes.toBytes(split[25]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ1600"),Bytes.toBytes(split[26]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ2000"),Bytes.toBytes(split[27]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ2500"),Bytes.toBytes(split[28]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ3150"),Bytes.toBytes(split[29]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ4000"),Bytes.toBytes(split[30]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ5000"),Bytes.toBytes(split[31]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ6300"),Bytes.toBytes(split[32]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ8000"),Bytes.toBytes(split[33]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ10000"),Bytes.toBytes(split[34]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ12500"),Bytes.toBytes(split[35]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ16000"),Bytes.toBytes(split[36]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ20000"),Bytes.toBytes(split[37]));
+                                    puts.add(put);
                                 }else {
                                     continue;
                                 }
                             }
+                            table.put(puts);
                         }
                         if(SendingInstruct.dataType == 1){
                             ObservableList<OctCode> octCodes = octCodeService.queryAllOct();
+                            Table table=connection.getTable(TableName.valueOf("Oct_code"));
                             for (OctCode octCode : octCodes) {
                                 if(!(octCode.getNoiseCode().equals(getCode(pack,"Code"))) && !(sdf.format(octCode.getMeasureTime()).equals(sdf.format(split[2])))){
                                     OctCode octCode1 = new OctCode();
                                     octCode1.setNoiseCode(getCode(pack,"Code"));
-                                    octCode1.setMeasureTime(sdf.parse(split[1]));
-                                    octCode1.setMillisecond(Integer.parseInt(split[2]));
-                                    octCode1.setHZ16(Double.parseDouble(split[3]));
-                                    octCode1.setHZ31P5(Double.parseDouble(split[4]));
-                                    octCode1.setHZ63(Double.parseDouble(split[5]));
-                                    octCode1.setHZ125(Double.parseDouble(split[6]));
-                                    octCode1.setHZ250(Double.parseDouble(split[7]));
-                                    octCode1.setHZ500(Double.parseDouble(split[8]));
-                                    octCode1.setHZ1000(Double.parseDouble(split[9]));
-                                    octCode1.setHZ2000(Double.parseDouble(split[10]));
-                                    octCode1.setHZ4000(Double.parseDouble(split[11]));
-                                    octCode1.setHZ8000(Double.parseDouble(split[12]));
-                                    octCode1.setHZ16000(Double.parseDouble(split[13]));
+                                    octCode1.setMeasureTime(sdf.parse(split[2]));
+                                    octCode1.setMillisecond(Integer.parseInt(split[3]));
+                                    octCode1.setHZ16(Double.parseDouble(split[4]));
+                                    octCode1.setHZ31P5(Double.parseDouble(split[5]));
+                                    octCode1.setHZ63(Double.parseDouble(split[6]));
+                                    octCode1.setHZ125(Double.parseDouble(split[7]));
+                                    octCode1.setHZ250(Double.parseDouble(split[8]));
+                                    octCode1.setHZ500(Double.parseDouble(split[9]));
+                                    octCode1.setHZ1000(Double.parseDouble(split[10]));
+                                    octCode1.setHZ2000(Double.parseDouble(split[11]));
+                                    octCode1.setHZ4000(Double.parseDouble(split[12]));
+                                    octCode1.setHZ8000(Double.parseDouble(split[13]));
+                                    octCode1.setHZ16000(Double.parseDouble(split[14]));
                                     //将接收到的数据放入一个对象中存入数据库
                                     octCodeService.saveOctCode(octCode1);
+
+                                    //存入Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("octCode"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes((split[3])));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ16"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ31P5"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ63"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ125"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ250"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ500"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ1000"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ2000"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ4000"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ8000"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("HZ16000"),Bytes.toBytes(split[14]));
+                                    puts.add(put);
                                 }else {
                                     continue;
                                 }
                             }
+                            table.put(puts);
                         }
                     }
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn")); //提取接收返回标记
                 } else if (classes.equals("N133")) { //提取每秒的Leq历史数据
-                    for (int i = 0; i < 3000; i++) {
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table table=connection.getTable(TableName.valueOf("Leq1s_code"));
+                    for (int i = 0; i < 10000; i++) {
                         value = getCode(pack, "H" + i);
                         if (value == null) return;
                         split = value.split(",");
@@ -409,10 +546,26 @@ public class SendingThread extends Thread {
                         leq1SCode.setLEQC(Double.parseDouble(split[4]));
                         leq1SCode.setLEQZ(Double.parseDouble(split[5]));
                         leq1sCodeService.saveLeq1sCode(leq1SCode);
+
+                        //存入Hbase数据库中
+                        System.out.println(".............添加数据..........");
+                        System.out.println(table);
+                        Put put=new Put(Bytes.toBytes("leq1s"));
+                        put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                        put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                        put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LEQA"),Bytes.toBytes(split[3]));
+                        put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LEQC"),Bytes.toBytes(split[4]));
+                        put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LEQC"),Bytes.toBytes(split[5]));
+                        puts.add(put);
                     }
+                    table.put(puts);
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N130")) { //污染物分钟数据（读一段时间内的统计数据）
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table staTable=connection.getTable(TableName.valueOf("sta_code"));
+                    Table hourStaTable=connection.getTable(TableName.valueOf("HourSta_code"));
+                    Table dateStaTable=connection.getTable(TableName.valueOf("DateSta_code"));
                     for (int i = 0;i < 3000;i++) {
                         value = getCode(pack, "H"+i);
                         if(value == null)return;
@@ -436,6 +589,25 @@ public class SendingThread extends Thread {
                             staCode.setDetail(0);
                             staCode.setRate(Double.parseDouble(split[19]));
                             staCodeService.saveStaCode(staCode);
+                            //保存到Hbase数据库中
+                            Put put = new Put(Bytes.toBytes("staCode"));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LeqT"),Bytes.toBytes(split[3]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF5"),Bytes.toBytes(split[4]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF10"),Bytes.toBytes(split[5]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF50"),Bytes.toBytes(split[6]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF90"),Bytes.toBytes(split[7]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF95"),Bytes.toBytes(split[8]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmax"),Bytes.toBytes(split[9]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmin"),Bytes.toBytes(split[10]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SD"),Bytes.toBytes(split[11]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Normal"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Sift"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SoftRate"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Detail"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Rate"),Bytes.toBytes(split[19]));
+                            puts.add(put);
                         }else if(SendingInstruct.dataType == 1){
                             HourStaCode hourStaCode = new HourStaCode();
                             hourStaCode.setNoiseCode(getCode(pack,"Code"));
@@ -454,6 +626,25 @@ public class SendingThread extends Thread {
                             hourStaCode.setSoftRate(0);
                             hourStaCode.setRate(Double.parseDouble(split[19]));
                             hourStaCodeService.saveHourStaCode(hourStaCode);
+
+                            //保存到Hbase数据库中
+                            Put put = new Put(Bytes.toBytes("hourStaCode"));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LeqT"),Bytes.toBytes(split[3]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF5"),Bytes.toBytes(split[4]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF10"),Bytes.toBytes(split[5]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF50"),Bytes.toBytes(split[6]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF90"),Bytes.toBytes(split[7]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF95"),Bytes.toBytes(split[8]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmax"),Bytes.toBytes(split[9]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmin"),Bytes.toBytes(split[10]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SD"),Bytes.toBytes(split[11]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Normal"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Sift"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SoftRate"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Rate"),Bytes.toBytes(split[19]));
+                            puts.add(put);
                         }else if(SendingInstruct.dataType == 2){
                             DateStaCode dateStaCode = new DateStaCode();
                             dateStaCode.setNoiseCode(getCode(pack,"Code"));
@@ -473,13 +664,46 @@ public class SendingThread extends Thread {
                             dateStaCode.setNormal(null);
                             dateStaCode.setSift(null);
                             dateStaCode.setSoftRate(0);
-                            dateStaCode.setRate(Double.parseDouble(split[19]));
+                            if(split[19].equals("-")){
+                                dateStaCode.setRate(0);
+                            }
                             dateStaCodeService.saveDateStaCode(dateStaCode);
+
+                            //保存到Hbase数据库中
+                            Put put = new Put(Bytes.toBytes("hourStaCode"));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                            put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LeqT"),Bytes.toBytes(split[3]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF5"),Bytes.toBytes(split[4]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF10"),Bytes.toBytes(split[5]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF50"),Bytes.toBytes(split[6]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF90"),Bytes.toBytes(split[7]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAF95"),Bytes.toBytes(split[8]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmax"),Bytes.toBytes(split[9]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("LAFmin"),Bytes.toBytes(split[10]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SD"),Bytes.toBytes(split[11]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Ld"),Bytes.toBytes(split[12]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Ln"),Bytes.toBytes(split[13]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Ldn"),Bytes.toBytes(split[14]));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Normal"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Sift"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SoftRate"),Bytes.toBytes(0));
+                            put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Rate"),Bytes.toBytes(split[19]));
+                            puts.add(put);
                         }
+                    }
+                    if(SendingInstruct.dataType == 0){
+                        staTable.put(puts);
+                    }else if(SendingInstruct.dataType == 1){
+                        hourStaTable.put(puts);
+                    }else if(SendingInstruct.dataType == 2){
+                        dateStaTable.put(puts);
                     }
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N134")) { //读气象历史数据
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table table = connection.getTable(TableName.valueOf("WeatherLp"));
                     for (int i = 0; i < 3000 ; i++) {
                         value = getCode(pack, "H"+i);
                         if(value == null) return;
@@ -489,52 +713,70 @@ public class SendingThread extends Thread {
                             if (!(weatherLP.getNoiseCode().equals(getCode(pack, "Code"))) && !(weatherLP.getMeasureTime().equals(sdf.parse(split[2])))) {
                                 WeatherLP weatherLP1 = new WeatherLP();
                                 weatherLP1.setNoiseCode(getCode(pack,"Code"));
-                                weatherLP1.setMeasureTime(sdf.parse(split[0]));
-                                weatherLP1.setUnitTime(Integer.parseInt(split[1]));
+                                weatherLP1.setMeasureTime(sdf.parse(split[2]));
+                                weatherLP1.setUnitTime(Integer.parseInt(split[3]));
                                 if(split[2].equals("-")){
                                     weatherLP1.setW_Speed(0);
                                 }else {
-                                    weatherLP1.setW_Speed(Double.parseDouble(split[2]));
+                                    weatherLP1.setW_Speed(Double.parseDouble(split[4]));
                                 }
                                 if(split[3].equals("-")){
                                     weatherLP1.setW_Direction(0);
                                 }else {
-                                    weatherLP1.setW_Direction(Double.parseDouble(split[3]));
+                                    weatherLP1.setW_Direction(Double.parseDouble(split[5]));
                                 }
                                 if(split[4].equals("-")){
                                     weatherLP1.setA_Temp(0);
                                 }else {
-                                    weatherLP1.setA_Temp(Double.parseDouble(split[4]));
+                                    weatherLP1.setA_Temp(Double.parseDouble(split[6]));
                                 }
                                 if(split[5].equals("-")){
                                     weatherLP1.setHumi_R(0);
                                 }else {
-                                    weatherLP1.setHumi_R(Double.parseDouble(split[5]));
+                                    weatherLP1.setHumi_R(Double.parseDouble(split[7]));
                                 }
                                 if(split[6].equals("-")){
                                     weatherLP1.setAri_p(0);
                                 }else {
-                                    weatherLP1.setAri_p(Double.parseDouble(split[6]));
+                                    weatherLP1.setAri_p(Double.parseDouble(split[8]));
                                 }
                                 if(split[7].equals("-")){
                                     weatherLP1.setPRF(0);
                                 }else {
-                                    weatherLP1.setPRF(Double.parseDouble(split[7]));
+                                    weatherLP1.setPRF(Double.parseDouble(split[9]));
                                 }
                                 //保存到数据库中
                                 weatherLPService.saveWeatherLP(weatherLP1);
+
+                                //保存到Hbase数据库中
+                                Put put = new Put(Bytes.toBytes("weatherLp"));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("UnitTime"),Bytes.toBytes(split[3]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("W_Speed"),Bytes.toBytes(split[4]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("W_Direction"),Bytes.toBytes(split[5]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("A_Temp"),Bytes.toBytes(split[6]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Humi_R"),Bytes.toBytes(split[7]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Ari_p"),Bytes.toBytes(split[8]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PRF"),Bytes.toBytes(split[9]));
+                                puts.add(put);
                             }else {
                                 continue;
                             }
                         }
                     }
+                    table.put(puts);
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N135")) { //读车流量历史数据
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table weatherLpTable = connection.getTable(TableName.valueOf("WeatherLp"));
+                    Table weatherHourTable = connection.getTable(TableName.valueOf("WeatherHour"));
+                    Table weatherDateTable = connection.getTable(TableName.valueOf("WeatherDate"));
                     Date date = new Date();
                     String hourTime = sdf.format(date.getTime()-60*60);
                     String dateTime = sdf.format(date.getTime()-60*60*24);
-                    for (int i = 0 ; i < 3000 ; i++) {
+                    for (int i = 0 ; i < 10000 ; i++) {
                         value = getCode(pack, "H"+i);
                         if(value == null)return;
                         split = value.split(",");
@@ -543,29 +785,52 @@ public class SendingThread extends Thread {
                             if(!(carFlowLP.getNoiseCode().equals(getCode(pack,"Code"))) && !(carFlowLP.getMeasureTime().equals(sdf.parse(split[2])))){
                                 CarFlowLP carFlowLP1 = new CarFlowLP();
                                 carFlowLP1.setNoiseCode(getCode(pack,"Code"));
-                                carFlowLP1.setMeasureTime(sdf.parse(split[0]));
-                                carFlowLP1.setRadarID(split[1]);
-                                carFlowLP1.setUnitTime(Integer.parseInt(split[2]));
-                                carFlowLP1.setRoadWayNum(Integer.parseInt(split[3]));
-                                carFlowLP1.setTotalFlux(Double.parseDouble(split[4]));
-                                carFlowLP1.setOccupyRation(Double.parseDouble(split[5]));
-                                carFlowLP1.setLongRation(Double.parseDouble(split[6]));
-                                carFlowLP1.setMidRation(Double.parseDouble(split[7]));
-                                carFlowLP1.setShortRation(Double.parseDouble(split[8]));
-                                carFlowLP1.setAvgSpeed(Double.parseDouble(split[9]));
-                                carFlowLP1.setLongSpeed(Double.parseDouble(split[10]));
-                                carFlowLP1.setMidSpeed(Double.parseDouble(split[11]));
-                                carFlowLP1.setShortSpeed(Double.parseDouble(split[12]));
-                                carFlowLP1.setPreFlux(Double.parseDouble(split[13]));
-                                carFlowLP1.setLongCarNums(Double.parseDouble(split[14]));
-                                carFlowLP1.setMidCarNums(Double.parseDouble(split[15]));
-                                carFlowLP1.setShortCarNums(Double.parseDouble(split[16]));
+                                carFlowLP1.setMeasureTime(sdf.parse(split[2]));
+                                carFlowLP1.setRadarID(split[3]);
+                                carFlowLP1.setUnitTime(Integer.parseInt(split[4]));
+                                carFlowLP1.setRoadWayNum(Integer.parseInt(split[5]));
+                                carFlowLP1.setTotalFlux(Double.parseDouble(split[6]));
+                                carFlowLP1.setOccupyRation(Double.parseDouble(split[7]));
+                                carFlowLP1.setLongRation(Double.parseDouble(split[8]));
+                                carFlowLP1.setMidRation(Double.parseDouble(split[9]));
+                                carFlowLP1.setShortRation(Double.parseDouble(split[10]));
+                                carFlowLP1.setAvgSpeed(Double.parseDouble(split[11]));
+                                carFlowLP1.setLongSpeed(Double.parseDouble(split[12]));
+                                carFlowLP1.setMidSpeed(Double.parseDouble(split[13]));
+                                carFlowLP1.setShortSpeed(Double.parseDouble(split[14]));
+                                carFlowLP1.setPreFlux(Double.parseDouble(split[15]));
+                                carFlowLP1.setLongCarNums(Double.parseDouble(split[16]));
+                                carFlowLP1.setMidCarNums(Double.parseDouble(split[17]));
+                                carFlowLP1.setShortCarNums(Double.parseDouble(split[18]));
                                 //保存到数据库中
                                 carFlowLPService.saveCarFlow(carFlowLP1);
+
+                                //保存到Hbase数据库中
+                                Put put = new Put(Bytes.toBytes("carFlowLp"));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("radarID"),Bytes.toBytes(split[3]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[4]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("roadWayNum"),Bytes.toBytes(split[5]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("totalFlux"),Bytes.toBytes(split[6]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("occupyRation"),Bytes.toBytes(split[7]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longRation"),Bytes.toBytes(split[8]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midRation"),Bytes.toBytes(split[9]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortRation"),Bytes.toBytes(split[10]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("avgSpeed"),Bytes.toBytes(split[11]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longSpeed"),Bytes.toBytes(split[12]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midSpeed"),Bytes.toBytes(split[13]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortSpeed"),Bytes.toBytes(split[14]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("preFlux"),Bytes.toBytes(split[15]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longCarNums"),Bytes.toBytes(split[16]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midCarNums"),Bytes.toBytes(split[17]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortCarNums"),Bytes.toBytes(split[18]));
+                                puts.add(put);
                             }else {
                                 continue;
                             }
                         }
+                        weatherLpTable.put(puts);
                         //小时统计数据
                         if(hourTime.equals(sdf.format(split[2]))){
                             ObservableList<CarFlowHour> carFlowHours = carFlowHourService.queryAllCarHour();
@@ -573,24 +838,46 @@ public class SendingThread extends Thread {
                                 if(!(carFlowHour.getNoiseCode().equals(getCode(pack,"Code"))) && !(sdf.format(carFlowHour.getMeasureTime()).equals(sdf.format(split[2])))){
                                     CarFlowHour carFlowHour1 = new CarFlowHour();
                                     carFlowHour1.setNoiseCode(getCode(pack,"Code"));
-                                    carFlowHour1.setMeasureTime(sdf.parse(split[0]));
-                                    carFlowHour1.setRadarID(split[1]);
-                                    carFlowHour1.setUnitTime(Integer.parseInt(split[2]));
-                                    carFlowHour1.setRoadWayNum(Integer.parseInt(split[3]));
-                                    carFlowHour1.setTotalFlux(Double.parseDouble(split[4]));
-                                    carFlowHour1.setOccupyRation(Double.parseDouble(split[5]));
-                                    carFlowHour1.setLongRation(Double.parseDouble(split[6]));
-                                    carFlowHour1.setMidRation(Double.parseDouble(split[7]));
-                                    carFlowHour1.setShortRation(Double.parseDouble(split[8]));
-                                    carFlowHour1.setAvgSpeed(Double.parseDouble(split[9]));
-                                    carFlowHour1.setLongSpeed(Double.parseDouble(split[10]));
-                                    carFlowHour1.setMidSpeed(Double.parseDouble(split[11]));
-                                    carFlowHour1.setShortSpeed(Double.parseDouble(split[12]));
-                                    carFlowHour1.setPreFlux(Double.parseDouble(split[13]));
-                                    carFlowHour1.setLongCarNums(Double.parseDouble(split[14]));
-                                    carFlowHour1.setMidCarNums(Double.parseDouble(split[15]));
-                                    carFlowHour1.setShortCarNums(Double.parseDouble(split[16]));
+                                    carFlowHour1.setMeasureTime(sdf.parse(split[2]));
+                                    carFlowHour1.setRadarID(split[3]);
+                                    carFlowHour1.setUnitTime(Integer.parseInt(split[4]));
+                                    carFlowHour1.setRoadWayNum(Integer.parseInt(split[5]));
+                                    carFlowHour1.setTotalFlux(Double.parseDouble(split[6]));
+                                    carFlowHour1.setOccupyRation(Double.parseDouble(split[7]));
+                                    carFlowHour1.setLongRation(Double.parseDouble(split[8]));
+                                    carFlowHour1.setMidRation(Double.parseDouble(split[9]));
+                                    carFlowHour1.setShortRation(Double.parseDouble(split[10]));
+                                    carFlowHour1.setAvgSpeed(Double.parseDouble(split[11]));
+                                    carFlowHour1.setLongSpeed(Double.parseDouble(split[12]));
+                                    carFlowHour1.setMidSpeed(Double.parseDouble(split[13]));
+                                    carFlowHour1.setShortSpeed(Double.parseDouble(split[14]));
+                                    carFlowHour1.setPreFlux(Double.parseDouble(split[15]));
+                                    carFlowHour1.setLongCarNums(Double.parseDouble(split[16]));
+                                    carFlowHour1.setMidCarNums(Double.parseDouble(split[17]));
+                                    carFlowHour1.setShortCarNums(Double.parseDouble(split[18]));
                                     carFlowHourService.saveCarFlowHour(carFlowHour1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("carFlowHour"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("radarID"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("roadWayNum"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("totalFlux"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("occupyRation"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longRation"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midRation"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortRation"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("avgSpeed"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longSpeed"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midSpeed"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortSpeed"),Bytes.toBytes(split[14]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("preFlux"),Bytes.toBytes(split[15]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longCarNums"),Bytes.toBytes(split[16]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midCarNums"),Bytes.toBytes(split[17]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortCarNums"),Bytes.toBytes(split[18]));
+                                    HourPuts.add(put);
                                 }
                             }
                         }else {
@@ -598,8 +885,9 @@ public class SendingThread extends Thread {
                         }
                         hourTime = sdf.format(date.getTime() - 60*60);
                     }
+                    weatherHourTable.put(HourPuts);
                     //天统计数据
-                    for (int i=0;i<30000;i++){
+                    for (int i=0;i<10000;i++){
                         value = getCode(pack, "H"+i);
                         if(value == null)return;
                         split = value.split(",");
@@ -609,24 +897,46 @@ public class SendingThread extends Thread {
                                 if(!(carFlowDate.getNoiseCode().equals(getCode(pack,"Code"))) && !(sdf.format(carFlowDate.getMeasureTime()).equals(sdf.format(split[2])))){
                                     CarFlowDate carFlowDate1 = new CarFlowDate();
                                     carFlowDate1.setNoiseCode(getCode(pack,"Code"));
-                                    carFlowDate1.setMeasureTime(sdf.parse(split[0]));
-                                    carFlowDate1.setRadarID(split[1]);
-                                    carFlowDate1.setUnitTime(Integer.parseInt(split[2]));
-                                    carFlowDate1.setRoadWayNum(Integer.parseInt(split[3]));
-                                    carFlowDate1.setTotalFlux(Double.parseDouble(split[4]));
-                                    carFlowDate1.setOccupyRation(Double.parseDouble(split[5]));
-                                    carFlowDate1.setLongRation(Double.parseDouble(split[6]));
-                                    carFlowDate1.setMidRation(Double.parseDouble(split[7]));
-                                    carFlowDate1.setShortRation(Double.parseDouble(split[8]));
-                                    carFlowDate1.setAvgSpeed(Double.parseDouble(split[9]));
-                                    carFlowDate1.setLongSpeed(Double.parseDouble(split[10]));
-                                    carFlowDate1.setMidSpeed(Double.parseDouble(split[11]));
-                                    carFlowDate1.setShortSpeed(Double.parseDouble(split[12]));
-                                    carFlowDate1.setPreFlux(Double.parseDouble(split[13]));
-                                    carFlowDate1.setLongCarNums(Double.parseDouble(split[14]));
-                                    carFlowDate1.setMidCarNums(Double.parseDouble(split[15]));
-                                    carFlowDate1.setShortCarNums(Double.parseDouble(split[16]));
+                                    carFlowDate1.setMeasureTime(sdf.parse(split[2]));
+                                    carFlowDate1.setRadarID(split[3]);
+                                    carFlowDate1.setUnitTime(Integer.parseInt(split[4]));
+                                    carFlowDate1.setRoadWayNum(Integer.parseInt(split[5]));
+                                    carFlowDate1.setTotalFlux(Double.parseDouble(split[6]));
+                                    carFlowDate1.setOccupyRation(Double.parseDouble(split[7]));
+                                    carFlowDate1.setLongRation(Double.parseDouble(split[8]));
+                                    carFlowDate1.setMidRation(Double.parseDouble(split[9]));
+                                    carFlowDate1.setShortRation(Double.parseDouble(split[10]));
+                                    carFlowDate1.setAvgSpeed(Double.parseDouble(split[11]));
+                                    carFlowDate1.setLongSpeed(Double.parseDouble(split[12]));
+                                    carFlowDate1.setMidSpeed(Double.parseDouble(split[13]));
+                                    carFlowDate1.setShortSpeed(Double.parseDouble(split[14]));
+                                    carFlowDate1.setPreFlux(Double.parseDouble(split[15]));
+                                    carFlowDate1.setLongCarNums(Double.parseDouble(split[16]));
+                                    carFlowDate1.setMidCarNums(Double.parseDouble(split[17]));
+                                    carFlowDate1.setShortCarNums(Double.parseDouble(split[18]));
                                     carFlowDateService.saveCarFlowDate(carFlowDate1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("carFlowDate"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("radarID"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("roadWayNum"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("totalFlux"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("occupyRation"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longRation"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midRation"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortRation"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("avgSpeed"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longSpeed"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midSpeed"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortSpeed"),Bytes.toBytes(split[14]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("preFlux"),Bytes.toBytes(split[15]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("longCarNums"),Bytes.toBytes(split[16]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("midCarNums"),Bytes.toBytes(split[17]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("shortCarNums"),Bytes.toBytes(split[18]));
+                                    DatePuts.add(put);
                                 }
                             }
                         }else {
@@ -634,9 +944,14 @@ public class SendingThread extends Thread {
                         }
                         dateTime = sdf.format(date.getTime() - 60*60*24);
                     }
+                    weatherDateTable.put(DatePuts);
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N136")) { //读粉尘历史数据
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table dustLpTable = connection.getTable(TableName.valueOf("dustLp"));
+                    Table dustHourTable = connection.getTable(TableName.valueOf("dustHour"));
+                    Table dustDateTable = connection.getTable(TableName.valueOf("dustDate"));
                     Date date = new Date();
                     String hourTime = sdf.format(date.getTime()-60*60);
                     String dateTime = sdf.format(date.getTime()-60*60*24);
@@ -649,44 +964,58 @@ public class SendingThread extends Thread {
                             if(!(dustLP.getNoiseCode().equals(getCode(pack,"Code"))) && !(dustLP.getMeasureTime().equals(sdf.parse(split[2])))){
                                 DustLP dustLP1 = new DustLP();
                                 dustLP1.setNoiseCode(getCode(pack,"Code"));
-                                dustLP1.setMeasureTime(sdf.parse(split[0]));
-                                dustLP1.setUnitTime(Integer.parseInt(split[1]));
-                                if(split[2].equals("-")){
+                                dustLP1.setMeasureTime(sdf.parse(split[2]));
+                                dustLP1.setUnitTime(Integer.parseInt(split[3]));
+                                if(split[4].equals("-")){
                                     dustLP1.setTSP(0);
                                 }else {
-                                    dustLP1.setTSP(Double.parseDouble(split[2]));
-                                }
-                                if(split[3].equals("-")){
-                                    dustLP1.setPM10(0);
-                                }else {
-                                    dustLP1.setPM10(Double.parseDouble(split[3]));
-                                }
-                                if(split[4].equals("-")){
-                                    dustLP1.setPM2_5(0);
-                                }else {
-                                    dustLP1.setPM2_5(Double.parseDouble(split[4]));
+                                    dustLP1.setTSP(Double.parseDouble(split[4]));
                                 }
                                 if(split[5].equals("-")){
-                                    dustLP1.setSOx(0);
+                                    dustLP1.setPM10(0);
                                 }else {
-                                    dustLP1.setSOx(Double.parseDouble(split[5]));
+                                    dustLP1.setPM10(Double.parseDouble(split[5]));
                                 }
                                 if(split[6].equals("-")){
-                                    dustLP1.setNOx(0);
+                                    dustLP1.setPM2_5(0);
                                 }else {
-                                    dustLP1.setNOx(Double.parseDouble(split[6]));
+                                    dustLP1.setPM2_5(Double.parseDouble(split[6]));
                                 }
                                 if(split[7].equals("-")){
+                                    dustLP1.setSOx(0);
+                                }else {
+                                    dustLP1.setSOx(Double.parseDouble(split[7]));
+                                }
+                                if(split[8].equals("-")){
+                                    dustLP1.setNOx(0);
+                                }else {
+                                    dustLP1.setNOx(Double.parseDouble(split[8]));
+                                }
+                                if(split[9].equals("-")){
                                     dustLP1.setAnion(0);
                                 }else {
-                                    dustLP1.setAnion(Double.parseDouble(split[7]));
+                                    dustLP1.setAnion(Double.parseDouble(split[9]));
                                 }
                                 dustLPService.saveDustLp(dustLP1);
+
+                                //保存到Hbase数据库中
+                                Put put = new Put(Bytes.toBytes("dustLp"));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[3]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("TSP"),Bytes.toBytes(split[4]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM10"),Bytes.toBytes(split[5]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM2_5"),Bytes.toBytes(split[6]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SOx"),Bytes.toBytes(split[7]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("NOx"),Bytes.toBytes(split[8]));
+                                put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Anion"),Bytes.toBytes(split[9]));
+                                puts.add(put);
                             }else {
                                 continue;
                             }
                         }
                     }
+                    dustLpTable.put(puts);
                     //小时统计
                     for (int i=0;i<3000;i++){
                         value = getCode(pack, "H"+i);
@@ -719,6 +1048,30 @@ public class SendingThread extends Thread {
                                     dustHour1.setMaxAnion(0);
                                     dustHour1.setMinAnion(0);
                                     dustHourService.saveDustHour(dustHour1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("dustHour"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("TSP"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM10"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM2_5"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SOx"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("NOx"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Anion"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxTSP"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minTSP"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxPM10"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minPM10"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxPM25"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minPM25"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxSOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minSOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxNOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minNOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAnion"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAnion"),Bytes.toBytes(0));
+                                    HourPuts.add(put);
                                 }else {
                                     continue;
                                 }
@@ -728,6 +1081,7 @@ public class SendingThread extends Thread {
                         }
                         hourTime = sdf.format(date.getTime()-60*60);
                     }
+                    dustHourTable.put(puts);
                     //天统计
                     for (int i=0;i<3000;i++){
                         value = getCode(pack, "H"+i);
@@ -760,6 +1114,30 @@ public class SendingThread extends Thread {
                                     dustDate1.setMaxAnion(0);
                                     dustDate1.setMinAnion(0);
                                     dustDateService.saveDustDate(dustDate1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("dustDate"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("TSP"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM10"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PM2_5"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("SOx"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("NOx"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("Anion"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxTSP"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minTSP"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxPM10"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minPM10"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxPM25"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minPM25"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxSOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minSOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxNOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minNOx"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAnion"),Bytes.toBytes(0));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAnion"),Bytes.toBytes(0));
+                                    DatePuts.add(put);
                                 }else {
                                     continue;
                                 }
@@ -769,9 +1147,13 @@ public class SendingThread extends Thread {
                         }
                         dateTime = sdf.format(date.getTime()-60*60*24);
                     }
+                    dustDateTable.put(DatePuts);
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N137")) { //读气象统计历史数据
+                    Connection connection=ConnectionFactory.createConnection(conf);
+                    Table weatherHourTable = connection.getTable(TableName.valueOf("weatherHour"));
+                    Table weatherDateTable = connection.getTable(TableName.valueOf("weatherDate"));
                     Date date = new Date();
                     String hourTime = sdf.format(date.getTime()-60*60);
                     String dateTime = sdf.format(date.getTime()-60*60*24);
@@ -799,7 +1181,30 @@ public class SendingThread extends Thread {
                                     weatherHour1.setMinAtemp(Double.parseDouble(split[13]));
                                     weatherHour1.setMaxHumi(Double.parseDouble(split[14]));
                                     weatherHour1.setMinHumi(Double.parseDouble(split[15]));
+                                    weatherHour1.setMaxAri(Double.parseDouble(split[16]));
+                                    weatherHour1.setMinAri(Double.parseDouble(split[17]));
                                     weatherHourService.saveWeatherHour(weatherHour1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("weatherHour"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("w_Speed"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("w_Direction"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("a_Temp"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("humi_R"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("ari_p"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PRF"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxSpeed"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minSpeed"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAtemp"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAtemp"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxHumi"),Bytes.toBytes(split[14]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minHumi"),Bytes.toBytes(split[15]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAri"),Bytes.toBytes(split[16]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAri"),Bytes.toBytes(split[17]));
+                                    HourPuts.add(put);
                                 } else {
                                     continue;
                                 }
@@ -809,6 +1214,7 @@ public class SendingThread extends Thread {
                         }
                         hourTime = sdf.format(date.getTime() - 60*60);
                     }
+                    weatherHourTable.put(HourPuts);
                     //天统计
                     for (int i=0;i<3000;i++){
                         value = getCode(pack, "H"+i);
@@ -834,7 +1240,30 @@ public class SendingThread extends Thread {
                                     weatherDate1.setMinAtemp(Double.parseDouble(split[13]));
                                     weatherDate1.setMaxHumi(Double.parseDouble(split[14]));
                                     weatherDate1.setMinHumi(Double.parseDouble(split[15]));
+                                    weatherDate1.setMaxAri(Double.parseDouble(split[16]));
+                                    weatherDate1.setMinAri(Double.parseDouble(split[17]));
                                     weatherDateService.saveWeatherDate(weatherDate1);
+
+                                    //保存到Hbase数据库中
+                                    Put put = new Put(Bytes.toBytes("weatherDate"));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("noiseCode"),Bytes.toBytes(getCode(pack,"Code")));
+                                    put.addColumn(Bytes.toBytes("info1"),Bytes.toBytes("measureTime"),Bytes.toBytes(sdf.format(sdf.parse(split[2]))));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("unitTime"),Bytes.toBytes(split[3]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("w_Speed"),Bytes.toBytes(split[4]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("w_Direction"),Bytes.toBytes(split[5]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("a_Temp"),Bytes.toBytes(split[6]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("humi_R"),Bytes.toBytes(split[7]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("ari_p"),Bytes.toBytes(split[8]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("PRF"),Bytes.toBytes(split[9]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxSpeed"),Bytes.toBytes(split[10]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minSpeed"),Bytes.toBytes(split[11]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAtemp"),Bytes.toBytes(split[12]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAtemp"),Bytes.toBytes(split[13]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxHumi"),Bytes.toBytes(split[14]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minHumi"),Bytes.toBytes(split[15]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("maxAri"),Bytes.toBytes(split[16]));
+                                    put.addColumn(Bytes.toBytes("info2"),Bytes.toBytes("minAri"),Bytes.toBytes(split[17]));
+                                    DatePuts.add(put);
                                 }else {
                                     continue;
                                 }
@@ -844,6 +1273,7 @@ public class SendingThread extends Thread {
                         }
                         dateTime = sdf.format(date.getTime() - 60*60*24);
                     }
+                    weatherDateTable.put(DatePuts);
                     //需要循环提取，提取成功则添加到数据库，提取失败则发送操作失败指令
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N140")) { //及时采样命令（心跳指令）
@@ -977,6 +1407,7 @@ public class SendingThread extends Thread {
                     rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N001")) { //实时瞬时声级自动上传命令
                     value = getCode(pack, "Value");
+                    if (value == null)continue;
                     split = value.split(",");
                     deviceCode = getCode(pack, "Code");
                     if(MoreInfoController.dummyData != null) {
@@ -994,11 +1425,6 @@ public class SendingThread extends Thread {
                         }
                     }
                     //接收的数据个数不是固定的，根据开关量判断传入的是哪种数据，提取第一个数据放入表格中显示
-                } else if (classes.equals("N002")) { //自动上传事件提示或报警
-                    value = getCode(pack, "Value");
-                    split = value.split(",");
-                    //成功会返回两个参数，一个是解除或者不解除报警，一个是事件结果
-                    rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N010")) { //OCT数据自动上传命令
                     value = getCode(pack, "Value");
                     split = value.split(",");
@@ -1070,7 +1496,7 @@ public class SendingThread extends Thread {
                     split = value.split(",");
                     //成功返回数据类型：0为积分统计数据； 1为小时统计数据；2为天统计数据
                     //以及数据后面数据可以会变化，根据字段名存入数据
-                    rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
+                    //rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N012")) { //录音文件自动上传(录音授权)
                     value = getCode(pack, "Value");
                     split = value.split(",");
@@ -1117,7 +1543,7 @@ public class SendingThread extends Thread {
                     //保存到数据库中
                     weatherLPService.saveWeatherLP(weatherLP);
                     //当接收数据为-时，表示没有数据
-                    rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
+                    //rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N014")) { //车流量数据自动上传命令
                     value = getCode(pack, "Value");
                     split = value.split(",");
@@ -1144,7 +1570,7 @@ public class SendingThread extends Thread {
                     carFlowLP.setShortCarNums(Double.parseDouble(split[16]));
                     //保存到数据库中
                     carFlowLPService.saveCarFlow(carFlowLP);
-                    rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
+                    //rtn = Integer.parseInt(getCode(pack, "Rtn"));//提取接收返回标记
                 } else if (classes.equals("N015")) { //粉尘数据自动上传命令
                     value = getCode(pack, "Value");
                     split = value.split(",");

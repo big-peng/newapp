@@ -235,14 +235,16 @@ public class AddFixedMeasureController {
                 stateMeasure.setAddress(measureLatitude+","+measureLongitude);
                 stateMeasure.setData("62.1");
                 stateMeasure.setDataTime("2019-02-02");
-                stateMeasure.setOther("0");
-                MainController.nowDummyData.add(stateMeasure);
-                StateNoise stateNoise = new StateNoise();
-                stateNoise.setDeviceCode("0");
-                stateNoise.setLinkState(0);
-                deviceManageService.insertState(stateNoise);
+                stateMeasure.setOther("");
+                //MainController.nowDummyData.add(stateMeasure);
+                for (InfoNoiseDevice device : noiseList) {
+                    StateNoise stateNoise = new StateNoise();
+                    stateNoise.setDeviceCode(device.getDeviceCode());
+                    stateNoise.setLinkState(0);
+                    deviceManageService.insertState(stateNoise);
+                }
                 NoiseDeviceManageController.infoNoiseManager.setNoiseManagerId(measureCode);
-                infoNoiseManagerService.saveInfoNoiseManager(NoiseDeviceManageController.infoNoiseManager);
+                //infoNoiseManagerService.saveInfoNoiseManager(NoiseDeviceManageController.infoNoiseManager);
             }
             noiseList.clear();
             stage.close();

@@ -24,6 +24,8 @@ public class WeatherDate extends RecursiveTreeObject<WeatherDate> {
     private SimpleDoubleProperty minHumi;
     private SimpleDoubleProperty maxAtemp;
     private SimpleDoubleProperty minAtemp;
+    private SimpleDoubleProperty maxAri;
+    private SimpleDoubleProperty minAri;
 
     @Override
     public String toString() {
@@ -43,6 +45,8 @@ public class WeatherDate extends RecursiveTreeObject<WeatherDate> {
                 ", minHumi=" + minHumi +
                 ", maxAtemp=" + maxAtemp +
                 ", minAtemp=" + minAtemp +
+                ", maxAri=" + maxAri +
+                ", minAri=" + minAri +
                 '}';
     }
 
@@ -222,7 +226,31 @@ public class WeatherDate extends RecursiveTreeObject<WeatherDate> {
         this.minAtemp = new SimpleDoubleProperty(minAtemp);
     }
 
-    public WeatherDate(String noiseCode, Date measureTime, int unitTime, double w_Speed, double w_Direction, double a_Temp, double humi_R, double ari_p, double PRF, double maxSpeed, double minSpeed, double maxHumi, double minHumi, double maxAtemp, double minAtemp) {
+    public double getMaxAri() {
+        return maxAri.get();
+    }
+
+    public SimpleDoubleProperty maxAriProperty() {
+        return maxAri;
+    }
+
+    public void setMaxAri(double maxAri) {
+        this.maxAri = new SimpleDoubleProperty(maxAri);
+    }
+
+    public double getMinAri() {
+        return minAri.get();
+    }
+
+    public SimpleDoubleProperty minAriProperty() {
+        return minAri;
+    }
+
+    public void setMinAri(double minAri) {
+        this.minAri = new SimpleDoubleProperty(minAri);
+    }
+
+    public WeatherDate(String noiseCode, Date measureTime, int unitTime, double w_Speed, double w_Direction, double a_Temp, double humi_R, double ari_p, double PRF, double maxSpeed, double minSpeed, double maxHumi, double minHumi, double maxAtemp, double minAtemp, double maxAri, double minAri) {
         this.noiseCode = new SimpleStringProperty(noiseCode);
         this.measureTime = measureTime;
         this.unitTime = new SimpleIntegerProperty(unitTime);
@@ -238,6 +266,8 @@ public class WeatherDate extends RecursiveTreeObject<WeatherDate> {
         this.minHumi = new SimpleDoubleProperty(minHumi);
         this.maxAtemp = new SimpleDoubleProperty(maxAtemp);
         this.minAtemp = new SimpleDoubleProperty(minAtemp);
+        this.maxAri = new SimpleDoubleProperty(maxAri);
+        this.minAri = new SimpleDoubleProperty(minAri);
     }
 
     public WeatherDate() {

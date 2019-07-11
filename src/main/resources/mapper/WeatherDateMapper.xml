@@ -6,7 +6,7 @@
       insert into weather_date
         values(#{noiseCode},#{measureTime},#{unitTime},#{w_Speed},
         #{w_Direction},#{a_Temp},#{humi_R},#{ari_p},#{PRF},
-        #{maxSpeed},#{minSpeed},#{maxHumi},#{minHumi},#{maxAtemp},#{minAtemp})
+        #{maxSpeed},#{minSpeed},#{maxHumi},#{minHumi},#{maxAtemp},#{minAtemp},#{maxAri},#{minAri})
     </insert>
     <!--根据时间段查询-->
     <select id="queryWeatherByTime" resultType="com.hzaihua.jfoenix.entity.WeatherDate">
